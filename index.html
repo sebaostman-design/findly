@@ -810,6 +810,8 @@ function showPage(name) {
     el.classList.add('active');
     window.scrollTo(0, 0);
   }
+  const m = document.getElementById('mobile-menu');
+  if (m) m.style.display = 'none';
   if (pageHistory[pageHistory.length - 1] !== name) pageHistory.push(name);
 
   if (name === 'feed') loadFeed();
