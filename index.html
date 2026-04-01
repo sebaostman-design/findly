@@ -32,7 +32,7 @@ nav {
   position: sticky; top: 0; z-index: 200;
   background: rgba(248,250,248,0.95); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between;
   padding: 0 5vw; height: 64px;
 }
 .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--green); letter-spacing: -0.5px; cursor: pointer; }
@@ -40,7 +40,8 @@ nav {
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a { text-decoration: none; color: var(--ink2); font-size: 14px; font-weight: 500; transition: color 0.2s; cursor: pointer; }
 .nav-links a:hover { color: var(--green); }
-.nav-right { display: flex; gap: 10px; align-items: center; }
+.nav-right { display: flex; flex-direction: row; gap: 10px; align-items: center; }
+#nav-auth-area { display: flex; flex-direction: row; gap: 10px; align-items: center; }
 .nav-auth-btn {
   padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 500;
   cursor: pointer; transition: all 0.2s; border: 1.5px solid var(--border);
@@ -358,7 +359,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
       <button class="nav-auth-btn" onclick="showPage('auth')">Kirjaudu</button>
       <button class="nav-cta" onclick="showPage('new-listing')">+ Ilmoita</button>
     </div>
-    <div id="nav-user-area" style="display:none;gap:10px;align-items:center;">
+    <div id="nav-user-area" style="display:none;flex-direction:row;gap:10px;align-items:center;">
       <button class="nav-auth-btn" onclick="showPage('messages')">💬 Viestit</button>
       <button class="nav-cta" onclick="showPage('new-listing')">+ Ilmoita</button>
       <button class="nav-auth-btn" onclick="showPage('profile')" id="nav-profile-btn">👤</button>
