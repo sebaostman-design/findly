@@ -1090,7 +1090,13 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 const SUPABASE_URL = 'https://dcofgvyviagqlikubmvl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_nFzHqgB9kuVe--A1xCMClQ_lQUvnJP6';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiY3Jlc2ViIiwiYSI6ImNtbmczbGVoZDAxbmIycHMzajRwMGxkMmkifQ.kzRDMcrKO5KT28qFrDzc7g';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // ═══════════════════════════════════════════════════════
@@ -2198,13 +2204,25 @@ function esc(str) {
 // INIT
 // ═══════════════════════════════════════════════════════
 (async () => {
+  // Handle email confirmation callback (token in URL hash)
+  const hash = new URLSearchParams(window.location.hash.replace('#', ''));
+  const isEmailCallback = hash.get('type') === 'signup' || hash.get('access_token');
+
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session?.user || null;
   updateNavAuth();
 
+  // Clean up the URL hash after Supabase processes it
+  if (isEmailCallback && window.history.replaceState) {
+    window.history.replaceState(null, '', window.location.pathname);
+  }
+
   const params = new URLSearchParams(window.location.search);
   if (params.get('listing')) {
     openListing(params.get('listing'));
+  } else if (isEmailCallback && currentUser) {
+    toast('Sähköposti vahvistettu! Tervetuloa Findlyyn 🎉', 'green');
+    showPage('home');
   } else {
     showPage('home');
   }
