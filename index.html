@@ -2682,11 +2682,14 @@ async function loadMatches() {
 
   el.innerHTML = '<div class="loading"><div class="spinner"></div>Lasketaan osumia...</div>';
 
-  // Load user's own listings + all other listings
-  const [{ data: myListings }, { data: allOther }] = await Promise.all([
+  // Load user's own listings + all other listings + existing conversations
+  const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found'])
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']),
+    sb.from('conversations').select('listing_id').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
   ]);
+  // Set of listing IDs where user already has a conversation
+  const pendingListingIds = new Set((myConvs || []).map(c => c.listing_id));
 
   if (!myListings || myListings.length === 0) {
     el.innerHTML = `
@@ -2732,7 +2735,8 @@ async function loadMatches() {
         const scoreLabel = score >= 70 ? 'Korkea vastaavuus' : score >= 45 ? 'Kohtalainen vastaavuus' : 'Heikko vastaavuus';
         const scoreCls = score >= 70 ? 'score-high' : score >= 45 ? 'score-mid' : 'score-low';
         const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
-        return `<div class="match-card" onclick="openListing('${l.id}')">
+        const isPending = pendingListingIds.has(l.id);
+        return `<div class="match-card" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.7;' : ''}">
           <div class="match-card-icon">${categoryIcon(l.category)}</div>
           <div class="match-card-body">
             <div class="match-card-top">
@@ -2749,8 +2753,10 @@ async function loadMatches() {
               ${reasons.map(r => `<span class="match-tag ${r.hit ? 'hit' : ''}">${esc(r.label)}</span>`).join('')}
             </div>
             <div class="match-card-actions">
-              <button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>
+              ${isPending
+                ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
+                : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>`}
             </div>
           </div>
         </div>`;
