@@ -927,32 +927,32 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div id="auth-login-form">
         <div class="auth-form-group">
           <label>Sähköposti</label>
-          <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" />
+          <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" onkeydown="if(event.key==='Enter')doLogin()" />
         </div>
         <div class="auth-form-group">
           <label>Salasana</label>
-          <input type="password" id="login-password" placeholder="••••••••" />
+          <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
         </div>
-        <button class="auth-btn" onclick="doLogin()">Kirjaudu sisään</button>
+        <button class="auth-btn" id="login-btn" onclick="doLogin()">Kirjaudu sisään</button>
       </div>
       <div id="auth-signup-form" style="display:none;">
         <div class="auth-form-group">
-          <label>Nimi</label>
-          <input type="text" id="signup-name" placeholder="Etunimi Sukunimi" />
+          <label>Nimi *</label>
+          <input type="text" id="signup-name" placeholder="Etunimi Sukunimi" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Sähköposti</label>
-          <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" />
+          <label>Sähköposti *</label>
+          <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Puhelinnumero *</label>
-          <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" />
+          <label>Puhelinnumero</label>
+          <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Salasana</label>
-          <input type="password" id="signup-password" placeholder="Vähintään 6 merkkiä" />
+          <label>Salasana *</label>
+          <input type="password" id="signup-password" placeholder="Vähintään 6 merkkiä" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
-        <button class="auth-btn" onclick="doSignup()">Luo tili</button>
+        <button class="auth-btn" id="signup-btn" onclick="doSignup()">Luo tili</button>
       </div>
       <div class="auth-msg" id="auth-msg"></div>
       <div class="auth-divider">— tai jatka ilman tiliä —</div>
@@ -1113,6 +1113,10 @@ function toast(msg, type = '') {
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
   updateNavAuth();
+  // Redirect away from auth page if user just signed in
+  if (currentUser && document.getElementById('page-auth').classList.contains('active')) {
+    showPage('home');
+  }
 });
 
 function updateNavAuth() {
@@ -1141,11 +1145,23 @@ async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw = document.getElementById('login-password').value;
   const msg = document.getElementById('auth-msg');
+  const btn = document.getElementById('login-btn');
   if (!email || !pw) { msg.textContent = 'Täytä kaikki kentät.'; msg.className = 'auth-msg error'; return; }
-  msg.textContent = 'Kirjaudutaan...'; msg.className = 'auth-msg';
+  msg.textContent = ''; msg.className = 'auth-msg';
+  btn.disabled = true; btn.textContent = 'Kirjaudutaan...';
   const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) { msg.textContent = 'Virhe: ' + error.message; msg.className = 'auth-msg error'; }
-  else { toast('Tervetuloa takaisin! 👋', 'green'); showPage('home'); }
+  btn.disabled = false; btn.textContent = 'Kirjaudu sisään';
+  if (error) {
+    const errMap = {
+      'Invalid login credentials': 'Väärä sähköposti tai salasana.',
+      'Email not confirmed': 'Vahvista sähköpostisi ensin.',
+    };
+    msg.textContent = errMap[error.message] || error.message;
+    msg.className = 'auth-msg error';
+  } else {
+    toast('Tervetuloa takaisin! 👋', 'green');
+    showPage('home');
+  }
 }
 
 async function doSignup() {
@@ -1154,12 +1170,27 @@ async function doSignup() {
   const phone = document.getElementById('signup-phone').value.trim();
   const pw = document.getElementById('signup-password').value;
   const msg = document.getElementById('auth-msg');
-  if (!name || !email || !pw) { msg.textContent = 'Täytä kaikki kentät.'; msg.className = 'auth-msg error'; return; }
+  const btn = document.getElementById('signup-btn');
+  if (!name || !email || !pw) { msg.textContent = 'Täytä pakolliset kentät.'; msg.className = 'auth-msg error'; return; }
   if (pw.length < 6) { msg.textContent = 'Salasanan tulee olla vähintään 6 merkkiä.'; msg.className = 'auth-msg error'; return; }
-  msg.textContent = 'Luodaan tiliä...'; msg.className = 'auth-msg';
-  const { error } = await sb.auth.signUp({ email, password: pw, options: { data: { name, phone } } });
-  if (error) { msg.textContent = 'Virhe: ' + error.message; msg.className = 'auth-msg error'; }
-  else { msg.textContent = 'Tarkista sähköpostisi vahvistusta varten!'; msg.className = 'auth-msg success'; }
+  msg.textContent = ''; msg.className = 'auth-msg';
+  btn.disabled = true; btn.textContent = 'Luodaan tiliä...';
+  const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { name, phone } } });
+  btn.disabled = false; btn.textContent = 'Luo tili';
+  if (error) {
+    const errMap = {
+      'User already registered': 'Sähköposti on jo käytössä. Kirjaudu sisään.',
+    };
+    msg.textContent = errMap[error.message] || error.message;
+    msg.className = 'auth-msg error';
+  } else if (data?.session) {
+    // Email confirmation disabled — logged in immediately
+    toast('Tervetuloa Findlyyn! 🎉', 'green');
+    showPage('home');
+  } else {
+    msg.textContent = '✓ Tarkista sähköpostisi ja klikkaa vahvistuslinkkiä.';
+    msg.className = 'auth-msg success';
+  }
 }
 
 async function doSignout() {
