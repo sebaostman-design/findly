@@ -901,45 +901,45 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <!-- ── CATEGORIES ── -->
   <section style="background:var(--paper);padding:96px 0;">
     <div class="wrap">
-      <div class="section-label">Kategoriat</div>
-      <div class="section-title">Mitä olet kadottanut?</div>
-      <div class="section-sub">Klikkaa kategoriaa tehdäksesi ilmoituksen nopeasti.</div>
+      <div class="section-label" data-i18n="cat_label">Kategoriat</div>
+      <div class="section-title" data-i18n="cat_title">Mitä olet kadottanut?</div>
+      <div class="section-sub" data-i18n="cat_sub">Klikkaa kategoriaa tehdäksesi ilmoituksen nopeasti.</div>
       <div class="category-grid">
         <div class="category-card" onclick="openFormCat('📱 Puhelin')">
           <span class="cat-icon">📱</span>
-          <div class="cat-label">Puhelin</div>
+          <div class="cat-label" data-i18n="cat_phone">Puhelin</div>
         </div>
         <div class="category-card" onclick="openFormCat('💳 Lompakko / kortit')">
           <span class="cat-icon">💳</span>
-          <div class="cat-label">Lompakko</div>
+          <div class="cat-label" data-i18n="cat_wallet">Lompakko</div>
         </div>
         <div class="category-card" onclick="openFormCat('🔑 Avaimet')">
           <span class="cat-icon">🔑</span>
-          <div class="cat-label">Avaimet</div>
+          <div class="cat-label" data-i18n="cat_keys">Avaimet</div>
         </div>
         <div class="category-card" onclick="openFormCat('👜 Laukku / reppu')">
           <span class="cat-icon">👜</span>
-          <div class="cat-label">Laukku / reppu</div>
+          <div class="cat-label" data-i18n="cat_bag">Laukku / reppu</div>
         </div>
         <div class="category-card" onclick="openFormCat('💎 Koru / kello')">
           <span class="cat-icon">💎</span>
-          <div class="cat-label">Koru / kello</div>
+          <div class="cat-label" data-i18n="cat_jewelry">Koru / kello</div>
         </div>
         <div class="category-card" onclick="openFormCat('🎧 Elektroniikka')">
           <span class="cat-icon">🎧</span>
-          <div class="cat-label">Elektroniikka</div>
+          <div class="cat-label" data-i18n="cat_electronics">Elektroniikka</div>
         </div>
         <div class="category-card" onclick="openFormCat('🚲 Polkupyörä')">
           <span class="cat-icon">🚲</span>
-          <div class="cat-label">Polkupyörä</div>
+          <div class="cat-label" data-i18n="cat_bike">Polkupyörä</div>
         </div>
         <div class="category-card" onclick="openFormTab('pet')">
           <span class="cat-icon">🐾</span>
-          <div class="cat-label">Eläin</div>
+          <div class="cat-label" data-i18n="cat_animal">Eläin</div>
         </div>
         <div class="category-card" onclick="openFormCat('Muu')">
           <span class="cat-icon">📦</span>
-          <div class="cat-label">Muu tavara</div>
+          <div class="cat-label" data-i18n="cat_other">Muu tavara</div>
         </div>
       </div>
     </div>
@@ -948,9 +948,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <!-- ── WHY FINDLY ── -->
   <section class="section-dark">
     <div class="wrap">
-      <div class="section-label">Miksi Findly?</div>
-      <div class="section-title">Rakennettu turvallisuus edellä</div>
-      <div class="section-sub">Muissa palveluissa jaat kaiken julkisesti. Findly suojaa yksityisyytesi ja varmistaa oikean omistajan.</div>
+      <div class="section-label" data-i18n="why_label">Miksi Findly?</div>
+      <div class="section-title" data-i18n="why_title">Rakennettu turvallisuus edellä</div>
+      <div class="section-sub" data-i18n="why_sub">Muissa palveluissa jaat kaiken julkisesti. Findly suojaa yksityisyytesi ja varmistaa oikean omistajan.</div>
       <div class="why-grid">
         <div class="why-card">
           <div class="why-icon">📍</div>
@@ -990,14 +990,14 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <section style="background:white;padding:80px 0;">
     <div class="wrap" style="max-width:800px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:40px;">
-        <div class="section-label">Findly-tarinat</div>
-        <div class="section-title">Tämä tarina päättyi hyvin</div>
-        <div class="section-sub">Oikeita kokemuksia Findly-käyttäjiltä. Jokainen palautus on pieni voitto.</div>
+        <div class="section-label" data-i18n="stories_label">Findly-tarinat</div>
+        <div class="section-title" data-i18n="stories_title">Tämä tarina päättyi hyvin</div>
+        <div class="section-sub" data-i18n="stories_sub">Oikeita kokemuksia Findly-käyttäjiltä. Jokainen palautus on pieni voitto.</div>
       </div>
       <div id="stories-feed" style="display:grid;gap:16px;">
         <div class="loading"><div class="spinner"></div></div>
       </div>
-      <div id="stories-empty" style="display:none;text-align:center;padding:32px;color:var(--ink3);font-size:14px;">
+      <div id="stories-empty" style="display:none;text-align:center;padding:32px;color:var(--ink3);font-size:14px;" data-i18n="stories_empty">
         Tarinoita ei ole vielä — ensimmäinen onnistuminen on tulossa! 💛
       </div>
     </div>
@@ -1008,8 +1008,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <div class="wrap" style="max-width:960px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:48px;">
         <div style="font-size:40px;margin-bottom:20px;">💛</div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:800;color:white;margin-bottom:16px;line-height:1.3;">Findly on hyvän mielen palvelu</h2>
-        <p style="font-size:16px;color:rgba(255,255,255,0.65);line-height:1.8;max-width:620px;margin:0 auto;">Tavoitteemme on yksinkertainen: saattaa kadonnut tavara takaisin omistajalleen. Jokainen onnistunut palautus tuottaa hyvää mieltä — sekä omistajalle että löytäjälle. Rehellisyys kannattaa, ja Findly tekee siitä helppoa.</p>
+        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:800;color:white;margin-bottom:16px;line-height:1.3;" data-i18n="vibes_title">Findly on hyvän mielen palvelu</h2>
+        <p style="font-size:16px;color:rgba(255,255,255,0.65);line-height:1.8;max-width:620px;margin:0 auto;" data-i18n="vibes_desc">Tavoitteemme on yksinkertainen: saattaa kadonnut tavara takaisin omistajalleen. Jokainen onnistunut palautus tuottaa hyvää mieltä — sekä omistajalle että löytäjälle. Rehellisyys kannattaa, ja Findly tekee siitä helppoa.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
         <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:24px;">
@@ -1034,11 +1034,11 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <!-- ── FINAL CTA ── -->
   <section class="section-cta">
     <div class="wrap">
-      <h2>Tavara kadoksissa?<br>Löysitkö jonkun tavaran?</h2>
-      <p>Tee ilmoitus alle kahdessa minuutissa — täysin ilmaiseksi.</p>
+      <h2 data-i18n="cta_title" data-i18n-html="1">Tavara kadoksissa?<br>Löysitkö jonkun tavaran?</h2>
+      <p data-i18n="cta_sub">Tee ilmoitus alle kahdessa minuutissa — täysin ilmaiseksi.</p>
       <div class="cta-buttons">
-        <button class="cta-btn-primary" onclick="openFormTab('lost')">🔍 Kadotin tavaran</button>
-        <button class="cta-btn-secondary" onclick="openFormTab('found')">📦 Löysin tavaran</button>
+        <button class="cta-btn-primary" onclick="openFormTab('lost')" data-i18n="cta_lost">🔍 Kadotin tavaran</button>
+        <button class="cta-btn-secondary" onclick="openFormTab('found')" data-i18n="cta_found">📦 Löysin tavaran</button>
       </div>
     </div>
   </section>
@@ -1046,8 +1046,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <!-- ── FAQ (SEO + Rich Results) ── -->
   <section style="background:var(--paper);padding:80px 0;">
     <div class="wrap">
-      <div class="section-label">Usein kysyttyä</div>
-      <div class="section-title" style="margin-bottom:40px;">Löytötavara-palvelun UKK</div>
+      <div class="section-label" data-i18n="faq_label">Usein kysyttyä</div>
+      <div class="section-title" style="margin-bottom:40px;" data-i18n="faq_title">Löytötavara-palvelun UKK</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:960px;margin:0 auto;">
         <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
           <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;" data-i18n="faq_q1">Miten ilmoitan kadonneesta tavarasta?</h3>
@@ -1127,15 +1127,15 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="section-label" data-i18n="feed_label">Ilmoitukset</div>
       <div class="section-title" data-i18n="feed_title">Kaikki ilmoitukset</div>
       <div class="feed-controls">
-        <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)">Kaikki</button>
-        <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)">🔍 Kadonneet</button>
-        <button class="feed-filter" data-filter="found" onclick="setFeedFilter('found',this)">📦 Löydetyt</button>
-        <button class="feed-filter" data-filter="stolen" onclick="setFeedFilter('stolen',this)">🚨 Varastetut</button>
-        <button class="feed-filter" data-filter="pet" onclick="setFeedFilter('pet',this)">🐾 Eläimet</button>
+        <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)" data-i18n="feed_all">Kaikki</button>
+        <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)" data-i18n="feed_lost">🔍 Kadonneet</button>
+        <button class="feed-filter" data-filter="found" onclick="setFeedFilter('found',this)" data-i18n="feed_found">📦 Löydetyt</button>
+        <button class="feed-filter" data-filter="stolen" onclick="setFeedFilter('stolen',this)" data-i18n="feed_stolen">🚨 Varastetut</button>
+        <button class="feed-filter" data-filter="pet" onclick="setFeedFilter('pet',this)" data-i18n="feed_pets">🐾 Eläimet</button>
         <input class="feed-search" placeholder="🔍 Hae ilmoituksista..." id="feed-search-input" oninput="renderFeed()" />
       </div>
       <div class="feed-grid" id="feed-grid">
-        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+        <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
       </div>
     </div>
   </section>
@@ -1150,10 +1150,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="map-header-inner">
         <h2 data-i18n="map_title">Karttanäkymä</h2>
         <div class="map-controls-bar">
-          <button class="feed-filter active-all" onclick="filterMap('all',this)">Kaikki</button>
-          <button class="feed-filter" onclick="filterMap('lost',this)">🔍 Kadonneet</button>
-          <button class="feed-filter" onclick="filterMap('found',this)">📦 Löydetyt</button>
-          <button class="feed-filter" onclick="filterMap('pet',this)">🐾 Eläimet</button>
+          <button class="feed-filter active-all" onclick="filterMap('all',this)" data-i18n="feed_all">Kaikki</button>
+          <button class="feed-filter" onclick="filterMap('lost',this)" data-i18n="feed_lost">🔍 Kadonneet</button>
+          <button class="feed-filter" onclick="filterMap('found',this)" data-i18n="feed_found">📦 Löydetyt</button>
+          <button class="feed-filter" onclick="filterMap('pet',this)" data-i18n="feed_pets">🐾 Eläimet</button>
         </div>
         <p style="font-size:12px;color:var(--ink3);margin-top:10px;" data-i18n="map_notice">📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.</p>
       </div>
@@ -1172,12 +1172,12 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="section-title" data-i18n="pets_title" data-i18n-html="1">Kadonneet &amp; löydetyt eläimet</div>
       <div class="section-sub" data-i18n="pets_sub">Ilmoita kadonneesta tai löytyneestä lemmikistä. Jaa ilmoitus helposti lähipiirillesi.</div>
       <div style="margin:24px 0 20px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="feed-filter active-all" onclick="setPetFilter('all',this)">Kaikki</button>
-        <button class="feed-filter" onclick="setPetFilter('lost',this)">🔴 Kadonneet</button>
-        <button class="feed-filter" onclick="setPetFilter('found',this)">🟢 Löydetyt</button>
+        <button class="feed-filter active-all" onclick="setPetFilter('all',this)" data-i18n="pets_all">Kaikki</button>
+        <button class="feed-filter" onclick="setPetFilter('lost',this)" data-i18n="pets_lost">🔴 Kadonneet</button>
+        <button class="feed-filter" onclick="setPetFilter('found',this)" data-i18n="pets_found">🟢 Löydetyt</button>
       </div>
       <div class="feed-grid" id="pets-grid">
-        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+        <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
       </div>
       <div style="margin-top:28px;">
         <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')" data-i18n="pets_add">🐾 Lisää eläinilmoitus</button>
@@ -1195,9 +1195,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div id="sighting-form" style="display:none;background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px;">
           <div style="font-size:15px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:16px;" data-i18n="sight_title">🐾 Uusi havainto</div>
           <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'kissa')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐈 Kissa</button>
-            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'koira')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐕 Koira</button>
-            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'muu')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐾 Muu</button>
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'kissa')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;" data-i18n="sight_cat">🐈 Kissa</button>
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'koira')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;" data-i18n="sight_dog">🐕 Koira</button>
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'muu')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;" data-i18n="sight_other">🐾 Muu</button>
           </div>
           <input type="hidden" id="sight-type" value="" />
           <input type="text" id="sight-address" placeholder="📍 Missä näit? Esim. Kallion kirjasto, Sörnäinen..." style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;margin-bottom:10px;outline:none;" />
@@ -1238,7 +1238,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
     <div id="new-listing-form-wrap">
     <div class="form-page-header">
-      <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+      <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
       <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;" data-i18n="form_title">Uusi ilmoitus</h2>
       <p style="font-size:14px;color:var(--ink3);" data-i18n="form_sub">Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistetaan automaattisesti.</p>
     </div>
@@ -1310,8 +1310,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
             onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
             <div id="image-placeholder">
               <div style="font-size:32px;margin-bottom:8px;">📷</div>
-              <div style="font-size:13px;font-weight:600;color:var(--ink2);">Lisää kuva tavarasta</div>
-              <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Klikkaa tai raahaa tiedosto tähän · max 5 MB</div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink2);" data-i18n="form_img_add">Lisää kuva tavarasta</div>
+              <div style="font-size:11px;color:var(--ink3);margin-top:4px;" data-i18n="form_img_hint">Klikkaa tai raahaa tiedosto tähän · max 5 MB</div>
             </div>
             <img id="image-preview" src="" alt="" style="display:none;max-width:100%;max-height:200px;border-radius:10px;object-fit:cover;" />
           </div>
@@ -1326,7 +1326,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           <label id="f-location-label" data-i18n="form_location">Katoamispaikka *</label>
           <div class="form-map-pick">
             <div id="form-map"></div>
-            <div class="form-map-hint">Klikkaa kartalta merkitäksesi sijainti</div>
+            <div class="form-map-hint" data-i18n="form_map_hint">Klikkaa kartalta merkitäksesi sijainti</div>
           </div>
           <input type="text" id="f-address" placeholder="Tai kirjoita alue / kaupunginosa..." />
           <input type="hidden" id="f-lat" />
@@ -1373,7 +1373,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="form-group">
           <label data-i18n="form_phone">Puhelinnumero *</label>
           <input type="tel" id="f-phone" placeholder="+358 40 123 4567" required />
-          <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Näytetään vain matchin jälkeen.</p>
+          <p style="font-size:11px;color:var(--ink3);margin-top:4px;" data-i18n="form_phone_note">Näytetään vain matchin jälkeen.</p>
         </div>
       </div>
 
@@ -1388,7 +1388,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-verify">
   <div class="verify-wrap">
-    <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+    <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
 
     <div class="verify-progress">
       <div class="vstep active" id="vstep-1">1</div>
@@ -1464,7 +1464,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="section-title" data-i18n="match_title">Ehdotetut osumat</div>
       <div class="section-sub" style="margin-bottom:36px;" data-i18n="match_sub">Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.</div>
       <div id="matches-content">
-        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+        <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
       </div>
     </div>
   </section>
@@ -1474,7 +1474,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-listing">
   <div class="listing-detail-wrap" id="listing-detail-content">
-    <div class="loading"><div class="spinner"></div>Ladataan...</div>
+    <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
   </div>
 </div>
 
@@ -1541,7 +1541,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="section-label" data-i18n="msg_label">Viestit</div>
       <div class="section-title" data-i18n="msg_title">Keskustelut</div>
       <div id="conversations-list" style="margin-top:28px;max-width:600px;">
-        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+        <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
       </div>
     </div>
   </section>
@@ -1583,7 +1583,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-profile">
   <div class="profile-wrap">
-    <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+    <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
     <div class="profile-card">
       <div class="profile-avatar" id="profile-avatar">?</div>
       <div class="profile-name" id="profile-name">—</div>
@@ -1950,6 +1950,24 @@ const translations = {
   toast_no_self_msg:   { fi: 'Et voi lähettää viestiä itsellesi.', sv: 'Du kan inte skicka meddelande till dig själv.', en: 'You can\'t message yourself.' },
   toast_status_update: { fi: 'Tila päivitetty!', sv: 'Status uppdaterad!', en: 'Status updated!' },
   toast_write_story:   { fi: 'Kirjoita ensin tarinasi.', sv: 'Skriv din berättelse först.', en: 'Write your story first.' },
+
+  // ── CATEGORY CARDS ──
+  cat_phone:       { fi: 'Puhelin', sv: 'Telefon', en: 'Phone' },
+  cat_wallet:      { fi: 'Lompakko', sv: 'Plånbok', en: 'Wallet' },
+  cat_keys:        { fi: 'Avaimet', sv: 'Nycklar', en: 'Keys' },
+  cat_bag:         { fi: 'Laukku / reppu', sv: 'Väska / ryggsäck', en: 'Bag / backpack' },
+  cat_jewelry:     { fi: 'Koru / kello', sv: 'Smycke / klocka', en: 'Jewelry / watch' },
+  cat_electronics: { fi: 'Elektroniikka', sv: 'Elektronik', en: 'Electronics' },
+  cat_bike:        { fi: 'Polkupyörä', sv: 'Cykel', en: 'Bicycle' },
+  cat_animal:      { fi: 'Eläin', sv: 'Djur', en: 'Pet' },
+  cat_other:       { fi: 'Muu tavara', sv: 'Övrigt', en: 'Other item' },
+
+  // ── FORM IMAGE ──
+  form_img_add:    { fi: 'Lisää kuva tavarasta', sv: 'Lägg till bild', en: 'Add a photo' },
+  form_img_hint:   { fi: 'Klikkaa tai raahaa tiedosto tähän · max 5 MB', sv: 'Klicka eller dra en fil hit · max 5 MB', en: 'Click or drag a file here · max 5 MB' },
+
+  // ── STORIES EMPTY ──
+  stories_empty:   { fi: 'Tarinoita ei ole vielä — ensimmäinen onnistuminen on tulossa! 💛', sv: 'Inga berättelser ännu — den första framgången är på väg! 💛', en: 'No stories yet — the first success is on its way! 💛' },
 };
 
 function t(key) {
@@ -2262,7 +2280,7 @@ async function loadAllListings() {
 
 async function loadFeed() {
   const grid = document.getElementById('feed-grid');
-  grid.innerHTML = '<div class="loading"><div class="spinner"></div>Ladataan...</div>';
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>';
   allListings = await loadAllListings();
   renderFeed();
 }
@@ -2286,7 +2304,7 @@ function renderFeed() {
 
 async function loadPets() {
   const grid = document.getElementById('pets-grid');
-  grid.innerHTML = '<div class="loading"><div class="spinner"></div>Ladataan...</div>';
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>';
   const { data } = await sb.from('listings').select('*').eq('type','pet').gt('expires_at', new Date().toISOString()).neq('status','returned').order('created_at', { ascending: false });
   let items = data || [];
   if (petFilter === 'lost') items = items.filter(l => l.subtype !== 'found');
@@ -2353,7 +2371,7 @@ async function openListing(id) {
   currentListingId = id;
   showPage('listing');
   const el = document.getElementById('listing-detail-content');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Ladataan...</div>';
+  el.innerHTML = '<div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>';
   const { data: l } = await sb.from('listings').select('*').eq('id', id).single();
   if (!l) { el.innerHTML = '<p>Ilmoitusta ei löydy.</p>'; return; }
 
@@ -2386,7 +2404,7 @@ async function openListing(id) {
   const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
 
   el.innerHTML = `
-    <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+    <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
     ${statusHtml}
     ${l.image_url
       ? `<div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;border:1px solid var(--border);background:var(--paper);text-align:center;">
