@@ -1718,10 +1718,7 @@ async function deleteListing(id) {
 }
 
 async function updateListingStatus(id, status) {
-  const { error } = await sb.from('listings').update({ status }).eq('id', id).eq('user_id', currentUser.id);
-  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
-  toast('Tila päivitetty!', 'green');
-  openListing(id);
+  toast('Tilapäivitys ei ole vielä käytössä.', 'amber');
 }
 
 function reportListing(id) {
@@ -1906,8 +1903,6 @@ async function submitListing(e) {
     taken_to_detail: document.getElementById('f-taken-to-detail')?.value?.trim() || null,
     police_report: null,
     subtype: currentFormType === 'pet' ? 'lost' : null,
-    visibility: document.getElementById('f-visibility').value || 'public',
-    status: 'active',
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   };
 
@@ -2009,8 +2004,8 @@ async function loadMatches() {
 
   // Load user's own listings + all other listings
   const [{ data: myListings }, { data: allOther }] = await Promise.all([
-    sb.from('listings').select('*').eq('user_id', currentUser.id).in('status', ['active','match']),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).eq('status', 'active')
+    sb.from('listings').select('*').eq('user_id', currentUser.id),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found'])
   ]);
 
   if (!myListings || myListings.length === 0) {
