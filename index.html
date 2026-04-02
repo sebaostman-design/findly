@@ -3,7 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Findly – Kadonneet ja löydetyt tavarat</title>
+
+<!-- ── PRIMARY SEO ── -->
+<title>Findly – Löytötavara-palvelu Suomessa | Kadonneet ja löydetyt tavarat</title>
+<meta name="description" content="Findly on Suomen löytötavara-palvelu. Ilmoita kadonneesta tai löydetystä tavarasta ilmaiseksi. Turvallinen matchaus, anonyymi sijainti ja löytötavaralain mukainen toiminta. Kokeile nyt →">
+<meta name="keywords" content="löytötavara, löytötavarat, kadonnut tavara, löydetty tavara, löytöilmoitus, katoilmoitus, löytötavaratoimisto, löytöpalvelu, kadonneet avaimet, kadonnut lompakko, kadonnut puhelin, kadonnut koira, kadonnut kissa, löytötavara Suomi, ilmoita löydöstä, löysin tavaran, kadotin tavaran, löytötavara Helsinki, löytötavara Tampere, löytötavara Turku, Findly">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Findly">
+<meta name="language" content="fi">
+<link rel="canonical" href="https://sebaostman-design.github.io/findly/">
+
+<!-- ── OPEN GRAPH ── -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sebaostman-design.github.io/findly/">
+<meta property="og:title" content="Findly – Löytötavara-palvelu Suomessa">
+<meta property="og:description" content="Kadotit tai löysit jotain? Findly yhdistää kadonneet tavarat löytäjiin turvallisesti ja anonyymisti. Ilmainen palvelu koko Suomeen.">
+<meta property="og:locale" content="fi_FI">
+<meta property="og:site_name" content="Findly">
+
+<!-- ── TWITTER CARD ── -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Findly – Löytötavara-palvelu Suomessa">
+<meta name="twitter:description" content="Kadotit tai löysit jotain? Findly yhdistää kadonneet tavarat löytäjiin turvallisesti. Ilmainen palvelu koko Suomeen.">
+
+<!-- ── STRUCTURED DATA ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Findly",
+  "url": "https://sebaostman-design.github.io/findly/",
+  "description": "Findly on Suomen löytötavara-palvelu. Ilmoita kadonneesta tai löydetystä tavarasta ilmaiseksi.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "inLanguage": "fi",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Finland"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Miten ilmoitan löydetystä tavarasta?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rekisteröidy Findlyyn ilmaiseksi, klikkaa 'Löysin tavaran' ja täytä lyhyt lomake. Findly vertaa ilmoitustasi automaattisesti kadonneiden tavaroiden ilmoituksiin ja ilmoittaa mahdollisesta matchista."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Miten ilmoitan kadonneesta tavarasta?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rekisteröidy Findlyyn ilmaiseksi, klikkaa 'Kadotin tavaran' ja kuvaile tavara. Sijainti tallennetaan anonyymisti. Findly etsii automaattisesti vastaavia löytöilmoituksia."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Onko Findly ilmainen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kyllä, Findly on täysin ilmainen palvelu. Voit jättää ja selata ilmoituksia maksutta."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kuinka kauan löytötavara-ilmoitus on voimassa?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistuu automaattisesti. Voit tehdä uuden ilmoituksen tarvittaessa."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Toimiiko Findly koko Suomessa?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kyllä, Findly toimii koko Suomessa — Helsingistä Ouluun ja kaikkialla muuallakin."
+      }
+    }
+  ]
+}
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
@@ -582,7 +675,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="hero-content">
         <div class="hero-badge"><div class="badge-dot"></div>Suomen löytötavaralain mukainen palvelu</div>
         <h1>Kadotin.<br>Löysin.<br><span class="accent">Findly.</span></h1>
-        <p class="hero-lead">Yhdistää kadonneet tavarat löytäjiin — turvallisesti, anonyymisti ja lain mukaisesti. Sijainti pysyy piilossa ennen matchausta.</p>
+        <p class="hero-lead">Suomen löytötavara-palvelu. Yhdistää kadonneet tavarat löytäjiin — turvallisesti, anonyymisti ja lain mukaisesti. Sijainti pysyy piilossa ennen matchausta.</p>
         <div class="task-cards">
           <div class="task-card tc-lost" onclick="openFormTab('lost')">
             <div class="task-card-icon">🔍</div>
@@ -770,6 +863,40 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="cta-buttons">
         <button class="cta-btn-primary" onclick="openFormTab('lost')">🔍 Kadotin tavaran</button>
         <button class="cta-btn-secondary" onclick="openFormTab('found')">📦 Löysin tavaran</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ (SEO + Rich Results) ── -->
+  <section style="background:var(--paper);padding:80px 0;">
+    <div class="wrap">
+      <div class="section-label">Usein kysyttyä</div>
+      <div class="section-title" style="margin-bottom:40px;">Löytötavara-palvelun UKK</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:960px;margin:0 auto;">
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Miten ilmoitan kadonneesta tavarasta?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Rekisteröidy ilmaiseksi, klikkaa "Kadotin tavaran" ja kuvaile tavara. Findly etsii automaattisesti vastaavia löytöilmoituksia ja ilmoittaa mahdollisesta matchista.</p>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Miten ilmoitan löydetystä tavarasta?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin — löytöpalkinto voi olla jopa 10% tavaran arvosta.</p>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Onko Findly ilmainen?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Kyllä, täysin ilmainen. Voit jättää ja selata löytötavara-ilmoituksia maksutta. Findly toimii koko Suomessa.</p>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Kuinka kauan ilmoitus on voimassa?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Löytötavara-ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistuu automaattisesti. Voit tehdä uuden ilmoituksen tarvittaessa.</p>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Toimiiko Findly koko Suomessa?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Kyllä — Helsingistä, Tampereelta, Turusta ja kaikkialta muualtakin. Findly on valtakunnallinen löytötavara-palvelu kaikille suomalaisille.</p>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Onko sijainti turvallinen?</h3>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;">Kyllä. Sijainti näytetään muille noin 300–500 metrin epätarkkuudella. Tarkka osoite jaetaan vasta kun omistajuus on vahvistettu.</p>
+        </div>
       </div>
     </div>
   </section>
