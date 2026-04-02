@@ -411,6 +411,42 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── MATCH CARDS ── */
+.match-group { margin-bottom: 40px; }
+.match-group-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.match-group-sub { font-size: 13px; color: var(--ink3); margin-bottom: 16px; }
+.match-card {
+  background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px; display: flex; gap: 16px; align-items: flex-start;
+  transition: all 0.2s; cursor: pointer; margin-bottom: 12px;
+}
+.match-card:hover { border-color: var(--green); box-shadow: var(--shadow); transform: translateY(-2px); }
+.match-card-icon { font-size: 36px; flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius); background: var(--paper); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
+.match-card-body { flex: 1; min-width: 0; }
+.match-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.match-card-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.match-score {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+}
+.score-high { background: var(--green-light); color: var(--green-dark); border: 1px solid #A8D8BC; }
+.score-mid  { background: var(--amber-light); color: var(--amber); border: 1px solid #F0D080; }
+.score-low  { background: var(--paper); color: var(--ink3); border: 1px solid var(--border); }
+.match-card-meta { font-size: 12px; color: var(--ink3); margin-bottom: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+.match-card-desc { font-size: 13px; color: var(--ink2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; }
+.match-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.match-tag { font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 20px; background: var(--paper); border: 1px solid var(--border); color: var(--ink3); }
+.match-tag.hit { background: var(--green-light); border-color: #A8D8BC; color: var(--green-dark); }
+.match-card-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.own-listing-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius);
+  font-size: 13px; color: var(--ink2); margin-bottom: 8px; cursor: pointer;
+  transition: all 0.15s; width: 100%;
+}
+.own-listing-pill:hover { border-color: var(--green); color: var(--green); }
+.own-listing-pill-icon { font-size: 20px; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .step-arrow { display: none !important; }
@@ -444,6 +480,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <div class="nav-inner">
     <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
     <div class="nav-links">
+      <a onclick="showPage('matches')" style="font-weight:600;">🎯 Osumat</a>
       <a onclick="showPage('map')">🗺️ Kartta</a>
       <a onclick="showPage('pets')">🐾 Eläimet</a>
       <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;">Ilmoitukset</a>
@@ -467,6 +504,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
 <!-- MOBILE MENU -->
 <div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:white;border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;font-weight:600;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat</a>
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">🗺️ Kartta</a>
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">🐾 Eläimet</a>
   <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
@@ -498,7 +536,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           </div>
         </div>
 
-        <button class="btn-check-matches" onclick="showPage('feed')">
+        <button class="btn-check-matches" onclick="showPage('matches')">
           🔔 Tarkista osumat
         </button>
       </div>
@@ -904,6 +942,23 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE: MATCHES -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page" id="page-matches">
+  <section>
+    <div class="wrap">
+      <div class="form-page-back" onclick="showPage('home')">← Etusivu</div>
+      <div class="section-label">Osumat</div>
+      <div class="section-title">Ehdotetut osumat</div>
+      <div class="section-sub" style="margin-bottom:36px;">Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.</div>
+      <div id="matches-content">
+        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- PAGE: LISTING DETAIL -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-listing">
@@ -1076,6 +1131,7 @@ function showPage(name) {
   if (name === 'feed') loadFeed();
   if (name === 'map') initMap();
   if (name === 'pets') loadPets();
+  if (name === 'matches') loadMatches();
   if (name === 'messages') loadConversations();
   if (name === 'profile') loadProfile();
   if (name === 'new-listing') initFormMap();
@@ -1694,6 +1750,174 @@ async function submitListing(e) {
   selectedLat = null; selectedLng = null;
   if (formMarker) { formMarker.remove(); formMarker = null; }
   openListing(data.id);
+}
+
+// ═══════════════════════════════════════════════════════
+// MATCH SUGGESTIONS
+// ═══════════════════════════════════════════════════════
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function scoreMatch(mine, other) {
+  // Must be opposite types: lost↔found
+  const valid = (mine.type === 'lost' && other.type === 'found') ||
+                (mine.type === 'found' && other.type === 'lost');
+  if (!valid) return 0;
+
+  let score = 0;
+  const reasons = [];
+
+  // Category match (required base)
+  if (mine.category && other.category && mine.category === other.category) {
+    score += 40;
+    reasons.push({ label: mine.category.split(' ').slice(1).join(' ') || mine.category, hit: true });
+  } else if (mine.category && other.category) {
+    // Different category = no match
+    return 0;
+  }
+
+  // Time proximity
+  if (mine.incident_time && other.incident_time) {
+    const diff = Math.abs(new Date(mine.incident_time) - new Date(other.incident_time));
+    const hours = diff / 3600000;
+    if (hours <= 6)       { score += 30; reasons.push({ label: 'Sama aika', hit: true }); }
+    else if (hours <= 24) { score += 20; reasons.push({ label: '±24h', hit: true }); }
+    else if (hours <= 72) { score += 10; reasons.push({ label: '±72h', hit: false }); }
+  }
+
+  // Location proximity
+  if (mine.lat && mine.lng && other.lat && other.lng) {
+    const dist = getDistanceMeters(mine.lat, mine.lng, other.lat, other.lng);
+    if (dist < 500)       { score += 30; reasons.push({ label: 'Sama alue', hit: true }); }
+    else if (dist < 1500) { score += 20; reasons.push({ label: '<1.5 km', hit: true }); }
+    else if (dist < 5000) { score += 10; reasons.push({ label: '<5 km', hit: false }); }
+    else return 0; // Too far, skip entirely
+  }
+
+  // Keyword overlap (title + description)
+  const myText = ((mine.title || '') + ' ' + (mine.description || '')).toLowerCase();
+  const otherText = ((other.title || '') + ' ' + (other.description || '')).toLowerCase();
+  const keywords = myText.split(/\s+/).filter(w => w.length > 4 && !['löydetty','kadonnut','tavara','paikka'].includes(w));
+  const hits = [...new Set(keywords.filter(w => otherText.includes(w)))];
+  if (hits.length > 0) {
+    score += Math.min(hits.length * 8, 24);
+    reasons.push({ label: hits.slice(0,2).join(', '), hit: true });
+  }
+
+  return { score: Math.min(score, 100), reasons };
+}
+
+async function loadMatches() {
+  const el = document.getElementById('matches-content');
+
+  if (!currentUser) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:48px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Kirjaudu sisään</h3>
+        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Osumat lasketaan sinun aktiivisten ilmoitustesi perusteella.</p>
+        <button class="btn-primary" style="border:none;" onclick="showPage('auth')">Kirjaudu tai luo tili →</button>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Lasketaan osumia...</div>';
+
+  // Load user's own listings + all other listings
+  const [{ data: myListings }, { data: allOther }] = await Promise.all([
+    sb.from('listings').select('*').eq('user_id', currentUser.id).in('status', ['active','match']),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).eq('status', 'active')
+  ]);
+
+  if (!myListings || myListings.length === 0) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:48px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;">📭</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Ei aktiivisia ilmoituksia</h3>
+        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Tee ensin ilmoitus niin Findly etsii sinulle osumia.</p>
+        <button class="btn-primary" style="border:none;" onclick="showPage('new-listing')">+ Tee ilmoitus →</button>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  let totalMatches = 0;
+
+  for (const mine of myListings) {
+    const candidates = (allOther || []).map(other => {
+      const result = scoreMatch(mine, other);
+      if (!result || result.score < 20) return null;
+      return { listing: other, score: result.score, reasons: result.reasons };
+    }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 5);
+
+    const typeLabel = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu' }[mine.type] || mine.type;
+    const typeBadge = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen' }[mine.type] || '';
+
+    html += `<div class="match-group">
+      <div class="own-listing-pill" onclick="openListing('${mine.id}')">
+        <span class="own-listing-pill-icon">${categoryIcon(mine.category)}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">${esc(mine.title)}</div>
+          <div style="font-size:11px;color:var(--ink3);">${typeLabel} · ${expiresIn(mine.created_at)}</div>
+        </div>
+        <span class="feed-card-badge ${typeBadge}" style="font-size:10px;">${typeLabel}</span>
+      </div>`;
+
+    if (candidates.length === 0) {
+      html += `<div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px;background:var(--paper);border-radius:var(--radius);border:1px dashed var(--border);">
+        Ei vielä osumia tähän ilmoitukseen. Tarkista myöhemmin uudelleen.
+      </div>`;
+    } else {
+      totalMatches += candidates.length;
+      html += candidates.map(({ listing: l, score, reasons }) => {
+        const scoreLabel = score >= 70 ? 'Korkea vastaavuus' : score >= 45 ? 'Kohtalainen vastaavuus' : 'Heikko vastaavuus';
+        const scoreCls = score >= 70 ? 'score-high' : score >= 45 ? 'score-mid' : 'score-low';
+        const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
+        return `<div class="match-card" onclick="openListing('${l.id}')">
+          <div class="match-card-icon">${categoryIcon(l.category)}</div>
+          <div class="match-card-body">
+            <div class="match-card-top">
+              <div class="match-card-title">${esc(l.title)}</div>
+              <span class="match-score ${scoreCls}">${score}% — ${scoreLabel}</span>
+            </div>
+            <div class="match-card-meta">
+              <span>📍 ${esc(displayAddr)}</span>
+              <span>🕐 ${timeAgo(l.created_at)}</span>
+              ${l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
+            </div>
+            <div class="match-card-desc">${esc(l.description || '')}</div>
+            <div class="match-tags">
+              ${reasons.map(r => `<span class="match-tag ${r.hit ? 'hit' : ''}">${esc(r.label)}</span>`).join('')}
+            </div>
+            <div class="match-card-actions">
+              <button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    html += '</div>';
+  }
+
+  const summaryColor = totalMatches > 0 ? 'var(--green-light)' : 'var(--paper)';
+  const summaryBorder = totalMatches > 0 ? '#A8D8BC' : 'var(--border)';
+  el.innerHTML = `
+    <div style="background:${summaryColor};border:1px solid ${summaryBorder};border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:24px;">${totalMatches > 0 ? '🎯' : '🔍'}</span>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--ink);">${totalMatches > 0 ? `${totalMatches} mahdollista osumaa löytyi` : 'Ei osumia juuri nyt'}</div>
+        <div style="font-size:12px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <button onclick="loadMatches()" style="margin-left:auto;padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink2);">↻ Päivitä</button>
+    </div>
+    ${html}`;
 }
 
 // ═══════════════════════════════════════════════════════
