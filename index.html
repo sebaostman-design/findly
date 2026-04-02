@@ -412,6 +412,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .step-arrow { display: none !important; }
+}
 @media (max-width: 768px) {
   .hero-visual { display: none; }
   .hero-inner { flex-direction: column; }
@@ -524,6 +527,70 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
             <div class="fc-sub">Töölön alueella</div>
             <span class="fc-badge badge-amber">🐾 Eläin</span>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="background:white;padding:96px 0;">
+    <div class="wrap">
+      <div class="section-label">Näin se toimii</div>
+      <div class="section-title">Turvallinen prosessi alusta loppuun</div>
+      <div class="section-sub" style="margin-bottom:56px;">Findly ei ole pelkkä ilmoitustaulu — se ohjaa sinut turvallisesti läpi koko prosessin.</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;position:relative;">
+
+        <!-- Step 1 -->
+        <div style="padding:0 32px 0 0;position:relative;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;">1</div>
+          <div style="position:absolute;top:24px;left:48px;right:0;height:2px;background:linear-gradient(to right,var(--green),var(--border));display:none;" class="step-line"></div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;">Tee ilmoitus</h3>
+          <p style="font-size:14px;color:var(--ink2);line-height:1.7;">Kerro mitä kadotit tai löysit. Sijainti tallennetaan — mutta näytetään muille vain epätarkkana alueena.</p>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;padding-top:16px;color:var(--border);font-size:24px;flex-shrink:0;" class="step-arrow">→</div>
+
+        <!-- Step 2 -->
+        <div style="padding:0 32px;position:relative;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;">2</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;">Osuma löytyy</h3>
+          <p style="font-size:14px;color:var(--ink2);line-height:1.7;">Findly vertaa ilmoituksia kategorian, ajan ja sijainnin perusteella. Saat ilmoituksen mahdollisesta matchista.</p>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;padding-top:16px;color:var(--border);font-size:24px;flex-shrink:0;" class="step-arrow">→</div>
+
+        <!-- Step 3 -->
+        <div style="padding:0 32px;position:relative;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;">3</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;">Todista omistajuus</h3>
+          <p style="font-size:14px;color:var(--ink2);line-height:1.7;">Kerro jotain, mitä vain oikea omistaja tietää. Löytäjä tarkistaa vastauksen ja hyväksyy tai hylkää.</p>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;padding-top:16px;color:var(--border);font-size:24px;flex-shrink:0;" class="step-arrow">→</div>
+
+        <!-- Step 4 -->
+        <div style="padding:0 0 0 32px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--green-mid);color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;">4</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;">Chat avautuu</h3>
+          <p style="font-size:14px;color:var(--ink2);line-height:1.7;">Vasta hyväksynnän jälkeen yhteystiedot ja tarkka sijainti jaetaan. Sovitaan palautus turvallisesti.</p>
+        </div>
+
+      </div>
+
+      <!-- Trust strip -->
+      <div style="margin-top:56px;padding:24px 28px;background:var(--paper);border-radius:var(--radius-lg);display:flex;gap:32px;flex-wrap:wrap;align-items:center;justify-content:center;border:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2);">
+          <span style="font-size:20px;">🔐</span> Sijainti piilotettu ennen matchausta
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2);">
+          <span style="font-size:20px;">✅</span> Pakollinen omistajuuden todistus
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2);">
+          <span style="font-size:20px;">⚖️</span> Löytötavaralain (778/1988) mukainen
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2);">
+          <span style="font-size:20px;">🆓</span> Täysin ilmainen
         </div>
       </div>
     </div>
