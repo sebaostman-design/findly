@@ -638,10 +638,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <div id="notif-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:#1A1A1A;color:white;border-radius:16px;padding:14px 18px;align-items:center;gap:12px;max-width:360px;width:calc(100% - 48px);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
   <span style="font-size:22px;flex-shrink:0;">🔔</span>
   <div style="flex:1;">
-    <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Salli ilmoitukset</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.6);">Saat tiedon matcheista ja viesteistä.</div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:2px;" data-i18n="notif_title">Salli ilmoitukset</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);" data-i18n="notif_sub">Saat tiedon matcheista ja viesteistä.</div>
   </div>
-  <button onclick="enableNotifications()" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:white;cursor:pointer;flex-shrink:0;">Salli</button>
+  <button onclick="enableNotifications()" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:white;cursor:pointer;flex-shrink:0;" data-i18n="notif_btn">Salli</button>
   <button onclick="dismissNotifBanner()" style="padding:4px 8px;font-size:18px;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;flex-shrink:0;">×</button>
 </div>
 
@@ -649,26 +649,26 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
   <div style="background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;margin:auto;">
     <div style="font-size:64px;margin-bottom:12px;" id="success-icon">🎉</div>
-    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;" id="success-title">Tapaus suljettu!</h2>
-    <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:24px;" id="success-body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
+    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;" id="success-title" data-i18n="success_title">Tapaus suljettu!</h2>
+    <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:24px;" id="success-body" data-i18n="success_body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
     <div id="success-badge" style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
       <span style="font-size:28px;">🏅</span>
       <div style="text-align:left;">
-        <div style="font-size:13px;font-weight:700;color:var(--green-dark);">Merkintä profiiliin</div>
-        <div style="font-size:12px;color:var(--ink2);">+1 palautettu tapaus</div>
+        <div style="font-size:13px;font-weight:700;color:var(--green-dark);" data-i18n="success_badge_t">Merkintä profiiliin</div>
+        <div style="font-size:12px;color:var(--ink2);" data-i18n="success_badge_d">+1 palautettu tapaus</div>
       </div>
     </div>
 
     <!-- Story (optional) -->
     <div style="text-align:left;background:var(--paper);border-radius:12px;padding:16px;margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">💬 Kerro miten kävi <span style="font-weight:400;color:var(--ink3);">(vapaaehtoinen)</span></div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;" data-i18n="success_story" data-i18n-html="1">💬 Kerro miten kävi <span style="font-weight:400;color:var(--ink3);">(vapaaehtoinen)</span></div>
       <textarea id="success-story" rows="2" placeholder="Esim: Lompakko löytyi rehellisen löytäjän ansiosta! Kaikki tallella." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none;resize:vertical;"></textarea>
-      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:white;cursor:pointer;">Tallenna tarina</button>
+      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:white;cursor:pointer;" data-i18n="success_save">Tallenna tarina</button>
     </div>
 
     <!-- Share -->
     <div style="margin-bottom:20px;">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.05em;color:var(--ink3);margin-bottom:10px;">JAA ONNISTUMINEN</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.05em;color:var(--ink3);margin-bottom:10px;" data-i18n="success_share">JAA ONNISTUMINEN</div>
       <div style="display:flex;gap:8px;justify-content:center;">
         <button onclick="shareSuccess('wa')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#25D366;color:white;cursor:pointer;">WhatsApp</button>
         <button onclick="shareSuccess('x')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#000;color:white;cursor:pointer;">X</button>
@@ -677,10 +677,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     </div>
 
     <div id="success-tip-prompt" style="margin-bottom:16px;display:none;">
-      <button onclick="document.getElementById('success-modal').style.display='none';openTipModal(successListingId)" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;margin-bottom:8px;">💸 Anna tippiä löytäjälle</button>
+      <button onclick="document.getElementById('success-modal').style.display='none';openTipModal(successListingId)" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;margin-bottom:8px;" data-i18n="success_tip">💸 Anna tippiä löytäjälle</button>
       <a href="https://hesy.fi/lahjoita/" target="_blank" style="display:block;font-size:12px;color:var(--ink3);text-decoration:none;">Tai lahjoita HESY:lle →</a>
     </div>
-    <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid var(--border);border-radius:14px;background:white;color:var(--ink2);cursor:pointer;">Etusivulle →</button>
+    <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid var(--border);border-radius:14px;background:white;color:var(--ink2);cursor:pointer;" data-i18n="success_home">Etusivulle →</button>
   </div>
 </div>
 
@@ -689,8 +689,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <div style="background:white;border-radius:24px 24px 0 0;padding:32px 24px 40px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
     <div style="text-align:center;margin-bottom:24px;">
       <div style="font-size:36px;margin-bottom:8px;">💛</div>
-      <div style="font-size:20px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:6px;">Anna tippiä löytäjälle</div>
-      <div style="font-size:13px;color:var(--ink3);">Vapaaehtoinen kiitos rehellisestä löytäjästä.<br>Findly veloittaa 8% palvelumaksun.</div>
+      <div style="font-size:20px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:6px;" data-i18n="tip_title">Anna tippiä löytäjälle</div>
+      <div style="font-size:13px;color:var(--ink3);" data-i18n="tip_sub" data-i18n-html="1">Vapaaehtoinen kiitos rehellisestä löytäjästä.<br>Findly veloittaa 8% palvelumaksun.</div>
     </div>
 
     <div style="font-size:12px;font-weight:600;color:var(--ink3);letter-spacing:0.05em;margin-bottom:10px;">VALITSE SUMMA</div>
@@ -723,7 +723,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
     <button id="tip-pay-btn" onclick="submitTip()" disabled
       style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;opacity:0.4;transition:opacity 0.2s;margin-bottom:12px;">
-      💸 Lähetä tippiä löytäjälle →
+      <span data-i18n="tip_pay">💸 Lähetä tippiä löytäjälle →</span>
     </button>
 
     <div style="position:relative;text-align:center;margin-bottom:12px;">
@@ -750,9 +750,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
     <div class="nav-links">
       <a onclick="showPage('matches')" style="font-weight:600;position:relative;" data-i18n="nav_matches">🎯 Osumat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
-      <a onclick="showPage('map')">🗺️ Kartta</a>
-      <a onclick="showPage('pets')">🐾 Eläimet</a>
-      <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;">Ilmoitukset</a>
+      <a onclick="showPage('map')" data-i18n="nav_map">🗺️ Kartta</a>
+      <a onclick="showPage('pets')" data-i18n="nav_pets">🐾 Eläimet</a>
+      <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;" data-i18n="nav_feed">Ilmoitukset</a>
     </div>
     <div class="nav-right">
       <div id="lang-switcher" style="display:flex;gap:4px;margin-right:8px;">
@@ -779,14 +779,14 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- MOBILE MENU -->
 <div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:white;border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat<span id="match-badge-mobile" style="display:none;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">🗺️ Kartta</a>
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">🐾 Eläimet</a>
-  <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()" data-i18n="nav_map">🗺️ Kartta</a>
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()" data-i18n="nav_pets">🐾 Eläimet</a>
+  <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()" data-i18n="nav_feed">Ilmoitukset</a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
-    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('messages');toggleMobileMenu()">💬 Viestit</a>
-    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()">👤 Profiili</a>
+    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit</a>
+    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
   </div>
-  <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()">+ Tee ilmoitus</a>
+  <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()" data-i18n="nav_new">+ Tee ilmoitus</a>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -858,7 +858,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-num">🔐</span>
-        <span class="stat-lbl">sijainti suojattu</span>
+        <span class="stat-lbl" data-i18n="stat_location">sijainti suojattu</span>
       </div>
     </div>
   </div>
@@ -1104,7 +1104,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <div class="footer-inner">
       <div>
         <div class="footer-logo">findly</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;">Löydä se mikä katosi. Hyvän mielen palvelu. 💛</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;" data-i18n="footer_tagline">Löydä se mikä katosi. Hyvän mielen palvelu. 💛</div>
         <div class="footer-legal">Findly toimii Suomen löytötavaralain (778/1988) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Tarkat sijaintitiedot jaetaan vasta matchauksen jälkeen.<br><br>Findly ei säilytä tavaroita. Palvelu ei korvaa poliisia tai löytötavaratoimistoa. Käyttäjä vastaa itse lain noudattamisesta.</div>
       </div>
       <div class="footer-links">
@@ -1114,7 +1114,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <a onclick="toast('Käyttöehdot julkaistaan pian.','green')" style="cursor:pointer;">Käyttöehdot</a>
       </div>
     </div>
-    <div class="footer-copy">© 2025 Findly. Kaikki oikeudet pidätetään.</div>
+    <div class="footer-copy" data-i18n="footer_copy">© 2025 Findly. Kaikki oikeudet pidätetään.</div>
   </footer>
 </div>
 
@@ -1124,8 +1124,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <div class="page" id="page-feed">
   <section id="feed-section">
     <div class="wrap">
-      <div class="section-label">Ilmoitukset</div>
-      <div class="section-title">Kaikki ilmoitukset</div>
+      <div class="section-label" data-i18n="feed_label">Ilmoitukset</div>
+      <div class="section-title" data-i18n="feed_title">Kaikki ilmoitukset</div>
       <div class="feed-controls">
         <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)">Kaikki</button>
         <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)">🔍 Kadonneet</button>
@@ -1168,9 +1168,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <div class="page" id="page-pets">
   <section>
     <div class="wrap">
-      <div class="section-label">Eläinilmoitukset</div>
-      <div class="section-title">Kadonneet &amp; löydetyt eläimet</div>
-      <div class="section-sub">Ilmoita kadonneesta tai löytyneestä lemmikistä. Jaa ilmoitus helposti lähipiirillesi.</div>
+      <div class="section-label" data-i18n="pets_label">Eläinilmoitukset</div>
+      <div class="section-title" data-i18n="pets_title" data-i18n-html="1">Kadonneet &amp; löydetyt eläimet</div>
+      <div class="section-sub" data-i18n="pets_sub">Ilmoita kadonneesta tai löytyneestä lemmikistä. Jaa ilmoitus helposti lähipiirillesi.</div>
       <div style="margin:24px 0 20px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="feed-filter active-all" onclick="setPetFilter('all',this)">Kaikki</button>
         <button class="feed-filter" onclick="setPetFilter('lost',this)">🔴 Kadonneet</button>
@@ -1180,7 +1180,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="loading"><div class="spinner"></div>Ladataan...</div>
       </div>
       <div style="margin-top:28px;">
-        <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')">🐾 Lisää eläinilmoitus</button>
+        <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')" data-i18n="pets_add">🐾 Lisää eläinilmoitus</button>
       </div>
 
       <!-- ── SIGHTINGS ── -->
@@ -1231,23 +1231,23 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <!-- Login gate — shown when not logged in -->
     <div id="new-listing-gate" style="display:none;text-align:center;padding:64px 20px;">
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;">Kirjaudu sisään</h3>
-      <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
-      <button class="btn-primary" style="border:none;" onclick="showPage('auth')">Kirjaudu tai luo tili →</button>
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;" data-i18n="form_gate_title">Kirjaudu sisään</h3>
+      <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;" data-i18n="form_gate_desc">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
+      <button class="btn-primary" style="border:none;" onclick="showPage('auth')" data-i18n="form_gate_btn">Kirjaudu tai luo tili →</button>
     </div>
 
     <div id="new-listing-form-wrap">
     <div class="form-page-header">
       <div class="form-page-back" onclick="goBack()">← Takaisin</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;">Uusi ilmoitus</h2>
-      <p style="font-size:14px;color:var(--ink3);">Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistetaan automaattisesti.</p>
+      <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;" data-i18n="form_title">Uusi ilmoitus</h2>
+      <p style="font-size:14px;color:var(--ink3);" data-i18n="form_sub">Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistetaan automaattisesti.</p>
     </div>
 
     <div class="form-type-tabs" id="form-type-tabs">
-      <div class="ftype-btn active-lost" onclick="setFormType('lost')">🔍 Kadonnut</div>
-      <div class="ftype-btn" onclick="setFormType('stolen')">🚨 Varastettu</div>
-      <div class="ftype-btn" onclick="setFormType('found')">📦 Löydetty</div>
-      <div class="ftype-btn" onclick="setFormType('pet')">🐾 Eläin</div>
+      <div class="ftype-btn active-lost" onclick="setFormType('lost')" data-i18n="form_lost">🔍 Kadonnut</div>
+      <div class="ftype-btn" onclick="setFormType('stolen')" data-i18n="form_stolen">🚨 Varastettu</div>
+      <div class="ftype-btn" onclick="setFormType('found')" data-i18n="form_found">📦 Löydetty</div>
+      <div class="ftype-btn" onclick="setFormType('pet')" data-i18n="form_pet">🐾 Eläin</div>
     </div>
 
     <!-- Pet subtype selector (lost/found) -->
@@ -1273,7 +1273,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <form id="listing-form" onsubmit="submitListing(event)" novalidate>
       <div class="form-grid">
         <div class="form-group">
-          <label>Kategoria *</label>
+          <label data-i18n="form_category">Kategoria *</label>
           <select id="f-category" required>
             <option value="">Valitse...</option>
             <option>📱 Puhelin</option>
@@ -1290,21 +1290,21 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           </select>
         </div>
         <div class="form-group">
-          <label id="f-when-label">Milloin katosi *</label>
+          <label id="f-when-label" data-i18n="form_when">Milloin katosi *</label>
           <input type="datetime-local" id="f-when" required />
         </div>
         <div class="form-group full">
-          <label>Otsikko *</label>
+          <label data-i18n="form_title_lbl">Otsikko *</label>
           <input type="text" id="f-title" placeholder="Esim: Musta Nike-reppu, iPhone 15 Pro..." required maxlength="80" />
         </div>
         <div class="form-group full">
-          <label>Kuvaus *</label>
+          <label data-i18n="form_desc">Kuvaus *</label>
           <textarea id="f-desc" placeholder="Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen." required></textarea>
         </div>
 
         <!-- IMAGE UPLOAD (owner only — not shown for 'found' type) -->
         <div class="form-group full" id="image-upload-field">
-          <label>Kuva <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
+          <label data-i18n="form_photo" data-i18n-html="1">Kuva <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
           <div id="image-drop-zone" onclick="document.getElementById('f-image').click()"
             style="border:2px dashed var(--border);border-radius:var(--radius);padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;background:white;"
             onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -1323,7 +1323,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         </div>
 
         <div class="form-group full">
-          <label id="f-location-label">Katoamispaikka *</label>
+          <label id="f-location-label" data-i18n="form_location">Katoamispaikka *</label>
           <div class="form-map-pick">
             <div id="form-map"></div>
             <div class="form-map-hint">Klikkaa kartalta merkitäksesi sijainti</div>
@@ -1357,7 +1357,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
         <!-- VISIBILITY -->
         <div class="form-group full">
-          <label>Näkyvyys</label>
+          <label data-i18n="form_visibility">Näkyvyys</label>
           <div class="vis-grid">
             <div class="vis-opt selected" onclick="selectVis(this,'public')">🌍 Julkinen<small>Kaikille näkyvä</small></div>
             <div class="vis-opt" onclick="selectVis(this,'limited')">👥 Rajattu<small>Vain kirjautuneille</small></div>
@@ -1367,17 +1367,17 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         </div>
 
         <div class="form-group" id="reward-field">
-          <label>Palkkio (valinnainen)</label>
+          <label data-i18n="form_reward">Palkkio (valinnainen)</label>
           <input type="number" id="f-reward" placeholder="Summa euroissa..." min="0" />
         </div>
         <div class="form-group">
-          <label>Puhelinnumero *</label>
+          <label data-i18n="form_phone">Puhelinnumero *</label>
           <input type="tel" id="f-phone" placeholder="+358 40 123 4567" required />
           <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Näytetään vain matchin jälkeen.</p>
         </div>
       </div>
 
-      <button type="submit" class="submit-btn lost" id="submit-btn" style="margin-top:20px;">Julkaise ilmoitus →</button>
+      <button type="submit" class="submit-btn lost" id="submit-btn" style="margin-top:20px;" data-i18n="form_submit">Julkaise ilmoitus →</button>
     </form>
     </div><!-- /new-listing-form-wrap -->
   </div>
@@ -1460,9 +1460,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <section>
     <div class="wrap">
       <div class="form-page-back" onclick="showPage('home')">← Etusivu</div>
-      <div class="section-label">Osumat</div>
-      <div class="section-title">Ehdotetut osumat</div>
-      <div class="section-sub" style="margin-bottom:36px;">Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.</div>
+      <div class="section-label" data-i18n="match_label">Osumat</div>
+      <div class="section-title" data-i18n="match_title">Ehdotetut osumat</div>
+      <div class="section-sub" style="margin-bottom:36px;" data-i18n="match_sub">Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.</div>
       <div id="matches-content">
         <div class="loading"><div class="spinner"></div>Ladataan...</div>
       </div>
@@ -1485,49 +1485,49 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <div class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">findly</div>
-      <div class="auth-sub">Kirjaudu sisään tai luo tili</div>
+      <div class="auth-sub" data-i18n="auth_title">Kirjaudu sisään tai luo tili</div>
       <div class="auth-tabs">
-        <div class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Kirjaudu</div>
-        <div class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Luo tili</div>
+        <div class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')" data-i18n="auth_tab_login">Kirjaudu</div>
+        <div class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')" data-i18n="auth_tab_signup">Luo tili</div>
       </div>
       <div id="auth-login-form">
         <div class="auth-form-group">
-          <label>Sähköposti</label>
+          <label data-i18n="auth_email">Sähköposti</label>
           <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" onkeydown="if(event.key==='Enter')doLogin()" />
         </div>
         <div class="auth-form-group">
-          <label>Salasana</label>
+          <label data-i18n="auth_password">Salasana</label>
           <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
         </div>
-        <button class="auth-btn" id="login-btn" onclick="doLogin()">Kirjaudu sisään</button>
+        <button class="auth-btn" id="login-btn" onclick="doLogin()" data-i18n="auth_login_btn">Kirjaudu sisään</button>
       </div>
       <div id="auth-signup-form" style="display:none;">
         <div class="auth-form-group">
-          <label>Nimi *</label>
+          <label data-i18n="auth_name">Nimi *</label>
           <input type="text" id="signup-name" placeholder="Etunimi Sukunimi" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Sähköposti *</label>
+          <label data-i18n="auth_email">Sähköposti *</label>
           <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Puhelinnumero</label>
+          <label data-i18n="auth_phone">Puhelinnumero</label>
           <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
         <div class="auth-form-group">
-          <label>Salasana *</label>
+          <label data-i18n="auth_password">Salasana *</label>
           <input type="password" id="signup-password" placeholder="Vähintään 6 merkkiä" onkeydown="if(event.key==='Enter')doSignup()" />
         </div>
-        <button class="auth-btn" id="signup-btn" onclick="doSignup()">Luo tili</button>
+        <button class="auth-btn" id="signup-btn" onclick="doSignup()" data-i18n="auth_signup_btn">Luo tili</button>
       </div>
       <div class="auth-msg" id="auth-msg"></div>
-      <div class="auth-divider">— tai —</div>
+      <div class="auth-divider" data-i18n="auth_or">— tai —</div>
       <button class="auth-btn" id="google-btn" onclick="doGoogleLogin()" style="background:white;color:#3c4043;border:1.5px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;">
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/></svg>
-        Jatka Googlella
+        <span data-i18n="auth_google">Jatka Googlella</span>
       </button>
-      <div class="auth-divider">— tai jatka ilman tiliä —</div>
-      <button class="auth-btn" style="background:var(--paper);color:var(--ink2);border:1.5px solid var(--border);" onclick="showPage('home')">Takaisin etusivulle</button>
+      <div class="auth-divider" data-i18n="auth_guest">— tai jatka ilman tiliä —</div>
+      <button class="auth-btn" style="background:var(--paper);color:var(--ink2);border:1.5px solid var(--border);" onclick="showPage('home')" data-i18n="auth_back">Takaisin etusivulle</button>
     </div>
   </div>
 </div>
@@ -1538,8 +1538,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <div class="page" id="page-messages">
   <section>
     <div class="wrap">
-      <div class="section-label">Viestit</div>
-      <div class="section-title">Keskustelut</div>
+      <div class="section-label" data-i18n="msg_label">Viestit</div>
+      <div class="section-title" data-i18n="msg_title">Keskustelut</div>
       <div id="conversations-list" style="margin-top:28px;max-width:600px;">
         <div class="loading"><div class="spinner"></div>Ladataan...</div>
       </div>
@@ -1560,7 +1560,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="chat-status" id="chat-listing-ref">—</div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button id="close-case-btn" onclick="closeCaseFromChat()" style="display:none;padding:6px 12px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✅ Tapaus suljettu</button>
+        <button id="close-case-btn" onclick="closeCaseFromChat()" style="display:none;padding:6px 12px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;" data-i18n="msg_close_case">✅ Tapaus suljettu</button>
         <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩</button>
       </div>
     </div>
@@ -1589,19 +1589,19 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="profile-name" id="profile-name">—</div>
       <div class="profile-email" id="profile-email">—</div>
       <div class="profile-stats">
-        <div class="profile-stat"><div class="n" id="stat-my-listings">0</div><div class="l">Ilmoitusta</div></div>
-        <div class="profile-stat"><div class="n" id="stat-matches">0</div><div class="l">Palautettua 💛</div></div>
-        <div class="profile-stat"><div class="n">★ —</div><div class="l">Arvostelu</div></div>
+        <div class="profile-stat"><div class="n" id="stat-my-listings">0</div><div class="l" data-i18n="prof_listings">Ilmoitusta</div></div>
+        <div class="profile-stat"><div class="n" id="stat-matches">0</div><div class="l" data-i18n="prof_returned">Palautettua 💛</div></div>
+        <div class="profile-stat"><div class="n">★ —</div><div class="l" data-i18n="prof_review">Arvostelu</div></div>
       </div>
     </div>
     <div id="profile-badge-card" style="display:none;" class="profile-card">
       <div id="profile-badge-content"></div>
     </div>
     <div class="profile-card">
-      <div class="my-listings-title">Omat ilmoitukset</div>
+      <div class="my-listings-title" data-i18n="prof_my">Omat ilmoitukset</div>
       <div id="my-listings-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
-    <button class="signout-btn" onclick="doSignout()">Kirjaudu ulos</button>
+    <button class="signout-btn" onclick="doSignout()" data-i18n="nav_logout">Kirjaudu ulos</button>
   </div>
 </div>
 
@@ -1672,9 +1672,148 @@ const translations = {
   cta_found: { fi: '📦 Löysin tavaran', sv: '📦 Jag hittade', en: '📦 I found something' },
 
   // ── AUTH ──
-  auth_title:     { fi: 'Kirjaudu tai luo tili', sv: 'Logga in eller skapa konto', en: 'Log in or create account' },
+  auth_title:     { fi: 'Kirjaudu sisään tai luo tili', sv: 'Logga in eller skapa konto', en: 'Log in or create account' },
   auth_tab_login: { fi: 'Kirjaudu', sv: 'Logga in', en: 'Log in' },
   auth_tab_signup:{ fi: 'Luo tili', sv: 'Skapa konto', en: 'Sign up' },
+  auth_email:     { fi: 'Sähköposti', sv: 'E-post', en: 'Email' },
+  auth_password:  { fi: 'Salasana', sv: 'Lösenord', en: 'Password' },
+  auth_name:      { fi: 'Nimi *', sv: 'Namn *', en: 'Name *' },
+  auth_phone:     { fi: 'Puhelinnumero', sv: 'Telefonnummer', en: 'Phone number' },
+  auth_login_btn: { fi: 'Kirjaudu sisään', sv: 'Logga in', en: 'Log in' },
+  auth_signup_btn:{ fi: 'Luo tili', sv: 'Skapa konto', en: 'Sign up' },
+  auth_or:        { fi: '— tai —', sv: '— eller —', en: '— or —' },
+  auth_google:    { fi: 'Jatka Googlella', sv: 'Fortsätt med Google', en: 'Continue with Google' },
+  auth_guest:     { fi: '— tai jatka ilman tiliä —', sv: '— eller fortsätt utan konto —', en: '— or continue without account —' },
+  auth_back:      { fi: 'Takaisin etusivulle', sv: 'Tillbaka till startsidan', en: 'Back to home' },
+
+  // ── NAV EXTRA ──
+  nav_map:    { fi: '🗺️ Kartta', sv: '🗺️ Karta', en: '🗺️ Map' },
+  nav_pets:   { fi: '🐾 Eläimet', sv: '🐾 Djur', en: '🐾 Pets' },
+  nav_feed:   { fi: 'Ilmoitukset', sv: 'Anmälningar', en: 'Listings' },
+  nav_profile:{ fi: '👤 Profiili', sv: '👤 Profil', en: '👤 Profile' },
+  nav_logout: { fi: 'Kirjaudu ulos', sv: 'Logga ut', en: 'Log out' },
+  back:       { fi: '← Takaisin', sv: '← Tillbaka', en: '← Back' },
+
+  // ── FEED ──
+  feed_label:  { fi: 'Ilmoitukset', sv: 'Anmälningar', en: 'Listings' },
+  feed_title:  { fi: 'Kaikki ilmoitukset', sv: 'Alla anmälningar', en: 'All listings' },
+  feed_all:    { fi: 'Kaikki', sv: 'Alla', en: 'All' },
+  feed_lost:   { fi: '🔍 Kadonneet', sv: '🔍 Förlorade', en: '🔍 Lost' },
+  feed_found:  { fi: '📦 Löydetyt', sv: '📦 Hittade', en: '📦 Found' },
+  feed_stolen: { fi: '🚨 Varastetut', sv: '🚨 Stulna', en: '🚨 Stolen' },
+  feed_pets:   { fi: '🐾 Eläimet', sv: '🐾 Djur', en: '🐾 Pets' },
+  feed_search: { fi: '🔍 Hae ilmoituksista...', sv: '🔍 Sök bland anmälningar...', en: '🔍 Search listings...' },
+  loading:     { fi: 'Ladataan...', sv: 'Laddar...', en: 'Loading...' },
+
+  // ── MAP ──
+  map_title:   { fi: 'Karttanäkymä', sv: 'Kartvy', en: 'Map view' },
+  map_notice:  { fi: '📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.', sv: '📍 Platser visas med ca 300–500 m noggrannhet för att skydda integriteten. Exakt plats delas först efter matchning.', en: '📍 Locations shown with ~300–500m accuracy for privacy. Exact location shared only after matching.' },
+
+  // ── PETS ──
+  pets_label:    { fi: 'Eläinilmoitukset', sv: 'Djuranmälningar', en: 'Pet listings' },
+  pets_title:    { fi: 'Kadonneet & löydetyt eläimet', sv: 'Förlorade & hittade djur', en: 'Lost & found pets' },
+  pets_sub:      { fi: 'Ilmoita kadonneesta tai löytyneestä lemmikistä. Jaa ilmoitus helposti lähipiirillesi.', sv: 'Anmäl ett förlorat eller hittat husdjur. Dela enkelt med dina nära.', en: 'Report a lost or found pet. Easily share with your network.' },
+  pets_all:      { fi: 'Kaikki', sv: 'Alla', en: 'All' },
+  pets_lost:     { fi: '🔴 Kadonneet', sv: '🔴 Förlorade', en: '🔴 Lost' },
+  pets_found:    { fi: '🟢 Löydetyt', sv: '🟢 Hittade', en: '🟢 Found' },
+  pets_add:      { fi: '🐾 Lisää eläinilmoitus', sv: '🐾 Lägg till djuranmälan', en: '🐾 Add pet listing' },
+  pets_notice:   { fi: 'Lisää selkeä kuva ja sijainti. Mitä tarkemmat tiedot, sitä todennäköisemmin eläin löytää kotiin.', sv: 'Lägg till en tydlig bild och plats. Ju mer detaljerad information, desto mer sannolikt att djuret hittar hem.', en: 'Add a clear photo and location. The more detailed the info, the more likely the pet finds home.' },
+  sight_label:   { fi: 'Havainnot', sv: 'Observationer', en: 'Sightings' },
+  sight_btn:     { fi: '👁️ Ilmoita havainto', sv: '👁️ Rapportera observation', en: '👁️ Report sighting' },
+  sight_sub:     { fi: 'Näitkö eläimen ulkona? Jätä nopea havainto — se voi auttaa omistajaa löytämään lemmikkinsä.', sv: 'Såg du ett djur utomhus? Lämna en snabb observation — det kan hjälpa ägaren att hitta sitt husdjur.', en: 'Saw an animal outside? Leave a quick sighting — it could help the owner find their pet.' },
+  sight_title:   { fi: '🐾 Uusi havainto', sv: '🐾 Ny observation', en: '🐾 New sighting' },
+  sight_cat:     { fi: '🐈 Kissa', sv: '🐈 Katt', en: '🐈 Cat' },
+  sight_dog:     { fi: '🐕 Koira', sv: '🐕 Hund', en: '🐕 Dog' },
+  sight_other:   { fi: '🐾 Muu', sv: '🐾 Annat', en: '🐾 Other' },
+  sight_submit:  { fi: 'Lähetä havainto →', sv: 'Skicka observation →', en: 'Submit sighting →' },
+  sight_anon:    { fi: 'Ei vaadi kirjautumista', sv: 'Kräver ingen inloggning', en: 'No login required' },
+
+  // ── NEW LISTING FORM ──
+  form_gate_title:{ fi: 'Kirjaudu sisään', sv: 'Logga in', en: 'Log in' },
+  form_gate_desc: { fi: 'Ilmoituksen jättäminen vaatii kirjautumisen.', sv: 'Att skapa en anmälan kräver inloggning.', en: 'Creating a listing requires login.' },
+  form_gate_btn:  { fi: 'Kirjaudu tai luo tili →', sv: 'Logga in eller skapa konto →', en: 'Log in or sign up →' },
+  form_title:     { fi: 'Uusi ilmoitus', sv: 'Ny anmälan', en: 'New listing' },
+  form_sub:       { fi: 'Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistetaan automaattisesti.', sv: 'Anmälan är synlig i 7 dagar, efter det raderas den automatiskt.', en: 'Listing is visible for 7 days, then automatically removed.' },
+  form_lost:      { fi: '🔍 Kadonnut', sv: '🔍 Förlorad', en: '🔍 Lost' },
+  form_stolen:    { fi: '🚨 Varastettu', sv: '🚨 Stulen', en: '🚨 Stolen' },
+  form_found:     { fi: '📦 Löydetty', sv: '📦 Hittad', en: '📦 Found' },
+  form_pet:       { fi: '🐾 Eläin', sv: '🐾 Djur', en: '🐾 Pet' },
+  form_category:  { fi: 'Kategoria *', sv: 'Kategori *', en: 'Category *' },
+  form_select:    { fi: 'Valitse...', sv: 'Välj...', en: 'Select...' },
+  form_when:      { fi: 'Milloin katosi *', sv: 'När försvann det *', en: 'When was it lost *' },
+  form_title_lbl: { fi: 'Otsikko *', sv: 'Rubrik *', en: 'Title *' },
+  form_desc:      { fi: 'Kuvaus *', sv: 'Beskrivning *', en: 'Description *' },
+  form_photo:     { fi: 'Kuva', sv: 'Bild', en: 'Photo' },
+  form_optional:  { fi: '(valinnainen)', sv: '(valfritt)', en: '(optional)' },
+  form_location:  { fi: 'Katoamispaikka *', sv: 'Plats *', en: 'Location *' },
+  form_map_hint:  { fi: 'Klikkaa kartalta merkitäksesi sijainti', sv: 'Klicka på kartan för att markera platsen', en: 'Click the map to mark location' },
+  form_phone:     { fi: 'Puhelinnumero *', sv: 'Telefonnummer *', en: 'Phone number *' },
+  form_phone_note:{ fi: 'Näytetään vain matchin jälkeen.', sv: 'Visas först efter matchning.', en: 'Shown only after matching.' },
+  form_reward:    { fi: 'Palkkio (valinnainen)', sv: 'Belöning (valfritt)', en: 'Reward (optional)' },
+  form_visibility:{ fi: 'Näkyvyys', sv: 'Synlighet', en: 'Visibility' },
+  form_submit:    { fi: 'Julkaise ilmoitus →', sv: 'Publicera anmälan →', en: 'Publish listing →' },
+  form_pet_q:     { fi: 'Onko eläin kadonnut vai löytynyt?', sv: 'Är djuret förlorat eller hittat?', en: 'Is the pet lost or found?' },
+  form_pet_lost:  { fi: '🔴 Kadonnut', sv: '🔴 Förlorad', en: '🔴 Lost' },
+  form_pet_found: { fi: '🟢 Löysin eläimen', sv: '🟢 Jag hittade ett djur', en: '🟢 I found a pet' },
+
+  // ── MATCHES ──
+  match_label:    { fi: 'Osumat', sv: 'Träffar', en: 'Matches' },
+  match_title:    { fi: 'Ehdotetut osumat', sv: 'Föreslagna träffar', en: 'Suggested matches' },
+  match_sub:      { fi: 'Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.', sv: 'Findly jämför dina anmälningar med andras baserat på kategori, tid och plats.', en: 'Findly compares your listings with others by category, time and location.' },
+
+  // ── MESSAGES ──
+  msg_label:      { fi: 'Viestit', sv: 'Meddelanden', en: 'Messages' },
+  msg_title:      { fi: 'Keskustelut', sv: 'Konversationer', en: 'Conversations' },
+  msg_placeholder:{ fi: 'Kirjoita viesti...', sv: 'Skriv ett meddelande...', en: 'Write a message...' },
+  msg_close_case: { fi: '✅ Tapaus suljettu', sv: '✅ Ärende avslutat', en: '✅ Case closed' },
+  msg_verify_warn:{ fi: 'Turvamuistutus: Varmista omistajuus ennen luovutusta — pyydä jotain, mitä vain oikea omistaja tietää. Älä luovuta tavaraa ennen vahvistusta.', sv: 'Säkerhetspåminnelse: Verifiera ägande innan överlämning — be om något som bara den riktiga ägaren vet. Lämna inte över föremålet innan verifiering.', en: 'Security reminder: Verify ownership before handover — ask for something only the real owner would know. Don\'t hand over the item before verification.' },
+
+  // ── PROFILE ──
+  prof_listings:  { fi: 'Ilmoitusta', sv: 'Anmälningar', en: 'Listings' },
+  prof_returned:  { fi: 'Palautettua 💛', sv: 'Returnerade 💛', en: 'Returned 💛' },
+  prof_review:    { fi: 'Arvostelu', sv: 'Omdöme', en: 'Rating' },
+  prof_my:        { fi: 'Omat ilmoitukset', sv: 'Mina anmälningar', en: 'My listings' },
+
+  // ── NOTIF BANNER ──
+  notif_title:    { fi: 'Salli ilmoitukset', sv: 'Tillåt notiser', en: 'Allow notifications' },
+  notif_sub:      { fi: 'Saat tiedon matcheista ja viesteistä.', sv: 'Få meddelanden om träffar och meddelanden.', en: 'Get notified about matches and messages.' },
+  notif_btn:      { fi: 'Salli', sv: 'Tillåt', en: 'Allow' },
+
+  // ── SUCCESS MODAL ──
+  success_title:  { fi: 'Tapaus suljettu!', sv: 'Ärende avslutat!', en: 'Case closed!' },
+  success_body:   { fi: 'Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.', sv: 'Bra jobbat! Anmälan har tagits bort från listan och markerats som löst.', en: 'Great job! The listing has been removed and marked as resolved.' },
+  success_badge_t:{ fi: 'Merkintä profiiliin', sv: 'Anteckning i profilen', en: 'Profile badge' },
+  success_badge_d:{ fi: '+1 palautettu tapaus', sv: '+1 returnerat ärende', en: '+1 returned case' },
+  success_story:  { fi: '💬 Kerro miten kävi', sv: '💬 Berätta hur det gick', en: '💬 Share your story' },
+  success_save:   { fi: 'Tallenna tarina', sv: 'Spara berättelse', en: 'Save story' },
+  success_share:  { fi: 'JAA ONNISTUMINEN', sv: 'DELA FRAMGÅNG', en: 'SHARE SUCCESS' },
+  success_home:   { fi: 'Etusivulle →', sv: 'Till startsidan →', en: 'To home →' },
+  success_tip:    { fi: '💸 Anna tippiä löytäjälle', sv: '💸 Ge dricks till upphittaren', en: '💸 Tip the finder' },
+
+  // ── TIP MODAL ──
+  tip_title:      { fi: 'Anna tippiä löytäjälle', sv: 'Ge dricks till upphittaren', en: 'Tip the finder' },
+  tip_sub:        { fi: 'Vapaaehtoinen kiitos rehellisestä löytäjästä.', sv: 'Ett frivilligt tack till en ärlig upphittare.', en: 'A voluntary thank you to an honest finder.' },
+  tip_fee_note:   { fi: 'Findly veloittaa 8% palvelumaksun.', sv: 'Findly tar 8% serviceavgift.', en: 'Findly charges 8% service fee.' },
+  tip_select:     { fi: 'VALITSE SUMMA', sv: 'VÄLJ BELOPP', en: 'SELECT AMOUNT' },
+  tip_custom:     { fi: 'Tai kirjoita:', sv: 'Eller skriv:', en: 'Or enter:' },
+  tip_gross:      { fi: 'Tippisumma', sv: 'Dricksbelopp', en: 'Tip amount' },
+  tip_fee:        { fi: 'Findly-palvelumaksu (8%)', sv: 'Findly-serviceavgift (8%)', en: 'Findly service fee (8%)' },
+  tip_net:        { fi: 'Löytäjä saa', sv: 'Upphittaren får', en: 'Finder receives' },
+  tip_pay:        { fi: '💸 Lähetä tippiä löytäjälle →', sv: '💸 Skicka dricks till upphittaren →', en: '💸 Send tip to finder →' },
+  tip_or:         { fi: 'TAI', sv: 'ELLER', en: 'OR' },
+  tip_charity:    { fi: 'Lahjoita HESY:lle', sv: 'Donera till HESY', en: 'Donate to HESY' },
+  tip_charity_sub:{ fi: 'Tue koditta olevia eläimiä Suomessa', sv: 'Stöd hemlösa djur i Finland', en: 'Support homeless animals in Finland' },
+
+  // ── WHY FINDLY ──
+  why_label:  { fi: 'Miksi Findly?', sv: 'Varför Findly?', en: 'Why Findly?' },
+  why_title:  { fi: 'Rakennettu turvallisuus edellä', sv: 'Byggt med säkerhet först', en: 'Built with security first' },
+  why_sub:    { fi: 'Muissa palveluissa jaat kaiken julkisesti. Findly suojaa yksityisyytesi ja varmistaa oikean omistajan.', sv: 'Andra tjänster delar allt offentligt. Findly skyddar din integritet och säkerställer rätt ägare.', en: 'Other services share everything publicly. Findly protects your privacy and ensures the right owner.' },
+
+  // ── MISC ──
+  stat_location: { fi: 'sijainti suojattu', sv: 'plats skyddad', en: 'location protected' },
+  loc_privacy:   { fi: '📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.', sv: '📍 Platsen visas med ca 300–500 m noggrannhet. Exakt plats delas först efter matchning.', en: '📍 Location shown with ~300–500m accuracy. Exact location shared only after matching.' },
+  footer_tagline: { fi: 'Löydä se mikä katosi. Hyvän mielen palvelu. 💛', sv: 'Hitta det som försvann. En feel-good tjänst. 💛', en: 'Find what was lost. A feel-good service. 💛' },
+  footer_copy:    { fi: '© 2025 Findly. Kaikki oikeudet pidätetään.', sv: '© 2025 Findly. Alla rättigheter förbehållna.', en: '© 2025 Findly. All rights reserved.' },
 };
 
 function t(key) {
