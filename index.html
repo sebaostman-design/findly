@@ -775,6 +775,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">🗺️ Kartta</a>
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">🐾 Eläimet</a>
   <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
+  <div id="mobile-menu-auth" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('messages');toggleMobileMenu()">💬 Viestit</a>
+    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()">👤 Profiili</a>
+  </div>
   <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()">+ Tee ilmoitus</a>
 </div>
 
@@ -842,7 +846,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-num">100%</span>
-        <span class="stat-lbl">ilmainen käyttää</span>
+        <span class="stat-lbl">ilmainen palvelu</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
@@ -1096,10 +1100,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="footer-legal">Findly toimii Suomen löytötavaralain (778/1988) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Tarkat sijaintitiedot jaetaan vasta matchauksen jälkeen.</div>
       </div>
       <div class="footer-links">
-        <a href="#">Tietosuoja</a>
-        <a href="#">Käyttöehdot</a>
         <a href="https://poliisi.fi/loytotavarat" target="_blank">Poliisi — löytötavarat</a>
-        <a href="#">Ota yhteyttä</a>
+        <a href="https://hesy.fi" target="_blank">HESY — eläinsuojelu</a>
+        <a onclick="toast('Tietosuojaseloste julkaistaan pian.','green')" style="cursor:pointer;">Tietosuoja</a>
+        <a onclick="toast('Käyttöehdot julkaistaan pian.','green')" style="cursor:pointer;">Käyttöehdot</a>
       </div>
     </div>
     <div class="footer-copy">© 2025 Findly. Kaikki oikeudet pidätetään.</div>
@@ -1748,14 +1752,17 @@ async function updateMatchBadge() {
 function updateNavAuth() {
   const anon = document.getElementById('nav-auth-area');
   const user = document.getElementById('nav-user-area');
+  const mobileAuth = document.getElementById('mobile-menu-auth');
   if (currentUser) {
     anon.style.display = 'none';
     user.style.display = 'flex';
+    if (mobileAuth) mobileAuth.style.display = 'block';
     const initials = (currentUser.user_metadata?.name || currentUser.email || 'U').charAt(0).toUpperCase();
     document.getElementById('nav-profile-btn').textContent = initials;
   } else {
     anon.style.display = 'flex';
     user.style.display = 'none';
+    if (mobileAuth) mobileAuth.style.display = 'none';
   }
 }
 
@@ -2633,7 +2640,6 @@ function previewImage(input) {
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
   e.preventDefault();
-  console.log('submitListing called, user:', currentUser?.id);
   if (!currentUser) {
     showPage('new-listing');
     return;
@@ -2651,6 +2657,9 @@ async function submitListing(e) {
   if (!desc) { toast('Kirjoita kuvaus.', 'red'); document.getElementById('f-desc').focus(); return; }
   if (!when) { toast('Valitse päivämäärä ja kellonaika.', 'red'); document.getElementById('f-when').focus(); return; }
   if (!phone) { toast('Kirjoita puhelinnumero.', 'red'); document.getElementById('f-phone').focus(); return; }
+  const hasAddress = document.getElementById('f-address').value.trim();
+  const hasLat = document.getElementById('f-lat').value;
+  if (!hasAddress && !hasLat) { toast('Merkitse sijainti kartalle tai kirjoita osoite.', 'red'); return; }
   if (currentFormType === 'found' && !document.getElementById('f-taken-to-val').value) {
     toast('Valitse mitä teit tavaralle.', 'red');
     return;
@@ -2700,15 +2709,12 @@ async function submitListing(e) {
     image_url
   };
 
-  console.log('Inserting payload:', payload);
   const { data, error } = await sb.from('listings').insert(payload).select().single();
-  console.log('Insert result:', { data, error });
   btn.disabled = false;
   setFormType(currentFormType);
 
   if (error) {
     toast('Virhe: ' + (error.message || JSON.stringify(error)), 'red');
-    console.error('Insert error:', error);
     return;
   }
 
