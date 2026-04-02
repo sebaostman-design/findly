@@ -1562,6 +1562,8 @@ function showPage(name) {
       gate.style.display = 'none';
       wrap.style.display = '';
       initFormMap();
+      const savedPhone = currentUser.user_metadata?.phone;
+      if (savedPhone) document.getElementById('f-phone').value = savedPhone;
     } else {
       gate.style.display = 'block';
       wrap.style.display = 'none';
@@ -2369,6 +2371,11 @@ async function submitListing(e) {
   }
 
   toast('Ilmoitus julkaistu! ✓', 'green');
+  // Save phone to profile for future autofill
+  const submittedPhone = document.getElementById('f-phone').value.trim();
+  if (submittedPhone && submittedPhone !== currentUser.user_metadata?.phone) {
+    sb.auth.updateUser({ data: { phone: submittedPhone } });
+  }
   document.getElementById('listing-form').reset();
   document.querySelectorAll('.loc-opt').forEach(o => o.classList.remove('selected'));
   document.querySelectorAll('.vis-opt').forEach((o,i) => { o.classList.toggle('selected', i === 0); });
@@ -2567,6 +2574,8 @@ function startVerifyFlow(listingId, ownerId) {
   goVerifyStep(1);
   showPage('verify');
   loadVerifyListingPreview(listingId);
+  const savedPhone = currentUser.user_metadata?.phone;
+  if (savedPhone) document.getElementById('verify-phone').value = savedPhone;
 }
 
 async function loadVerifyListingPreview(id) {
