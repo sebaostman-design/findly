@@ -2050,11 +2050,18 @@ async function openListing(id) {
 
     ${l.lat && l.lng ? `<div id="listing-map"></div>` : ''}
 
-    ${canContact && l.type !== 'stolen' ? `
+    ${canContact && l.type !== 'stolen' && l.type !== 'pet' ? `
     <div class="contact-card">
       <h3>Ilmoita osumasta</h3>
       <p>Käy läpi lyhyt vahvistusprosessi ennen yhteydenottoa. Sijainti ja yhteystiedot jaetaan vasta vahvistuksen jälkeen.</p>
       <button class="btn-primary" style="border:none;" onclick="startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta →</button>
+    </div>` : ''}
+
+    ${canContact && l.type === 'pet' ? `
+    <div class="contact-card" style="border-color:var(--amber);background:linear-gradient(135deg,#FFF8E7,#FEF3E2);">
+      <h3>🐾 Ota yhteyttä</h3>
+      <p>Eläinhavainnossa ei tarvita vahvistusprosessia — chat aukeaa suoraan. Kerro omistajalle missä ja milloin näit eläimen.</p>
+      <button class="btn-primary" style="border:none;background:var(--amber);" onclick="startDirectChat('${l.id}','${l.user_id}')">💬 Avaa chat omistajan kanssa →</button>
     </div>` : ''}
 
     ${isOwn && status !== 'returned' ? `
@@ -2900,7 +2907,10 @@ async function loadMatches() {
             <div class="match-card-actions">
               ${isPending
                 ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
-                : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
+                : l.type === 'pet'
+                  ? `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;background:var(--amber);" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">💬 Avaa chat</button>
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>`
+                  : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
               <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>`}
             </div>
           </div>
@@ -2935,6 +2945,40 @@ async function loadMatches() {
 // ═══════════════════════════════════════════════════════
 // VERIFY FLOW
 // ═══════════════════════════════════════════════════════
+async function startDirectChat(listingId, ownerId) {
+  if (!currentUser) { showPage('auth'); return; }
+  if (currentUser.id === ownerId) { toast('Et voi lähettää viestiä itsellesi.', 'red'); return; }
+
+  // Check if conversation already exists
+  const { data: existing } = await sb.from('conversations')
+    .select('id')
+    .eq('listing_id', listingId)
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .limit(1)
+    .single();
+
+  let convId;
+  if (existing) {
+    convId = existing.id;
+  } else {
+    const { data: conv, error } = await sb.from('conversations').insert({
+      listing_id: listingId,
+      user_a: currentUser.id,
+      user_b: ownerId
+    }).select().single();
+    if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+    convId = conv.id;
+    // Send automatic intro message
+    await sb.from('messages').insert({
+      conversation_id: convId,
+      sender_id: currentUser.id,
+      content: '🐾 Hei! Otin yhteyttä eläinilmoituksestasi. Kerron lisää chatissa.'
+    });
+  }
+
+  openChat(convId, { listing_id: listingId });
+}
+
 function startVerifyFlow(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
   // Claim rate limiting
