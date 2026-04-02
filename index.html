@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Findly – Löydä se mikä kadosi</title>
+<title>Findly – Kadonneet ja löydetyt tavarat</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
@@ -27,33 +26,40 @@ html { scroll-behavior: smooth; }
 body { font-family: 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
 h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.2; }
 
+/* ── LAYOUT ── */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 100px); width: 100%; }
+
 /* ── NAV ── */
 nav {
   position: sticky; top: 0; z-index: 200;
-  background: rgba(248,250,248,0.95); backdrop-filter: blur(12px);
+  background: rgba(248,250,248,0.97); backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between;
-  padding: 0 5vw; height: 64px;
 }
-.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--green); letter-spacing: -0.5px; cursor: pointer; }
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 clamp(24px, 6vw, 100px); height: 72px;
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: var(--green); letter-spacing: -0.5px; cursor: pointer; }
 .nav-logo span { color: var(--ink); }
-.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links { display: flex; gap: 32px; align-items: center; }
 .nav-links a { text-decoration: none; color: var(--ink2); font-size: 14px; font-weight: 500; transition: color 0.2s; cursor: pointer; }
 .nav-links a:hover { color: var(--green); }
 .nav-right { display: flex; flex-direction: row; gap: 10px; align-items: center; }
 #nav-auth-area { display: flex; flex-direction: row; gap: 10px; align-items: center; }
 .nav-auth-btn {
-  padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 500;
+  padding: 9px 20px; border-radius: 30px; font-size: 13px; font-weight: 500;
   cursor: pointer; transition: all 0.2s; border: 1.5px solid var(--border);
   background: white; color: var(--ink2);
 }
 .nav-auth-btn:hover { border-color: var(--green); color: var(--green); }
 .nav-cta {
-  background: var(--green); color: white; padding: 9px 20px;
-  border-radius: 30px; font-size: 13px; font-weight: 500; text-decoration: none;
-  transition: background 0.2s; cursor: pointer; border: none;
+  background: var(--green); color: white; padding: 10px 22px;
+  border-radius: 30px; font-size: 13px; font-weight: 600; text-decoration: none;
+  transition: all 0.2s; cursor: pointer; border: none;
+  box-shadow: 0 2px 12px rgba(26,122,82,0.2);
 }
-.nav-cta:hover { background: var(--green-dark); }
+.nav-cta:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(26,122,82,0.3); }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
 .hamburger span { width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all 0.2s; }
 
@@ -63,15 +69,20 @@ nav {
 
 /* ── HERO ── */
 .hero {
-  min-height: 88vh; display: flex; align-items: center;
-  padding: 80px 5vw 60px; position: relative;
+  min-height: 92vh; display: flex; align-items: center;
+  padding: 80px 0 60px; position: relative; overflow: hidden;
 }
 .hero-bg {
-  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
-  background: radial-gradient(ellipse 60% 60% at 70% 50%, #C8EED9 0%, transparent 70%);
-  opacity: 0.5;
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 55% 70% at 68% 45%, #C8EED9 0%, transparent 65%);
+  opacity: 0.55;
 }
-.hero-content { max-width: 560px; position: relative; z-index: 1; }
+.hero-inner {
+  max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 100px);
+  display: flex; align-items: center; justify-content: space-between; gap: 60px;
+  position: relative; z-index: 1; width: 100%;
+}
+.hero-content { flex: 1; max-width: 600px; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--green-light); border: 1px solid #A8D8BC;
@@ -80,35 +91,43 @@ nav {
 }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-mid); animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
-.hero h1 { font-size: clamp(36px, 5.5vw, 68px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 20px; }
+.hero h1 { font-size: clamp(40px, 5.5vw, 72px); font-weight: 800; letter-spacing: -2px; margin-bottom: 20px; line-height: 1.05; }
 .hero h1 .accent { color: var(--green); }
-.hero p { font-size: 17px; color: var(--ink2); line-height: 1.7; margin-bottom: 36px; max-width: 460px; }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
-.btn-primary {
-  background: var(--green); color: white; padding: 13px 26px;
-  border-radius: 30px; font-size: 14px; font-weight: 600;
-  border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+.hero-lead { font-size: 17px; color: var(--ink2); line-height: 1.7; margin-bottom: 40px; max-width: 480px; }
+
+/* Task cards */
+.task-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; max-width: 520px; }
+.task-card {
+  background: white; border: 2px solid var(--border); border-radius: var(--radius-lg);
+  padding: 28px 22px; cursor: pointer; transition: all 0.2s; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
 }
-.btn-primary:hover { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,122,82,0.25); }
-.btn-secondary {
-  background: white; color: var(--ink); padding: 13px 26px;
-  border-radius: 30px; font-size: 14px; font-weight: 500;
-  border: 1.5px solid var(--border); cursor: pointer; transition: all 0.2s;
+.task-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.task-card.tc-lost { border-color: #F5B8B8; background: var(--red-light); }
+.task-card.tc-lost:hover { border-color: var(--red); box-shadow: 0 8px 28px rgba(217,64,64,0.15); }
+.task-card.tc-found { border-color: #A8D8BC; background: var(--green-light); }
+.task-card.tc-found:hover { border-color: var(--green); box-shadow: 0 8px 28px rgba(26,122,82,0.15); }
+.task-card-icon { font-size: 36px; }
+.task-card-label { font-size: 16px; font-weight: 700; color: var(--ink); }
+.task-card-sub { font-size: 12px; color: var(--ink3); }
+
+.btn-check-matches {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: white; border: 2px dashed var(--border);
+  color: var(--ink2); padding: 13px 26px; border-radius: 30px;
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-top: 6px;
 }
-.btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
-.hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
-.hero-stat .num { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: var(--green); }
-.hero-stat .lbl { font-size: 12px; color: var(--ink3); }
+.btn-check-matches:hover { border-color: var(--green); border-style: solid; color: var(--green); background: var(--green-light); }
+
 .hero-visual {
-  position: absolute; right: 5vw; top: 50%; transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: 12px; align-items: flex-end;
+  flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; align-items: flex-end;
 }
 .floating-card {
   background: white; border: 1px solid var(--border); border-radius: var(--radius);
   padding: 14px 18px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px;
-  animation: float 4s ease-in-out infinite; max-width: 240px;
+  animation: float 4s ease-in-out infinite; max-width: 260px;
 }
-.floating-card:nth-child(2) { animation-delay: 1.3s; margin-right: 28px; }
+.floating-card:nth-child(2) { animation-delay: 1.3s; margin-right: 32px; }
 .floating-card:nth-child(3) { animation-delay: 2.6s; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .fc-icon { font-size: 26px; flex-shrink: 0; }
@@ -119,22 +138,23 @@ nav {
 .badge-blue { background: var(--blue-light); color: var(--blue); }
 .badge-amber { background: var(--amber-light); color: var(--amber); }
 
+/* ── SECTIONS ── */
+section { padding: 80px 0; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--green); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.section-title { font-size: clamp(26px, 3.5vw, 40px); font-weight: 800; letter-spacing: -0.8px; margin-bottom: 14px; }
+.section-sub { font-size: 15px; color: var(--ink2); max-width: 520px; line-height: 1.7; }
+
 /* ── LAW BANNER ── */
+.law-banner-outer { padding: 0 0 64px; }
 .law-banner {
-  margin: 0 5vw 56px; background: #FFFBEB; border: 1px solid #F0D080;
-  border-radius: var(--radius-lg); padding: 22px 26px;
+  background: #FFFBEB; border: 1px solid #F0D080;
+  border-radius: var(--radius-lg); padding: 24px 28px;
   display: flex; gap: 14px; align-items: flex-start;
 }
 .law-content h3 { font-size: 14px; font-weight: 600; color: #7A4F00; margin-bottom: 6px; }
 .law-content p { font-size: 13px; color: #5C3D00; line-height: 1.7; }
 .law-points { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .law-tag { background: #FEF3C7; border: 1px solid #F0D080; color: #7A4F00; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
-
-/* ── SECTIONS ── */
-section { padding: 72px 5vw; }
-.section-label { font-size: 11px; font-weight: 600; color: var(--green); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
-.section-title { font-size: clamp(26px, 3.5vw, 40px); font-weight: 800; letter-spacing: -0.8px; margin-bottom: 14px; }
-.section-sub { font-size: 15px; color: var(--ink2); max-width: 500px; line-height: 1.7; }
 
 /* ── FEED ── */
 #feed-section { background: white; }
@@ -151,7 +171,7 @@ section { padding: 72px 5vw; }
 .feed-filter.active-pet { background: var(--amber-light); color: var(--amber); border-color: #F0D080; }
 .feed-search { flex: 1; min-width: 200px; padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 30px; font-size: 13px; background: var(--paper); color: var(--ink); }
 .feed-search:focus { outline: none; border-color: var(--green); }
-.feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
 .feed-card {
   background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
   overflow: hidden; cursor: pointer; transition: all 0.2s;
@@ -174,9 +194,59 @@ section { padding: 72px 5vw; }
 .feed-empty { text-align: center; padding: 60px 20px; color: var(--ink3); grid-column: 1/-1; }
 .feed-empty-icon { font-size: 48px; margin-bottom: 12px; }
 
+/* ── STATUS FLOW ── */
+.status-flow { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+.status-step {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 5px 12px;
+  border-radius: 20px; border: 1px solid var(--border); color: var(--ink3); background: white;
+}
+.status-step.active { background: var(--green); border-color: var(--green); color: white; }
+.status-step.done { background: var(--green-light); border-color: #A8D8BC; color: var(--green-dark); }
+.status-step.match { background: var(--blue-light); border-color: #B8D4F5; color: var(--blue); }
+.status-arrow { color: var(--border); font-size: 12px; }
+
+/* ── VERIFY PAGE ── */
+.verify-wrap { max-width: 540px; margin: 0 auto; padding: 40px clamp(20px, 5vw, 40px); }
+.verify-progress { display: flex; align-items: center; margin-bottom: 36px; }
+.vstep {
+  width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--ink3); flex-shrink: 0; background: white;
+}
+.vstep.active { background: var(--green); border-color: var(--green); color: white; }
+.vstep.done { background: var(--green-light); border-color: var(--green); color: var(--green); }
+.vstep-line { flex: 1; height: 2px; background: var(--border); }
+.vstep-line.done { background: var(--green); }
+.verify-listing-preview {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 18px; display: flex; align-items: center; gap: 16px; margin: 20px 0 28px;
+}
+.vlp-icon { font-size: 40px; flex-shrink: 0; }
+.vlp-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 4px; }
+
+/* ── REPORT BUTTON ── */
+.report-btn {
+  font-size: 12px; color: var(--ink3); background: none; border: none;
+  cursor: pointer; padding: 5px 0; display: inline-flex; align-items: center; gap: 5px;
+  transition: color 0.2s; text-decoration: none;
+}
+.report-btn:hover { color: var(--red); }
+
+/* ── VISIBILITY SELECTOR ── */
+.vis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
+.vis-opt {
+  padding: 12px 8px; border: 1.5px solid var(--border); border-radius: var(--radius);
+  cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s;
+  text-align: center; color: var(--ink2); background: white;
+}
+.vis-opt:hover, .vis-opt.selected { border-color: var(--green); background: var(--green-light); color: var(--green-dark); }
+.vis-opt small { display: block; font-size: 11px; font-weight: 400; margin-top: 3px; opacity: 0.85; }
+
 /* ── MAP PAGE ── */
 #map-page { min-height: 100vh; display: flex; flex-direction: column; }
-.map-header { padding: 20px 5vw 16px; background: white; border-bottom: 1px solid var(--border); }
+.map-header { padding: 20px clamp(24px, 6vw, 100px) 16px; background: white; border-bottom: 1px solid var(--border); max-width: 100%; }
+.map-header-inner { max-width: 1280px; margin: 0 auto; }
 .map-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
 .map-controls-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 #mapbox-container { flex: 1; min-height: 500px; }
@@ -186,7 +256,7 @@ section { padding: 72px 5vw; }
 .popup-btn { background: var(--green); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; width: 100%; }
 
 /* ── FORM PAGE ── */
-.form-page-wrap { max-width: 700px; margin: 0 auto; padding: 48px 5vw; }
+.form-page-wrap { max-width: 720px; margin: 0 auto; padding: 48px clamp(20px, 5vw, 48px); }
 .form-page-header { margin-bottom: 32px; }
 .form-page-back { display: inline-flex; align-items: center; gap: 6px; color: var(--ink3); font-size: 13px; cursor: pointer; margin-bottom: 16px; transition: color 0.2s; }
 .form-page-back:hover { color: var(--green); }
@@ -215,6 +285,7 @@ textarea { resize: vertical; min-height: 88px; }
 .loc-opt:hover, .loc-opt.selected { border-color: var(--green); background: var(--green-light); color: var(--green-dark); }
 .notice-info { background: var(--blue-light); border: 1px solid #B8D4F5; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #1A3A6A; line-height: 1.6; display: flex; gap: 10px; }
 .notice-warn { background: #FFFBEB; border: 1px solid #F0D080; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #7A4F00; line-height: 1.6; display: flex; gap: 10px; }
+.notice-red { background: var(--red-light); border: 1px solid #F5B8B8; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #7A1A1A; line-height: 1.6; display: flex; gap: 10px; }
 .submit-btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.2s; color: white; }
 .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
 .submit-btn.lost { background: var(--red); }
@@ -223,7 +294,7 @@ textarea { resize: vertical; min-height: 88px; }
 .submit-btn.pet { background: var(--amber); }
 
 /* ── LISTING DETAIL ── */
-.listing-detail-wrap { max-width: 740px; margin: 0 auto; padding: 40px 5vw; }
+.listing-detail-wrap { max-width: 760px; margin: 0 auto; padding: 40px clamp(20px, 5vw, 48px); }
 .listing-hero-img { width: 100%; height: 280px; background: var(--paper); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 96px; margin-bottom: 24px; border: 1px solid var(--border); }
 .listing-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .meta-badge { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
@@ -238,6 +309,20 @@ textarea { resize: vertical; min-height: 88px; }
 .contact-card h3 { font-size: 16px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
 .contact-card p { font-size: 13px; color: var(--ink2); line-height: 1.6; margin-bottom: 16px; }
 #listing-map { height: 200px; border-radius: var(--radius); margin-bottom: 28px; }
+
+/* ── BTN ── */
+.btn-primary {
+  background: var(--green); color: white; padding: 13px 26px;
+  border-radius: 30px; font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,122,82,0.25); }
+.btn-secondary {
+  background: white; color: var(--ink); padding: 13px 26px;
+  border-radius: 30px; font-size: 14px; font-weight: 500;
+  border: 1.5px solid var(--border); cursor: pointer; transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
 
 /* ── AUTH ── */
 .auth-wrap { max-width: 440px; margin: 60px auto; padding: 0 20px; }
@@ -257,8 +342,8 @@ textarea { resize: vertical; min-height: 88px; }
 .auth-msg.success { color: var(--green); }
 
 /* ── CHAT ── */
-.chat-wrap { max-width: 680px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; height: calc(100vh - 64px); }
-.chat-header { padding: 16px 5vw; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.chat-wrap { max-width: 680px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; height: calc(100vh - 72px); }
+.chat-header { padding: 16px 24px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
 .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--green-dark); flex-shrink: 0; }
 .chat-name { font-size: 15px; font-weight: 600; }
 .chat-status { font-size: 12px; color: var(--ink3); }
@@ -269,15 +354,15 @@ textarea { resize: vertical; min-height: 88px; }
 .msg-bubble.other { background: white; color: var(--ink); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
 .msg-bubble.own { background: var(--green); color: white; border-bottom-right-radius: 4px; }
 .msg-time { font-size: 10px; color: var(--ink3); padding: 0 4px; }
-.chat-verify { background: var(--amber-light); border: 1px solid #F0D080; border-radius: var(--radius); padding: 14px; margin: 0 20px 12px; font-size: 13px; color: #7A4F00; }
-.chat-input-bar { padding: 12px 20px 20px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.chat-verify { background: var(--amber-light); border: 1px solid #F0D080; border-radius: var(--radius); padding: 14px 20px; margin: 0 20px 12px; font-size: 13px; color: #7A4F00; display: flex; align-items: flex-start; gap: 10px; }
+.chat-input-bar { padding: 12px 20px 20px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
 .chat-input { flex: 1; padding: 10px 16px; border: 1.5px solid var(--border); border-radius: 24px; font-size: 14px; background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; }
 .chat-input:focus { outline: none; border-color: var(--green); }
 .chat-send { width: 42px; height: 42px; background: var(--green); border: none; border-radius: 50%; cursor: pointer; color: white; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
 .chat-send:hover { background: var(--green-dark); }
 
 /* ── PROFILE ── */
-.profile-wrap { max-width: 600px; margin: 0 auto; padding: 40px 5vw; }
+.profile-wrap { max-width: 620px; margin: 0 auto; padding: 40px clamp(20px, 5vw, 48px); }
 .profile-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 20px; }
 .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: var(--green-dark); margin-bottom: 14px; }
 .profile-name { font-size: 20px; font-weight: 700; }
@@ -312,14 +397,14 @@ textarea { resize: vertical; min-height: 88px; }
 .modal-close:hover { background: var(--border); }
 
 /* ── FOOTER ── */
-footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw 32px; }
-.footer-inner { display: grid; grid-template-columns: 1fr auto; gap: 40px; }
+footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 32px; }
+.footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 100px); display: grid; grid-template-columns: 1fr auto; gap: 48px; }
 .footer-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--green-mid); margin-bottom: 8px; }
-.footer-legal { font-size: 12px; line-height: 1.7; max-width: 500px; margin-top: 8px; }
+.footer-legal { font-size: 12px; line-height: 1.7; max-width: 520px; margin-top: 8px; }
 .footer-links { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
 .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.2s; }
 .footer-links a:hover { color: white; }
-.footer-copy { margin-top: 28px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; text-align: center; }
+.footer-copy { max-width: 1280px; margin: 28px auto 0; padding: 18px clamp(24px, 6vw, 100px) 0; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; }
 
 /* ── UTILITY ── */
 .loading { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--ink3); gap: 10px; font-size: 14px; }
@@ -329,6 +414,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .hero-visual { display: none; }
+  .hero-inner { flex-direction: column; }
   .nav-links { display: none; }
   .hamburger { display: flex; }
   .form-grid { grid-template-columns: 1fr; }
@@ -337,7 +423,11 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
   .footer-links { align-items: flex-start; }
   .loc-options { grid-template-columns: 1fr; }
   .profile-stats { grid-template-columns: 1fr 1fr; }
-  .action-grid { grid-template-columns: 1fr !important; }
+  .vis-grid { grid-template-columns: 1fr; }
+  .task-cards { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1200px) {
+  .feed-grid { grid-template-columns: repeat(4, 1fr); }
 }
 </style>
 </head>
@@ -348,33 +438,35 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
-  <div class="nav-links">
-    <a onclick="showPage('feed')">Ilmoitukset</a>
-    <a onclick="showPage('map')">Kartta</a>
-    <a onclick="showPage('pets')">Eläimet</a>
-  </div>
-  <div class="nav-right">
-    <div id="nav-auth-area">
-      <button class="nav-auth-btn" onclick="showPage('auth')">Kirjaudu</button>
-      <button class="nav-cta" onclick="showPage('new-listing')">+ Ilmoita</button>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('map')">🗺️ Kartta</a>
+      <a onclick="showPage('pets')">🐾 Eläimet</a>
+      <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;">Ilmoitukset</a>
     </div>
-    <div id="nav-user-area" style="display:none;flex-direction:row;gap:10px;align-items:center;">
-      <button class="nav-auth-btn" onclick="showPage('messages')">💬 Viestit</button>
-      <button class="nav-cta" onclick="showPage('new-listing')">+ Ilmoita</button>
-      <button class="nav-auth-btn" onclick="showPage('profile')" id="nav-profile-btn">👤</button>
+    <div class="nav-right">
+      <div id="nav-auth-area">
+        <button class="nav-auth-btn" onclick="showPage('auth')">Kirjaudu</button>
+        <button class="nav-cta" onclick="showPage('new-listing')">+ Tee ilmoitus</button>
+      </div>
+      <div id="nav-user-area" style="display:none;flex-direction:row;gap:10px;align-items:center;">
+        <button class="nav-auth-btn" onclick="showPage('messages')">💬 Viestit</button>
+        <button class="nav-cta" onclick="showPage('new-listing')">+ Tee ilmoitus</button>
+        <button class="nav-auth-btn" onclick="showPage('profile')" id="nav-profile-btn">👤</button>
+      </div>
     </div>
-  </div>
-  <div class="hamburger" onclick="toggleMobileMenu()">
-    <span></span><span></span><span></span>
+    <div class="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
 
 <!-- MOBILE MENU -->
-<div id="mobile-menu" style="display:none;position:fixed;top:64px;left:0;right:0;background:white;border-bottom:1px solid var(--border);z-index:190;padding:16px 5vw;flex-direction:column;gap:14px;">
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">Kartta</a>
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">Eläimet</a>
+<div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:white;border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">🗺️ Kartta</a>
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">🐾 Eläimet</a>
+  <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
   <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()">+ Tee ilmoitus</a>
 </div>
 
@@ -384,89 +476,83 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 <div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-badge"><div class="badge-dot"></div>Aktiivisia ilmoituksia lähialueellasi</div>
-      <h1>Löydä se,<br>mikä <span class="accent">katosi.</span></h1>
-      <p>Findly yhdistää kadonneiden tavaroiden omistajat löytäjiin — nopeasti, turvallisesti ja löytötavaralain mukaisesti.</p>
-      <div class="hero-actions">
-        <button class="btn-primary" onclick="showPage('new-listing')">🔍 Etsin tavaraa</button>
-        <button class="btn-secondary" onclick="showPage('feed')">Selaa ilmoituksia</button>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="num" id="stat-count">—</div><div class="lbl">Aktiivista ilmoitusta</div></div>
-        <div class="hero-stat"><div class="num">7 pv</div><div class="lbl">Ilmoitus voimassa</div></div>
-        <div class="hero-stat"><div class="num">🆓</div><div class="lbl">Ilmainen käyttää</div></div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="floating-card"><div class="fc-icon">💛</div><div><div class="fc-title">Match löytyi!</div><div class="fc-sub">Musta laukku · Rautatieasema</div><span class="fc-badge badge-blue">✦ Uusi yhteys</span></div></div>
-      <div class="floating-card"><div class="fc-icon">💳</div><div><div class="fc-title">Lompakko löydetty</div><div class="fc-sub">Kallio · 30 min sitten</div><span class="fc-badge badge-green">Löydetty</span></div></div>
-      <div class="floating-card"><div class="fc-icon">🐕</div><div><div class="fc-title">Kultainennoutaja</div><div class="fc-sub">Töölö · Kadonnut</div><span class="fc-badge badge-amber">🐾 Eläin</span></div></div>
-    </div>
-  </section>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge"><div class="badge-dot"></div>Suomen löytötavaralain mukainen palvelu</div>
+        <h1>Kadotin.<br>Löysin.<br><span class="accent">Findly.</span></h1>
+        <p class="hero-lead">Yhdistää kadonneet tavarat löytäjiin — turvallisesti, anonyymisti ja lain mukaisesti. Sijainti pysyy piilossa ennen matchausta.</p>
 
-  <div class="law-banner">
-    <div style="font-size:26px;flex-shrink:0;margin-top:2px;">⚖️</div>
-    <div class="law-content">
-      <h3>Löytötavaralaki — tiedä oikeutesi ja velvollisuutesi</h3>
-      <p>Yli 20€:n arvoisen tavaran löytäjällä on <strong>ilmoittamis- ja toimittamisvelvollisuus</strong> — ilmoita omistajalle tai toimita poliisille. Löytäjällä on oikeus <strong>10% löytöpalkkioon</strong> tavaran käyvästä arvosta. Findly helpottaa tätä prosessia.</p>
-      <div class="law-points">
-        <span class="law-tag">📋 Ilmoita poliisille jos omistajaa ei löydy</span>
-        <span class="law-tag">💰 10% löytöpalkkio-oikeus</span>
-        <span class="law-tag">⏳ Omistajalla 3kk hakea tavaransa</span>
-        <span class="law-tag">🔒 Puhelin ei siirry löytäjälle</span>
-      </div>
-    </div>
-  </div>
+        <div class="task-cards">
+          <div class="task-card tc-lost" onclick="openFormTab('lost')">
+            <div class="task-card-icon">🔍</div>
+            <div class="task-card-label">Kadotin tavaran</div>
+            <div class="task-card-sub">Tee ilmoitus ja odota osumia</div>
+          </div>
+          <div class="task-card tc-found" onclick="openFormTab('found')">
+            <div class="task-card-icon">📦</div>
+            <div class="task-card-label">Löysin tavaran</div>
+            <div class="task-card-sub">Ilmoita löydöstäsi</div>
+          </div>
+        </div>
 
-  <!-- ACTION CARDS -->
-  <section style="background:white;padding:64px 5vw;">
-    <div class="section-label">Mitä haluat tehdä?</div>
-    <div class="section-title">Aloita tästä</div>
-    <div class="action-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:40px;max-width:900px;">
-      <div onclick="openFormTab('lost')" style="background:var(--red-light);border:1.5px solid #F5B8B8;border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:40px;margin-bottom:12px;">🔍</div>
-        <h3 style="font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px;">Etsin tavaraa</h3>
-        <p style="font-size:13px;color:var(--ink2);">Tee ilmoitus kadonneesta tavarasta — Findly matchaa sinut löytäjiin automaattisesti.</p>
+        <button class="btn-check-matches" onclick="showPage('feed')">
+          🔔 Tarkista osumat
+        </button>
       </div>
-      <div onclick="openFormTab('stolen')" style="background:#FFF0F0;border:1.5px solid #E8A0A0;border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:40px;margin-bottom:12px;">🚨</div>
-        <h3 style="font-size:18px;font-weight:700;color:#A32D2D;margin-bottom:8px;">Varastettu</h3>
-        <p style="font-size:13px;color:var(--ink2);">Tee ilmoitus rikosilmoituksen lisäksi — tunnistamme tavaran jos se ilmestyy löydetyksi.</p>
-      </div>
-      <div onclick="openFormTab('found')" style="background:var(--green-light);border:1.5px solid #A8D8BC;border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:40px;margin-bottom:12px;">📦</div>
-        <h3 style="font-size:18px;font-weight:700;color:var(--green-dark);margin-bottom:8px;">Löysin tavaran</h3>
-        <p style="font-size:13px;color:var(--ink2);">Kiitos rehellisyydestäsi! Kerro löydöstäsi ja mihin veit tavaran.</p>
-      </div>
-      <div onclick="openFormTab('pet')" style="background:var(--amber-light);border:1.5px solid #F0D080;border-radius:var(--radius-lg);padding:28px;cursor:pointer;grid-column:1/-1;display:flex;align-items:center;gap:20px;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:48px;flex-shrink:0;">🐾</div>
-        <div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--amber);margin-bottom:6px;">Kadonnut tai löydetty eläin</h3>
-          <p style="font-size:13px;color:var(--ink2);">Eläinilmoitukset omassa osiossaan — push-ilmoitukset 5km säteellä, helppo jakaa WhatsAppiin ja Instagramiin.</p>
+
+      <div class="hero-visual">
+        <div class="floating-card">
+          <div class="fc-icon">🔐</div>
+          <div>
+            <div class="fc-title">Osuma vahvistettu</div>
+            <div class="fc-sub">Omistajuus todistettu</div>
+            <span class="fc-badge badge-green">✓ Hyväksytty</span>
+          </div>
+        </div>
+        <div class="floating-card">
+          <div class="fc-icon">💳</div>
+          <div>
+            <div class="fc-title">Lompakko löydetty</div>
+            <div class="fc-sub">Lähellä Kalliota · 30 min</div>
+            <span class="fc-badge badge-blue">Osuma löytyi</span>
+          </div>
+        </div>
+        <div class="floating-card">
+          <div class="fc-icon">🐕</div>
+          <div>
+            <div class="fc-title">Kultainennoutaja</div>
+            <div class="fc-sub">Töölön alueella</div>
+            <span class="fc-badge badge-amber">🐾 Eläin</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- LATEST FEED PREVIEW -->
-  <section style="background:var(--paper);">
-    <div class="section-label">Viimeisimmät ilmoitukset</div>
-    <div class="section-title">Lähialueellasi nyt</div>
-    <div id="home-feed-preview" style="margin-top:32px;">
-      <div class="loading"><div class="spinner"></div>Ladataan ilmoituksia...</div>
+  <div class="wrap">
+    <div class="law-banner-outer">
+      <div class="law-banner">
+        <div style="font-size:26px;flex-shrink:0;margin-top:2px;">⚖️</div>
+        <div class="law-content">
+          <h3>Löytötavaralaki (778/1988) — tiedä oikeutesi ja velvollisuutesi</h3>
+          <p>Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on oikeus <strong>10% löytöpalkkioon</strong> tavaran käyvästä arvosta.</p>
+          <div class="law-points">
+            <span class="law-tag">📋 Ilmoita poliisille jos omistajaa ei löydy</span>
+            <span class="law-tag">💰 10% löytöpalkkio-oikeus</span>
+            <span class="law-tag">⏳ Omistajalla 3 kk hakea tavaransa</span>
+            <span class="law-tag">🔒 Tarkat tiedot vasta matchin jälkeen</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="text-align:center;margin-top:28px;">
-      <button class="btn-secondary" onclick="showPage('feed')">Näytä kaikki ilmoitukset →</button>
-    </div>
-  </section>
+  </div>
 
   <footer>
     <div class="footer-inner">
       <div>
         <div class="footer-logo">findly</div>
         <div style="font-size:13px;color:rgba(255,255,255,0.5);">Löydä se mikä katosi.</div>
-        <div class="footer-legal">Findly toimii Suomen löytötavaralain (778/2009) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Löytöpalkkio sovitaan suoraan käyttäjien välillä. Palkkion maksaminen tapahtuu käyttäjien keskinäisellä sopimuksella — Findly ei toimi maksuvälittäjänä tässä vaiheessa.</div>
+        <div class="footer-legal">Findly toimii Suomen löytötavaralain (778/1988) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Tarkat sijaintitiedot jaetaan vasta matchauksen jälkeen. Löytöpalkkio sovitaan suoraan käyttäjien välillä.</div>
       </div>
       <div class="footer-links">
         <a href="#">Tietosuoja</a>
@@ -484,18 +570,20 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-feed">
   <section id="feed-section">
-    <div class="section-label">Ilmoitukset</div>
-    <div class="section-title">Kaikki ilmoitukset</div>
-    <div class="feed-controls">
-      <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)">Kaikki</button>
-      <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)">🔍 Kadonneet</button>
-      <button class="feed-filter" data-filter="found" onclick="setFeedFilter('found',this)">📦 Löydetyt</button>
-      <button class="feed-filter" data-filter="stolen" onclick="setFeedFilter('stolen',this)">🚨 Varastetut</button>
-      <button class="feed-filter" data-filter="pet" onclick="setFeedFilter('pet',this)">🐾 Eläimet</button>
-      <input class="feed-search" placeholder="🔍 Hae ilmoituksista..." id="feed-search-input" oninput="renderFeed()" />
-    </div>
-    <div class="feed-grid" id="feed-grid">
-      <div class="loading"><div class="spinner"></div>Ladataan...</div>
+    <div class="wrap">
+      <div class="section-label">Ilmoitukset</div>
+      <div class="section-title">Kaikki ilmoitukset</div>
+      <div class="feed-controls">
+        <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)">Kaikki</button>
+        <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)">🔍 Kadonneet</button>
+        <button class="feed-filter" data-filter="found" onclick="setFeedFilter('found',this)">📦 Löydetyt</button>
+        <button class="feed-filter" data-filter="stolen" onclick="setFeedFilter('stolen',this)">🚨 Varastetut</button>
+        <button class="feed-filter" data-filter="pet" onclick="setFeedFilter('pet',this)">🐾 Eläimet</button>
+        <input class="feed-search" placeholder="🔍 Hae ilmoituksista..." id="feed-search-input" oninput="renderFeed()" />
+      </div>
+      <div class="feed-grid" id="feed-grid">
+        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+      </div>
     </div>
   </section>
 </div>
@@ -506,12 +594,15 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 <div class="page" id="page-map">
   <div id="map-page">
     <div class="map-header">
-      <h2>Karttanäkymä</h2>
-      <div class="map-controls-bar">
-        <button class="feed-filter active-all" onclick="filterMap('all',this)">Kaikki</button>
-        <button class="feed-filter" onclick="filterMap('lost',this)">💎 Kadonneet</button>
-        <button class="feed-filter" onclick="filterMap('found',this)">⚡ Löydetyt</button>
-        <button class="feed-filter" onclick="filterMap('pet',this)">🐾 Eläimet</button>
+      <div class="map-header-inner">
+        <h2>Karttanäkymä</h2>
+        <div class="map-controls-bar">
+          <button class="feed-filter active-all" onclick="filterMap('all',this)">Kaikki</button>
+          <button class="feed-filter" onclick="filterMap('lost',this)">🔍 Kadonneet</button>
+          <button class="feed-filter" onclick="filterMap('found',this)">📦 Löydetyt</button>
+          <button class="feed-filter" onclick="filterMap('pet',this)">🐾 Eläimet</button>
+        </div>
+        <p style="font-size:12px;color:var(--ink3);margin-top:10px;">📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.</p>
       </div>
     </div>
     <div id="mapbox-container"></div>
@@ -523,23 +614,25 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-pets">
   <section>
-    <div class="section-label">Eläinilmoitukset</div>
-    <div class="section-title">Kadonneet & löydetyt eläimet</div>
-    <div class="section-sub">Push-ilmoitukset lähtevät automaattisesti 5km säteellä. Helppo jakaa WhatsAppiin ja Instagramiin.</div>
-    <div style="margin:24px 0 20px;display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="feed-filter active-all" onclick="setPetFilter('all',this)">Kaikki</button>
-      <button class="feed-filter" onclick="setPetFilter('lost',this)">🔴 Kadonneet</button>
-      <button class="feed-filter" onclick="setPetFilter('found',this)">🟢 Löydetyt</button>
-    </div>
-    <div class="feed-grid" id="pets-grid">
-      <div class="loading"><div class="spinner"></div>Ladataan...</div>
-    </div>
-    <div style="margin-top:28px;">
-      <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')">🐾 Lisää eläinilmoitus</button>
-    </div>
-    <div style="background:var(--amber-light);border:1px solid #F0D080;border-radius:var(--radius);padding:14px 18px;display:flex;gap:10px;align-items:flex-start;margin-top:24px;font-size:13px;color:#7A4F00;">
-      <span style="font-size:18px;">📣</span>
-      <span>Eläinilmoitukset lähettävät push-ilmoituksen kaikille Findly-käyttäjille 5 km säteellä. WhatsApp- ja Instagram-jakolinkki generoidaan automaattisesti.</span>
+    <div class="wrap">
+      <div class="section-label">Eläinilmoitukset</div>
+      <div class="section-title">Kadonneet &amp; löydetyt eläimet</div>
+      <div class="section-sub">Push-ilmoitukset lähtevät automaattisesti 5 km säteellä. Helppo jakaa WhatsAppiin ja Instagramiin.</div>
+      <div style="margin:24px 0 20px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="feed-filter active-all" onclick="setPetFilter('all',this)">Kaikki</button>
+        <button class="feed-filter" onclick="setPetFilter('lost',this)">🔴 Kadonneet</button>
+        <button class="feed-filter" onclick="setPetFilter('found',this)">🟢 Löydetyt</button>
+      </div>
+      <div class="feed-grid" id="pets-grid">
+        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+      </div>
+      <div style="margin-top:28px;">
+        <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')">🐾 Lisää eläinilmoitus</button>
+      </div>
+      <div class="notice-warn" style="margin-top:24px;">
+        <span style="font-size:18px;">📣</span>
+        <span>Eläinilmoitukset lähettävät push-ilmoituksen kaikille Findly-käyttäjille 5 km säteellä. WhatsApp- ja Instagram-jakolinkki generoidaan automaattisesti.</span>
+      </div>
     </div>
   </section>
 </div>
@@ -562,16 +655,14 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
       <div class="ftype-btn" onclick="setFormType('pet')">🐾 Eläin</div>
     </div>
 
-    <!-- INFO NOTICE -->
     <div id="form-notice" class="notice-info" style="margin-bottom:20px;">
       <span>🔴</span>
-      <span id="form-notice-text">Kuvaa tavara riittävästi matchausta varten, mutta älä paljasta kaikkia tunnistetietoja julkisesti. Yksityiskohdat vahvistetaan chatissa.</span>
+      <span id="form-notice-text">Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.</span>
     </div>
 
-    <!-- STOLEN WARNING -->
-    <div id="stolen-warning" style="display:none;background:#FFF0F0;border:1.5px solid #E8A0A0;border-radius:var(--radius);padding:16px;margin-bottom:20px;">
-      <div style="font-size:13px;color:#7A1A1A;line-height:1.7;">🚨 <strong>Muista:</strong> Tee ensin <strong>rikosilmoitus poliisille</strong> — se on tärkeää vakuutuskorvausten kannalta. Findly toimii täydentävänä palveluna.
-      <a href="https://poliisi.fi/rikosilmoitus" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#A32D2D;text-decoration:none;border:1px solid #E8A0A0;padding:4px 12px;border-radius:20px;background:white;">Tee rikosilmoitus →</a></div>
+    <div id="stolen-warning" style="display:none;" class="notice-red" style="margin-bottom:20px;">
+      🚨 <strong>Muista:</strong> Tee ensin <strong>rikosilmoitus poliisille</strong> — se on tärkeää vakuutuskorvausten kannalta. Findly toimii täydentävänä palveluna.
+      <a href="https://poliisi.fi/rikosilmoitus" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#A32D2D;text-decoration:none;border:1px solid #E8A0A0;padding:4px 12px;border-radius:20px;background:white;">Tee rikosilmoitus →</a>
     </div>
 
     <form id="listing-form" onsubmit="submitListing(event)">
@@ -603,34 +694,61 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
         </div>
         <div class="form-group full">
           <label>Kuvaus *</label>
-          <textarea id="f-desc" placeholder="Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan chatissa." required></textarea>
+          <textarea id="f-desc" placeholder="Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen." required></textarea>
         </div>
+
+        <!-- IMAGE GUIDANCE -->
+        <div class="form-group full">
+          <div class="notice-warn">
+            <span>🛡️</span>
+            <div>
+              <strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja kuvassa. Jätä osa tiedoista (esim. sarjanumero, nimi) varmistusta varten — oikea omistaja tietää ne jo valmiiksi.
+            </div>
+          </div>
+        </div>
+
         <div class="form-group full">
           <label id="f-location-label">Katoamispaikka *</label>
           <div class="form-map-pick">
             <div id="form-map"></div>
             <div class="form-map-hint">Klikkaa kartalta merkitäksesi sijainti</div>
           </div>
-          <input type="text" id="f-address" placeholder="Tai kirjoita osoite / paikka..." />
+          <input type="text" id="f-address" placeholder="Tai kirjoita alue / kaupunginosa..." />
           <input type="hidden" id="f-lat" />
           <input type="hidden" id="f-lng" />
+          <p style="font-size:11px;color:var(--ink3);margin-top:6px;">📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.</p>
         </div>
 
-        <!-- FOUND SPECIFIC -->
+        <!-- FOUND SPECIFIC: where did you take it -->
         <div class="form-group full" id="found-location-field" style="display:none;">
-          <label>Mihin veit löydetyn tavaran? *</label>
-          <div style="background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;">
-            <p style="font-size:13px;color:var(--ink2);margin-bottom:10px;">Valitse vaihtoehto ja lisää tarkemmat tiedot alla.</p>
-            <div class="loc-options" id="loc-options">
-              <div class="loc-opt" onclick="selectLoc(this,'police')">🏛️ Poliisille</div>
-              <div class="loc-opt" onclick="selectLoc(this,'info')">📍 Infopiste / vastaanotto</div>
-              <div class="loc-opt" onclick="selectLoc(this,'personal')">🤝 Palautan henkilökohtaisesti</div>
-              <div class="loc-opt" onclick="selectLoc(this,'lostfound')">📦 Löytötavaratoimisto</div>
-              <div class="loc-opt" onclick="selectLoc(this,'spot')">🗺️ Jätin löytöpaikalle</div>
-            </div>
-            <input type="hidden" id="f-taken-to" />
-            <input type="text" id="f-taken-to-detail" placeholder="Lisätiedot sijainnista..." style="margin-top:10px;" />
+          <label>Mitä teit tavaralle? *</label>
+          <select id="f-taken-to" required style="display:none;">
+            <option value="">Valitse...</option>
+            <option value="police">🏛️ Vein poliisille</option>
+            <option value="info">📍 Vein infopisteelle</option>
+            <option value="lostfound">📦 Vein löytötavaratoimistoon</option>
+            <option value="safe">🔒 Säilytän turvallisesti</option>
+            <option value="other">✏️ Muu (kerro alla)</option>
+          </select>
+          <div class="loc-options" id="loc-options">
+            <div class="loc-opt" onclick="selectLoc(this,'police')">🏛️ Vein poliisille</div>
+            <div class="loc-opt" onclick="selectLoc(this,'info')">📍 Vein infopisteelle</div>
+            <div class="loc-opt" onclick="selectLoc(this,'lostfound')">📦 Löytötavaratoimisto</div>
+            <div class="loc-opt" onclick="selectLoc(this,'safe')">🔒 Säilytän turvallisesti</div>
           </div>
+          <input type="hidden" id="f-taken-to-val" />
+          <input type="text" id="f-taken-to-detail" placeholder="Lisätiedot: osoite, nimi tms..." style="margin-top:10px;" />
+        </div>
+
+        <!-- VISIBILITY -->
+        <div class="form-group full">
+          <label>Näkyvyys</label>
+          <div class="vis-grid">
+            <div class="vis-opt selected" onclick="selectVis(this,'public')">🌍 Julkinen<small>Kaikille näkyvä</small></div>
+            <div class="vis-opt" onclick="selectVis(this,'limited')">👥 Rajattu<small>Vain kirjautuneille</small></div>
+            <div class="vis-opt" onclick="selectVis(this,'match')">🔒 Vain matchissa<small>Vain vahvistuksen jälkeen</small></div>
+          </div>
+          <input type="hidden" id="f-visibility" value="public" />
         </div>
 
         <div class="form-group" id="reward-field">
@@ -638,18 +756,83 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
           <input type="number" id="f-reward" placeholder="Summa euroissa..." min="0" />
         </div>
         <div class="form-group">
-          <label>Yhteystiedot (valinnainen)</label>
-          <input type="text" id="f-contact" placeholder="Puhelin tai sähköposti matchin jälkeen..." />
+          <label>Puhelinnumero *</label>
+          <input type="tel" id="f-phone" placeholder="+358 40 123 4567" required />
+          <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Näytetään vain matchin jälkeen.</p>
         </div>
-      </div>
-
-      <div id="photo-hint-box" class="notice-info" style="margin-top:16px;">
-        <span>🛡️</span>
-        <span id="photo-hint-text">Vinkki: Jos tavarassa näkyy tunnistetietoja (kortit, nimet), sumentaa ne kuvasta. Oikea omistaja tietää yksityiskohdat jo valmiiksi.</span>
       </div>
 
       <button type="submit" class="submit-btn lost" id="submit-btn" style="margin-top:20px;">Julkaise ilmoitus →</button>
     </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE: VERIFY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page" id="page-verify">
+  <div class="verify-wrap">
+    <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+
+    <div class="verify-progress">
+      <div class="vstep active" id="vstep-1">1</div>
+      <div class="vstep-line" id="vstep-line-1"></div>
+      <div class="vstep" id="vstep-2">2</div>
+      <div class="vstep-line" id="vstep-line-2"></div>
+      <div class="vstep" id="vstep-3">3</div>
+    </div>
+
+    <!-- STEP 1: Match overview -->
+    <div id="vstep-1-content">
+      <div class="hero-badge" style="margin-bottom:20px;"><div class="badge-dot"></div>Mahdollinen osuma löytyi</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;">Löysimme mahdollisen matchin</h2>
+      <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;">Tarkista ilmoitus ja jatka omistajuuden todistamiseen. Löytäjä ei näe yhteystietojasi ennen hyväksyntää.</p>
+      <div class="verify-listing-preview" id="verify-listing-preview">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+      <div class="notice-info" style="margin-bottom:24px;">
+        <span>🔐</span>
+        <span>Seuraavaksi sinua pyydetään kertomaan jotain, mitä vain oikea omistaja tietää. Tämä estää väärät claimat.</span>
+      </div>
+      <button class="btn-primary" style="border:none;width:100%;" onclick="goVerifyStep(2)">Jatka omistajuuden todistamiseen →</button>
+    </div>
+
+    <!-- STEP 2: Verify questions -->
+    <div id="vstep-2-content" style="display:none;">
+      <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;">Todista omistajuus</h2>
+      <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;">Vastauksesi lähetetään löytäjälle tarkistettavaksi.</p>
+      <div class="notice-warn" style="margin-bottom:20px;">
+        <span>🛡️</span>
+        <span>Kerro jotain, mitä <strong>ei näy julkisessa ilmoituksessa</strong>. Esim. tavaran sisältö, erityinen tunniste, mistä ostit sen.</span>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label>Kerro yksityiskohta, jonka vain oikea omistaja tietää *</label>
+        <textarea id="verify-secret" rows="4" placeholder="Esim: Laukussa on punainen avainnauhani ja siinä lukee 'Anna'. Ostoin sen Stockmannilta 2023." required></textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label>Puhelinnumero yhteydenottoa varten *</label>
+        <input type="tel" id="verify-phone" placeholder="+358 40 123 4567" required />
+        <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Näytetään löytäjälle vasta hyväksynnän jälkeen.</p>
+      </div>
+      <div class="form-group" style="margin-bottom:24px;">
+        <label>Lisäkysymys löytäjälle (valinnainen)</label>
+        <input type="text" id="verify-question" placeholder="Esim: Onko laukussa jotain erityistä sisällä?" />
+      </div>
+      <button class="btn-primary" style="border:none;width:100%;" onclick="submitVerifyRequest()">Lähetä →</button>
+    </div>
+
+    <!-- STEP 3: Sent -->
+    <div id="vstep-3-content" style="display:none;">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:64px;margin-bottom:20px;">✅</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:12px;">Pyyntö lähetetty!</h2>
+        <p style="font-size:15px;color:var(--ink2);line-height:1.7;max-width:380px;margin:0 auto 28px;">Löytäjä näkee vastauksesi ja voi hyväksyä, hylätä tai pyytää lisätietoja. Saat ilmoituksen viestit-osiosta.</p>
+        <button class="btn-primary" style="border:none;" onclick="showPage('messages')">💬 Avaa viestit →</button>
+        <div style="margin-top:12px;">
+          <button class="btn-secondary" onclick="showPage('home')">Takaisin etusivulle</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -695,6 +878,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
           <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" />
         </div>
         <div class="auth-form-group">
+          <label>Puhelinnumero *</label>
+          <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" />
+        </div>
+        <div class="auth-form-group">
           <label>Salasana</label>
           <input type="password" id="signup-password" placeholder="Vähintään 6 merkkiä" />
         </div>
@@ -712,10 +899,12 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-messages">
   <section>
-    <div class="section-label">Viestit</div>
-    <div class="section-title">Keskustelut</div>
-    <div id="conversations-list" style="margin-top:28px;max-width:600px;">
-      <div class="loading"><div class="spinner"></div>Ladataan...</div>
+    <div class="wrap">
+      <div class="section-label">Viestit</div>
+      <div class="section-title">Keskustelut</div>
+      <div id="conversations-list" style="margin-top:28px;max-width:600px;">
+        <div class="loading"><div class="spinner"></div>Ladataan...</div>
+      </div>
     </div>
   </section>
 </div>
@@ -728,13 +917,15 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
     <div class="chat-header">
       <div class="form-page-back" onclick="showPage('messages')" style="margin:0;">←</div>
       <div class="chat-avatar" id="chat-avatar">?</div>
-      <div>
+      <div style="flex:1;">
         <div class="chat-name" id="chat-name">Keskustelu</div>
         <div class="chat-status" id="chat-listing-ref">—</div>
       </div>
+      <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩 Ilmoita</button>
     </div>
     <div class="chat-verify" id="chat-verify-box" style="display:none;">
-      🔐 <strong>Muistutus:</strong> Varmista omistajuus ennen luovutusta — kysy jotain mitä vain oikea omistaja tietää.
+      <span>🔐</span>
+      <span><strong>Turvamuistutus:</strong> Varmista omistajuus ennen luovutusta — pyydä jotain, mitä vain oikea omistaja tietää. Älä luovuta tavaraa ennen vahvistusta.</span>
     </div>
     <div class="chat-messages" id="chat-messages">
       <div class="loading"><div class="spinner"></div>Ladataan viestejä...</div>
@@ -770,8 +961,6 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 5vw
   </div>
 </div>
 
-<!-- LISTING DETAIL MODAL could go here; using page instead -->
-
 <script>
 // ═══════════════════════════════════════════════════════
 // SUPABASE INIT
@@ -799,6 +988,9 @@ let currentListingId = null;
 let currentConvId = null;
 let chatInterval = null;
 let pageHistory = ['home'];
+let verifyListingId = null;
+let verifyOwnerId = null;
+let claimsToday = 0;
 
 // ═══════════════════════════════════════════════════════
 // NAVIGATION
@@ -817,10 +1009,9 @@ function showPage(name) {
   if (name === 'feed') loadFeed();
   if (name === 'map') initMap();
   if (name === 'pets') loadPets();
-  if (name === 'home') loadHomePreview();
-  if (name === 'new-listing') initFormMap();
   if (name === 'messages') loadConversations();
   if (name === 'profile') loadProfile();
+  if (name === 'new-listing') initFormMap();
 }
 
 function goBack() {
@@ -846,7 +1037,7 @@ function toast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast show ' + type;
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -855,9 +1046,6 @@ function toast(msg, type = '') {
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
   updateNavAuth();
-  if (currentUser) {
-    document.getElementById('page-auth').classList.remove('active');
-  }
 });
 
 function updateNavAuth() {
@@ -896,12 +1084,13 @@ async function doLogin() {
 async function doSignup() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
+  const phone = document.getElementById('signup-phone').value.trim();
   const pw = document.getElementById('signup-password').value;
   const msg = document.getElementById('auth-msg');
   if (!name || !email || !pw) { msg.textContent = 'Täytä kaikki kentät.'; msg.className = 'auth-msg error'; return; }
   if (pw.length < 6) { msg.textContent = 'Salasanan tulee olla vähintään 6 merkkiä.'; msg.className = 'auth-msg error'; return; }
   msg.textContent = 'Luodaan tiliä...'; msg.className = 'auth-msg';
-  const { error } = await sb.auth.signUp({ email, password: pw, options: { data: { name } } });
+  const { error } = await sb.auth.signUp({ email, password: pw, options: { data: { name, phone } } });
   if (error) { msg.textContent = 'Virhe: ' + error.message; msg.className = 'auth-msg error'; }
   else { msg.textContent = 'Tarkista sähköpostisi vahvistusta varten!'; msg.className = 'auth-msg success'; }
 }
@@ -910,8 +1099,19 @@ async function doSignout() {
   await sb.auth.signOut();
   currentUser = null;
   updateNavAuth();
-  toast('Kirjauduttu ulos.', '');
+  toast('Kirjauduttu ulos.');
   showPage('home');
+}
+
+// ═══════════════════════════════════════════════════════
+// LOCATION BLUR — 300–500m offset for privacy
+// ═══════════════════════════════════════════════════════
+function blurLocation(lat, lng) {
+  const meters = 300 + Math.random() * 200;
+  const angle = Math.random() * 2 * Math.PI;
+  const dLat = (meters / 111320) * Math.cos(angle);
+  const dLng = (meters / (111320 * Math.cos(lat * Math.PI / 180))) * Math.sin(angle);
+  return { lat: lat + dLat, lng: lng + dLng };
 }
 
 // ═══════════════════════════════════════════════════════
@@ -924,20 +1124,6 @@ async function loadAllListings() {
     .order('created_at', { ascending: false });
   if (error) { console.error(error); return []; }
   return data || [];
-}
-
-async function loadHomePreview() {
-  const listings = await loadAllListings();
-  allListings = listings;
-  const el = document.getElementById('home-feed-preview');
-  const recent = listings.slice(0, 4);
-  if (recent.length === 0) {
-    el.innerHTML = '<p style="color:var(--ink3);text-align:center;padding:20px;">Ei vielä ilmoituksia — ole ensimmäinen!</p>';
-    document.getElementById('stat-count').textContent = '0';
-    return;
-  }
-  document.getElementById('stat-count').textContent = listings.length;
-  el.innerHTML = '<div class="feed-grid">' + recent.map(renderCard).join('') + '</div>';
 }
 
 async function loadFeed() {
@@ -973,7 +1159,7 @@ async function loadPets() {
     grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🐾</div><div>Ei eläinilmoituksia vielä.</div></div>';
     return;
   }
-  grid.innerHTML = items.map(l => renderPetCard(l)).join('');
+  grid.innerHTML = items.map(renderPetCard).join('');
 }
 
 function renderCard(l) {
@@ -981,6 +1167,8 @@ function renderCard(l) {
   const badgeMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
   const labelMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
   const timeStr = timeAgo(l.created_at);
+  // Blur the address for privacy
+  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
     <div class="feed-card-img">${icon}</div>
     <div class="feed-card-body">
@@ -988,11 +1176,11 @@ function renderCard(l) {
         <div class="feed-card-title">${esc(l.title)}</div>
         <span class="feed-card-badge ${labelMap[l.type]||''}">${badgeMap[l.type]||l.type}</span>
       </div>
-      <div class="feed-card-loc">📍 ${esc(l.address||'Sijainti merkitty kartalle')}</div>
+      <div class="feed-card-loc">📍 ${esc(displayAddr)}</div>
       <div class="feed-card-desc">${esc(l.description||'')}</div>
       <div class="feed-card-footer">
-        <span class="feed-card-time">${timeStr}</span>
-        ${l.reward ? `<span class="feed-card-reward">💰 ${l.reward}€ palkkio</span>` : ''}
+        <span class="feed-card-time">${timeStr} · ${expiresIn(l.created_at)}</span>
+        ${l.reward ? `<span class="feed-card-reward">💰 ${l.reward}€</span>` : ''}
       </div>
     </div>
   </div>`;
@@ -1032,21 +1220,42 @@ async function openListing(id) {
   const icon = categoryIcon(l.category);
   const badgeMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
   const labelMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
-  const takenToLabels = { police: '🏛️ Viety poliisille', info: '📍 Infopiste / vastaanotto', personal: '🤝 Löytäjä palauttaa henkilökohtaisesti', lostfound: '📦 Löytötavaratoimisto', spot: '🗺️ Jätetty löytöpaikalle' };
+  const takenToLabels = { police: '🏛️ Viety poliisille', info: '📍 Infopiste', lostfound: '📦 Löytötavaratoimisto', safe: '🔒 Säilössä turvallisesti', other: '✏️ Muu' };
 
   const canContact = currentUser && currentUser.id !== l.user_id;
   const isOwn = currentUser && currentUser.id === l.user_id;
 
+  // Status flow
+  const status = l.status || 'active';
+  const statusSteps = [
+    { key: 'active', label: 'Aktiivinen' },
+    { key: 'match', label: 'Osuma löytyi' },
+    { key: 'agreed', label: 'Palautus sovittu' },
+    { key: 'returned', label: 'Palautettu' },
+  ];
+  const statusHtml = `<div class="status-flow">${statusSteps.map((s, i) => {
+    const isDone = statusSteps.findIndex(x => x.key === status) > i;
+    const isActive = s.key === status;
+    let cls = isDone ? 'done' : isActive ? 'active' : '';
+    if (isActive && s.key === 'match') cls = 'match';
+    return (i > 0 ? '<span class="status-arrow">→</span>' : '') +
+      `<span class="status-step ${cls}">${isDone ? '✓ ' : ''}${s.label}</span>`;
+  }).join('')}</div>`;
+
+  // Blur location display
+  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
+
   el.innerHTML = `
     <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+    ${statusHtml}
     <div class="listing-hero-img">${icon}</div>
     <div class="listing-meta">
       <span class="meta-badge ${badgeMap[l.type]||''}" style="padding:5px 14px;">${labelMap[l.type]||l.type}</span>
-      <span class="meta-badge" style="background:var(--paper);border:1px solid var(--border);color:var(--ink2);padding:5px 14px;">${l.category||''}</span>
+      <span class="meta-badge" style="background:var(--paper);border:1px solid var(--border);color:var(--ink2);padding:5px 14px;">${esc(l.category||'')}</span>
       ${l.reward ? `<span class="meta-badge" style="background:var(--green-light);color:var(--green-dark);padding:5px 14px;">💰 ${l.reward}€ palkkio</span>` : ''}
     </div>
     <div class="listing-title">${esc(l.title)}</div>
-    <div class="listing-loc">📍 ${esc(l.address||'Sijainti merkitty kartalle')} · ${timeAgo(l.created_at)}</div>
+    <div class="listing-loc">📍 ${esc(displayAddr)} · ${timeAgo(l.created_at)}</div>
     <div class="listing-desc">${esc(l.description||'').replace(/\n/g,'<br>')}</div>
 
     ${l.type === 'found' && l.taken_to ? `
@@ -1058,7 +1267,6 @@ async function openListing(id) {
     ${l.type === 'stolen' ? `
     <div style="background:#FFF0F0;border:1px solid #E8A0A0;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#7A1A1A;">
       🚨 Varastettu-ilmoitus — tee myös rikosilmoitus poliisille jos et ole jo tehnyt.
-      ${l.police_report ? `<br><strong>Rikosilmoitusnumero:</strong> ${esc(l.police_report)}` : ''}
     </div>` : ''}
 
     <div class="listing-info-grid">
@@ -1070,35 +1278,54 @@ async function openListing(id) {
         <div class="listing-info-label">Ilmoitus jätetty</div>
         <div class="listing-info-value">${new Date(l.created_at).toLocaleDateString('fi-FI')}</div>
       </div>
-      ${l.contact ? `<div class="listing-info-card">
-        <div class="listing-info-label">Yhteystiedot (matchin jälkeen)</div>
-        <div class="listing-info-value">${esc(l.contact)}</div>
-      </div>` : ''}
       <div class="listing-info-card">
         <div class="listing-info-label">Vanhenee</div>
         <div class="listing-info-value">${expiresIn(l.created_at)}</div>
+      </div>
+      <div class="listing-info-card">
+        <div class="listing-info-label">Sijainti</div>
+        <div class="listing-info-value">📍 ${esc(displayAddr)}<br><span style="font-size:11px;color:var(--ink3);">Tarkka sijainti matchin jälkeen</span></div>
       </div>
     </div>
 
     ${l.lat && l.lng ? `<div id="listing-map"></div>` : ''}
 
-    ${canContact ? `
+    ${canContact && l.type !== 'stolen' ? `
     <div class="contact-card">
-      <h3>Ota yhteyttä</h3>
-      <p>Lähetä viesti ilmoittajalle — varmista ensin chatissa omistajuus ennen luovutusta.</p>
-      <button class="btn-primary" style="border:none;" onclick="startConversation('${l.id}','${l.user_id}')">💬 Aloita chat →</button>
+      <h3>Ilmoita osumasta</h3>
+      <p>Käy läpi lyhyt vahvistusprosessi ennen yhteydenottoa. Sijainti ja yhteystiedot jaetaan vasta vahvistuksen jälkeen.</p>
+      <button class="btn-primary" style="border:none;" onclick="startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta →</button>
     </div>` : ''}
 
     ${isOwn ? `
-    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-size:13px;color:var(--ink2);">Tämä on sinun ilmoituksesi</span>
-      <button onclick="deleteListing('${l.id}')" style="font-size:12px;color:var(--red);background:none;border:1px solid var(--red);padding:6px 14px;border-radius:20px;cursor:pointer;">Poista ilmoitus</button>
+    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Päivitä tila</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="updateListingStatus('${l.id}','match')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--blue);color:var(--blue);background:var(--blue-light);">Osuma löytyi</button>
+        <button onclick="updateListingStatus('${l.id}','agreed')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--amber);color:var(--amber);background:var(--amber-light);">Palautus sovittu</button>
+        <button onclick="updateListingStatus('${l.id}','returned')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--green);color:var(--green-dark);background:var(--green-light);">✓ Palautettu</button>
+      </div>
+    </div>
+    ${status === 'returned' ? `
+    <div class="notice-info" style="margin-bottom:16px;">
+      <span>💛</span>
+      <div>
+        <strong>Tavara palautettu!</strong> Haluatko tukea löytäjää?
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <button onclick="toast('Tip-ominaisuus tulossa pian!','green')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">💸 Lähetä tip löytäjälle</button>
+          <button onclick="toast('Lahjoituslinkki kopioitu! (tulossa)','green')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink2);">🤝 Lahjoita HESY:lle</button>
+        </div>
+      </div>
+    </div>` : ''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="font-size:13px;color:var(--ink3);">Tämä on sinun ilmoituksesi</span>
+      <button onclick="deleteListing('${l.id}')" style="font-size:12px;color:var(--red);background:none;border:1px solid var(--red);padding:6px 14px;border-radius:20px;cursor:pointer;">Poista</button>
     </div>` : ''}
 
     ${!currentUser ? `
     <div class="notice-info">
       <span>💡</span>
-      <span>Kirjaudu sisään lähettääksesi viestin ilmoittajalle. <a onclick="showPage('auth')" style="color:var(--blue);cursor:pointer;font-weight:500;">Kirjaudu tai luo tili →</a></span>
+      <span>Kirjaudu sisään ilmoittaaksesi osumasta. <a onclick="showPage('auth')" style="color:var(--blue);cursor:pointer;font-weight:500;">Kirjaudu tai luo tili →</a></span>
     </div>` : ''}
 
     ${l.type === 'pet' ? `
@@ -1106,18 +1333,45 @@ async function openListing(id) {
       <button onclick="shareWA('${l.id}')" style="padding:10px 20px;background:#25D366;color:white;border:none;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;">📤 Jaa WhatsAppiin</button>
       <button onclick="shareIG('${l.id}')" style="padding:10px 20px;background:#E1306C;color:white;border:none;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;">📤 Jaa Instagramiin</button>
     </div>` : ''}
+
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;">
+      <button class="report-btn" onclick="reportListing('${l.id}')">🚩 Ilmoita väärinkäytöstä</button>
+    </div>
   `;
 
   if (l.lat && l.lng) {
     setTimeout(() => {
+      const blurred = blurLocation(l.lat, l.lng);
       const lmap = new mapboxgl.Map({
         container: 'listing-map',
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [l.lng, l.lat],
-        zoom: 14,
+        center: [blurred.lng, blurred.lat],
+        zoom: 13,
         interactive: false
       });
-      new mapboxgl.Marker({ color: markerColor(l.type) }).setLngLat([l.lng, l.lat]).addTo(lmap);
+      // Show a circle instead of exact pin
+      lmap.on('load', () => {
+        lmap.addSource('blur-area', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [blurred.lng, blurred.lat] }
+          }
+        });
+        lmap.addLayer({
+          id: 'blur-circle',
+          type: 'circle',
+          source: 'blur-area',
+          paint: {
+            'circle-radius': 60,
+            'circle-color': markerColor(l.type),
+            'circle-opacity': 0.15,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': markerColor(l.type),
+            'circle-stroke-opacity': 0.4
+          }
+        });
+      });
     }, 100);
   }
 }
@@ -1125,17 +1379,33 @@ async function openListing(id) {
 async function deleteListing(id) {
   if (!confirm('Haluatko varmasti poistaa tämän ilmoituksen?')) return;
   const { error } = await sb.from('listings').delete().eq('id', id).eq('user_id', currentUser.id);
-  if (error) { toast('Virhe poistaessa: ' + error.message, 'red'); return; }
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
   toast('Ilmoitus poistettu.', 'green');
   showPage('feed');
 }
 
+async function updateListingStatus(id, status) {
+  const { error } = await sb.from('listings').update({ status }).eq('id', id).eq('user_id', currentUser.id);
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+  toast('Tila päivitetty!', 'green');
+  openListing(id);
+}
+
+function reportListing(id) {
+  toast('Ilmoitus lähetetty moderaattorille. Kiitos!', 'green');
+}
+
+function reportChat() {
+  toast('Chat ilmoitettu moderaattorille. Kiitos!', 'green');
+}
+
 // ═══════════════════════════════════════════════════════
-// MAP
+// MAP — blurred circles instead of exact pins
 // ═══════════════════════════════════════════════════════
 async function initMap() {
   if (mapInstance) {
     const listings = await loadAllListings();
+    allListings = listings;
     updateMapMarkers(listings);
     return;
   }
@@ -1157,18 +1427,25 @@ async function initMap() {
 function updateMapMarkers(listings) {
   document.querySelectorAll('.map-marker').forEach(m => m.remove());
   listings.filter(l => l.lat && l.lng).forEach(l => {
+    const blurred = blurLocation(l.lat, l.lng);
     const el = document.createElement('div');
     el.className = 'map-marker';
-    el.style.fontSize = '22px';
-    el.style.cursor = 'pointer';
-    el.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))';
-    el.textContent = l.type === 'pet' ? '🐾' : (l.type === 'found' ? '⚡' : '💎');
+    // Show blurred area circle
+    el.style.cssText = `
+      width: 48px; height: 48px; border-radius: 50%;
+      background: ${markerColor(l.type)}22;
+      border: 2px solid ${markerColor(l.type)}66;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; backdrop-filter: blur(2px);
+    `;
+    el.textContent = l.type === 'pet' ? '🐾' : (l.type === 'found' ? '📦' : '🔍');
     const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
       <div class="popup-title">${esc(l.title)}</div>
-      <div class="popup-loc">📍 ${esc(l.address||'')} · ${timeAgo(l.created_at)}</div>
+      <div class="popup-loc">📍 lähellä ${esc((l.address||'').split(',')[0])} · ${timeAgo(l.created_at)}</div>
+      <div style="font-size:11px;color:#8A9E93;margin-bottom:8px;">Tarkka sijainti matchin jälkeen</div>
       <button class="popup-btn" onclick="openListing('${l.id}')">Avaa ilmoitus</button>
     `);
-    new mapboxgl.Marker(el).setLngLat([l.lng, l.lat]).setPopup(popup).addTo(mapInstance);
+    new mapboxgl.Marker(el).setLngLat([blurred.lng, blurred.lat]).setPopup(popup).addTo(mapInstance);
   });
 }
 
@@ -1200,7 +1477,6 @@ function initFormMap() {
       if (formMarker) formMarker.remove();
       formMarker = new mapboxgl.Marker({ color: '#1A7A52' }).setLngLat([selectedLng, selectedLat]).addTo(formMap);
       document.querySelector('.form-map-hint').textContent = '✓ Sijainti merkitty';
-      // reverse geocode
       fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${selectedLng},${selectedLat}.json?access_token=${MAPBOX_TOKEN}&language=fi`)
         .then(r => r.json())
         .then(d => {
@@ -1224,16 +1500,21 @@ function setFormType(type) {
   });
 
   const noticeTexts = {
-    lost: 'Kuvaa tavara riittävästi matchausta varten, mutta älä paljasta kaikkia tunnistetietoja julkisesti.',
-    found: 'Kiitos rehellisyydestäsi! Kuvaile yleisellä tasolla — yksityiskohdat vahvistetaan chatissa.',
+    lost: 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.',
+    found: 'Kiitos rehellisyydestäsi! Kuvaile yleisellä tasolla — yksityiskohdat vahvistetaan matchauksen jälkeen. <strong>Älä näytä kaikkia tunnistetietoja kuvassa.</strong>',
     stolen: 'Tee ensin rikosilmoitus poliisille. Findly toimii täydentävänä palveluna.',
-    pet: 'Eläinilmoitus — lisää mahdollisimman selkeä kuva. Push-ilmoitukset lähtevät 5km säteellä.'
+    pet: 'Eläinilmoitus — lisää mahdollisimman selkeä kuva. Push-ilmoitukset lähtevät 5 km säteellä.'
   };
 
-  document.getElementById('form-notice-text').textContent = noticeTexts[type];
+  document.getElementById('form-notice-text').innerHTML = noticeTexts[type];
   document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
   document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
   document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
+
+  // found: make taken-to required
+  const takenToVal = document.getElementById('f-taken-to-val');
+  if (type === 'found') takenToVal.required = true;
+  else takenToVal.required = false;
 
   document.getElementById('f-when-label').textContent = type === 'found' ? 'Milloin löysit *' : type === 'stolen' ? 'Milloin tapahtui *' : 'Milloin katosi *';
   document.getElementById('f-location-label').textContent = type === 'found' ? 'Löytöpaikka *' : type === 'stolen' ? 'Tapahtumapaikka *' : 'Katoamispaikka *';
@@ -1247,7 +1528,13 @@ function setFormType(type) {
 function selectLoc(el, val) {
   document.querySelectorAll('.loc-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById('f-taken-to').value = val;
+  document.getElementById('f-taken-to-val').value = val;
+}
+
+function selectVis(el, val) {
+  document.querySelectorAll('.vis-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('f-visibility').value = val;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1260,6 +1547,12 @@ async function submitListing(e) {
     showPage('auth');
     return;
   }
+  // Validate found type requires taken-to selection
+  if (currentFormType === 'found' && !document.getElementById('f-taken-to-val').value) {
+    toast('Valitse mitä teit tavaralle.', 'red');
+    return;
+  }
+
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'Julkaistaan...';
   btn.disabled = true;
@@ -1275,11 +1568,13 @@ async function submitListing(e) {
     lng: parseFloat(document.getElementById('f-lng').value) || null,
     incident_time: document.getElementById('f-when').value || null,
     reward: document.getElementById('f-reward')?.value ? parseFloat(document.getElementById('f-reward').value) : null,
-    contact: document.getElementById('f-contact').value.trim() || null,
-    taken_to: document.getElementById('f-taken-to')?.value || null,
+    contact: document.getElementById('f-phone').value.trim() || null,
+    taken_to: document.getElementById('f-taken-to-val')?.value || null,
     taken_to_detail: document.getElementById('f-taken-to-detail')?.value?.trim() || null,
     police_report: null,
     subtype: currentFormType === 'pet' ? 'lost' : null,
+    visibility: document.getElementById('f-visibility').value || 'public',
+    status: 'active',
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   };
 
@@ -1289,46 +1584,125 @@ async function submitListing(e) {
 
   if (error) {
     toast('Virhe julkaistaessa: ' + error.message, 'red');
-    btn.textContent = 'Julkaise ilmoitus →';
     return;
   }
 
   toast('Ilmoitus julkaistu! ✓', 'green');
   document.getElementById('listing-form').reset();
+  document.querySelectorAll('.loc-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.vis-opt').forEach((o,i) => { o.classList.toggle('selected', i === 0); });
+  document.getElementById('f-visibility').value = 'public';
+  document.getElementById('f-taken-to-val').value = '';
   selectedLat = null; selectedLng = null;
   if (formMarker) { formMarker.remove(); formMarker = null; }
   openListing(data.id);
 }
 
 // ═══════════════════════════════════════════════════════
-// CONVERSATIONS & CHAT
+// VERIFY FLOW
 // ═══════════════════════════════════════════════════════
-async function startConversation(listingId, otherUserId) {
+function startVerifyFlow(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
-  // check existing
-  const { data: existing } = await sb.from('conversations')
-    .select('*')
-    .eq('listing_id', listingId)
-    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
-    .single();
-  if (existing) {
-    openChat(existing.id, existing);
+  // Claim rate limiting
+  const todayKey = 'claims_' + new Date().toDateString();
+  const claimsCount = parseInt(localStorage.getItem(todayKey) || '0');
+  if (claimsCount >= 5) {
+    toast('Olet lähettänyt liian monta osumailmoitusta tänään. Yritä huomenna.', 'red');
     return;
   }
-  const { data: conv, error } = await sb.from('conversations').insert({
-    listing_id: listingId,
-    user_a: currentUser.id,
-    user_b: otherUserId
-  }).select().single();
-  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
-  openChat(conv.id, conv);
+  verifyListingId = listingId;
+  verifyOwnerId = ownerId;
+  goVerifyStep(1);
+  showPage('verify');
+  loadVerifyListingPreview(listingId);
 }
 
+async function loadVerifyListingPreview(id) {
+  const el = document.getElementById('verify-listing-preview');
+  const { data: l } = await sb.from('listings').select('*').eq('id', id).single();
+  if (!l) return;
+  const badgeMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
+  const labelMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
+  el.innerHTML = `
+    <div class="vlp-icon">${categoryIcon(l.category)}</div>
+    <div>
+      <span class="vlp-badge ${badgeMap[l.type]||''}">${labelMap[l.type]||l.type}</span>
+      <div style="font-size:15px;font-weight:600;margin-bottom:4px;">${esc(l.title)}</div>
+      <div style="font-size:12px;color:var(--ink3);">📍 lähellä ${esc((l.address||'').split(',')[0])} · ${timeAgo(l.created_at)}</div>
+    </div>
+  `;
+}
+
+function goVerifyStep(step) {
+  [1,2,3].forEach(s => {
+    document.getElementById(`vstep-${s}-content`).style.display = s === step ? 'block' : 'none';
+    const vstepEl = document.getElementById(`vstep-${s}`);
+    vstepEl.className = 'vstep' + (s < step ? ' done' : s === step ? ' active' : '');
+  });
+  [1,2].forEach(s => {
+    const line = document.getElementById(`vstep-line-${s}`);
+    if (line) line.className = 'vstep-line' + (s < step ? ' done' : '');
+  });
+}
+
+async function submitVerifyRequest() {
+  const secret = document.getElementById('verify-secret').value.trim();
+  const phone = document.getElementById('verify-phone').value.trim();
+  const question = document.getElementById('verify-question').value.trim();
+
+  if (!secret) { toast('Kerro tunnistava yksityiskohta.', 'red'); return; }
+  if (!phone) { toast('Lisää puhelinnumero.', 'red'); return; }
+
+  // Check if conversation already exists
+  const { data: existing } = await sb.from('conversations')
+    .select('*')
+    .eq('listing_id', verifyListingId)
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .maybeSingle();
+
+  let convId;
+  if (existing) {
+    convId = existing.id;
+  } else {
+    const { data: conv, error } = await sb.from('conversations').insert({
+      listing_id: verifyListingId,
+      user_a: currentUser.id,
+      user_b: verifyOwnerId
+    }).select().single();
+    if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+    convId = conv.id;
+  }
+
+  // Send structured verification message
+  const verifyMsg = `🔐 OSUMAILMOITUS\n\n✔️ Tunnistava yksityiskohta:\n"${secret}"\n\n📱 Puhelinnumero: ${phone}${question ? `\n\n❓ Kysymys löytäjälle: ${question}` : ''}`;
+  await sb.from('messages').insert({
+    conversation_id: convId,
+    sender_id: currentUser.id,
+    content: verifyMsg
+  });
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', convId);
+
+  // Increment claim counter
+  const todayKey = 'claims_' + new Date().toDateString();
+  localStorage.setItem(todayKey, String(parseInt(localStorage.getItem(todayKey) || '0') + 1));
+
+  goVerifyStep(3);
+}
+
+// ═══════════════════════════════════════════════════════
+// CONVERSATIONS & CHAT
+// ═══════════════════════════════════════════════════════
 async function loadConversations() {
-  if (!currentUser) { document.getElementById('conversations-list').innerHTML = '<p style="color:var(--ink3);">Kirjaudu sisään nähdäksesi viestisi.</p>'; return; }
+  if (!currentUser) {
+    document.getElementById('conversations-list').innerHTML = '<p style="color:var(--ink3);">Kirjaudu sisään nähdäksesi viestisi.</p>';
+    return;
+  }
   const el = document.getElementById('conversations-list');
   el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  const { data } = await sb.from('conversations').select('*, listings(title,type)').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`).order('updated_at', { ascending: false });
+  const { data } = await sb.from('conversations')
+    .select('*, listings(title,type)')
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .order('updated_at', { ascending: false });
   if (!data || data.length === 0) {
     el.innerHTML = '<p style="color:var(--ink3);">Ei vielä keskusteluja.</p>';
     return;
@@ -1349,13 +1723,12 @@ async function openChat(convId, conv) {
   showPage('chat');
   if (chatInterval) clearInterval(chatInterval);
 
-  // load listing info
   const listingId = typeof conv === 'object' ? conv.listing_id : conv;
   if (listingId) {
     const { data: l } = await sb.from('listings').select('title,type').eq('id', listingId).single();
     if (l) {
       document.getElementById('chat-listing-ref').textContent = l.title;
-      document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'block' : 'none';
+      document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'flex' : 'none';
     }
   }
 
@@ -1370,12 +1743,33 @@ async function loadMessages() {
   const wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 40;
   el.innerHTML = data.map(m => {
     const own = m.sender_id === currentUser?.id;
+    const isVerifyMsg = m.content.startsWith('🔐 OSUMAILMOITUS');
+    if (isVerifyMsg && !own) {
+      // Show structured verify request for listing owner
+      return `<div style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--ink);">
+        <div style="font-weight:600;margin-bottom:8px;color:var(--green-dark);">🔐 Osumailmoitus saapui</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;">${esc(m.content.replace('🔐 OSUMAILMOITUS\n\n',''))}</pre>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="replyVerify('accepted')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✓ Hyväksy</button>
+          <button onclick="replyVerify('more')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);">Pyydä lisätietoa</button>
+          <button onclick="replyVerify('rejected')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);">✗ Hylkää</button>
+        </div>
+        <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
     return `<div class="msg-row ${own?'own':''}">
       <div class="msg-bubble ${own?'own':'other'}">${esc(m.content)}</div>
       <div class="msg-time">${timeAgo(m.created_at)}</div>
     </div>`;
   }).join('');
   if (wasAtBottom || data.length <= 3) el.scrollTop = el.scrollHeight;
+}
+
+async function replyVerify(decision) {
+  const msgs = { accepted: '✅ Hyväksytty! Otetaan yhteyttä sijainnin sopimiseksi.', more: '❓ Pyydän lisätietoja — voitko kertoa jotain muuta tavarasta?', rejected: '❌ Hylätty — en tunnista tätä omakseni.' };
+  const input = document.getElementById('chat-input');
+  input.value = msgs[decision];
+  sendMessage();
 }
 
 async function sendMessage() {
@@ -1469,8 +1863,9 @@ function timeAgo(ts) {
 function expiresIn(created) {
   const exp = new Date(new Date(created).getTime() + 7*24*60*60*1000);
   const d = Math.ceil((exp - Date.now()) / 86400000);
-  if (d <= 0) return 'Vanhentunut';
-  return 'Vanhenee ' + d + ' pv';
+  if (d <= 0) return '⚠️ Vanhentunut';
+  if (d === 1) return '⏳ Poistuu huomenna';
+  return '⏳ Poistuu ' + d + ' pv';
 }
 function esc(str) {
   if (!str) return '';
@@ -1485,7 +1880,6 @@ function esc(str) {
   currentUser = session?.user || null;
   updateNavAuth();
 
-  // check URL param
   const params = new URLSearchParams(window.location.search);
   if (params.get('listing')) {
     openListing(params.get('listing'));
