@@ -628,6 +628,17 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- NOTIFICATION PERMISSION BANNER -->
+<div id="notif-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:#1A1A1A;color:white;border-radius:16px;padding:14px 18px;align-items:center;gap:12px;max-width:360px;width:calc(100% - 48px);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+  <span style="font-size:22px;flex-shrink:0;">🔔</span>
+  <div style="flex:1;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Salli ilmoitukset</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);">Saat tiedon matcheista ja viesteistä.</div>
+  </div>
+  <button onclick="enableNotifications()" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:white;cursor:pointer;flex-shrink:0;">Salli</button>
+  <button onclick="dismissNotifBanner()" style="padding:4px 8px;font-size:18px;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;flex-shrink:0;">×</button>
+</div>
+
 <!-- SUCCESS MODAL -->
 <div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;">
   <div style="background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;">
@@ -1617,6 +1628,7 @@ sb.auth.onAuthStateChange((event, session) => {
   }
   if (currentUser) {
     setTimeout(updateMatchBadge, 1500);
+    setTimeout(askNotificationPermission, 3000);
   } else {
     setMatchBadge(0);
   }
@@ -2065,6 +2077,96 @@ function refreshResolvedCount() {
     const el = document.getElementById('stat-resolved');
     if (el && count !== null) el.textContent = count;
   });
+}
+
+// ═══════════════════════════════════════════════════════
+// PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════════════════
+let lastMessageCount = {};
+let lastMatchCount = 0;
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/findly/sw.js').catch(() => {});
+}
+
+function askNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    startNotificationPolling();
+    return;
+  }
+  if (Notification.permission === 'denied') return;
+  if (localStorage.getItem('notif-dismissed')) return;
+  document.getElementById('notif-banner').style.display = 'flex';
+}
+
+async function enableNotifications() {
+  document.getElementById('notif-banner').style.display = 'none';
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    toast('Ilmoitukset käytössä! 🔔', 'green');
+    startNotificationPolling();
+  }
+}
+
+function dismissNotifBanner() {
+  document.getElementById('notif-banner').style.display = 'none';
+  localStorage.setItem('notif-dismissed', '1');
+}
+
+function sendNotification(title, body, url) {
+  if (Notification.permission !== 'granted') return;
+  if (document.visibilityState === 'visible') return; // skip if app is in focus
+  const n = new Notification(title, {
+    body,
+    icon: 'https://sebaostman-design.github.io/findly/icon-192.png',
+    badge: 'https://sebaostman-design.github.io/findly/icon-192.png'
+  });
+  if (url) n.onclick = () => { window.focus(); n.close(); };
+}
+
+let notifPollInterval = null;
+function startNotificationPolling() {
+  if (notifPollInterval) return;
+  notifPollInterval = setInterval(pollForNotifications, 15000);
+}
+
+async function pollForNotifications() {
+  if (!currentUser) return;
+
+  // Check for new messages
+  const { data: convs } = await sb.from('conversations')
+    .select('id, updated_at')
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .order('updated_at', { ascending: false });
+
+  if (convs) {
+    for (const c of convs) {
+      const prev = lastMessageCount[c.id];
+      if (prev && new Date(c.updated_at) > new Date(prev)) {
+        sendNotification('Findly — Uusi viesti 💬', 'Sinulle on saapunut uusi viesti.');
+      }
+      lastMessageCount[c.id] = c.updated_at;
+    }
+  }
+
+  // Check for new matches
+  const [{ data: mine }, { data: others }] = await Promise.all([
+    sb.from('listings').select('*').eq('user_id', currentUser.id).gt('expires_at', new Date().toISOString()),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).gt('expires_at', new Date().toISOString())
+  ]);
+  if (!mine) return;
+  let count = 0;
+  for (const m of mine)
+    for (const o of (others || []))
+      if (scoreMatch(m, o)?.score >= 20) count++;
+
+  if (lastMatchCount > 0 && count > lastMatchCount) {
+    sendNotification('Findly — Uusi osuma 🎯', `${count - lastMatchCount} uusi mahdollinen osuma ilmoituksellesi!`);
+    updateMatchBadge();
+  }
+  lastMatchCount = count;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2705,10 +2807,17 @@ async function openChat(convId, conv) {
   chatInterval = setInterval(loadMessages, 5000);
 }
 
+let lastMessageId = null;
 async function loadMessages() {
   const el = document.getElementById('chat-messages');
   const { data } = await sb.from('messages').select('*').eq('conversation_id', currentConvId).order('created_at', { ascending: true });
   if (!data) return;
+  // Notify on new incoming message
+  const latest = data[data.length - 1];
+  if (lastMessageId && latest && latest.id !== lastMessageId && latest.sender_id !== currentUser?.id) {
+    sendNotification('Findly — Uusi viesti 💬', latest.content.substring(0, 80));
+  }
+  if (latest) lastMessageId = latest.id;
   const wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 40;
   el.innerHTML = data.map(m => {
     const own = m.sender_id === currentUser?.id;
