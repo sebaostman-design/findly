@@ -1135,6 +1135,38 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div style="margin-top:28px;">
         <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')">🐾 Lisää eläinilmoitus</button>
       </div>
+
+      <!-- ── SIGHTINGS ── -->
+      <div style="margin-top:48px;border-top:1px solid var(--border);padding-top:40px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="section-label" style="margin:0;">Havainnot</div>
+          <button onclick="document.getElementById('sighting-form').style.display = document.getElementById('sighting-form').style.display === 'none' ? 'block' : 'none'" style="padding:8px 16px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--green);background:var(--green-light);color:var(--green-dark);">👁️ Ilmoita havainto</button>
+        </div>
+        <div style="font-size:14px;color:var(--ink2);margin-bottom:20px;">Näitkö eläimen ulkona? Jätä nopea havainto — se voi auttaa omistajaa löytämään lemmikkinsä.</div>
+
+        <!-- Quick sighting form -->
+        <div id="sighting-form" style="display:none;background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px;">
+          <div style="font-size:15px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:16px;">🐾 Uusi havainto</div>
+          <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'kissa')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐈 Kissa</button>
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'koira')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐕 Koira</button>
+            <button type="button" class="sight-type-btn" onclick="selectSightType(this,'muu')" style="padding:10px 18px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;cursor:pointer;">🐾 Muu</button>
+          </div>
+          <input type="hidden" id="sight-type" value="" />
+          <input type="text" id="sight-address" placeholder="📍 Missä näit? Esim. Kallion kirjasto, Sörnäinen..." style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;margin-bottom:10px;outline:none;" />
+          <textarea id="sight-desc" rows="2" placeholder="Kuvaile lyhyesti: väri, koko, käyttäytyminen..." style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;margin-bottom:14px;outline:none;resize:vertical;font-family:inherit;"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button onclick="submitSighting()" style="padding:11px 24px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:white;cursor:pointer;">Lähetä havainto →</button>
+            <span style="font-size:11px;color:var(--ink3);">Ei vaadi kirjautumista</span>
+          </div>
+        </div>
+
+        <!-- Sightings feed -->
+        <div id="sightings-list">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+
       <div class="notice-info" style="margin-top:24px;">
         <span style="font-size:18px;">🐾</span>
         <span>Lisää selkeä kuva ja sijainti. Mitä tarkemmat tiedot, sitä todennäköisemmin eläin löytää kotiin.</span>
@@ -1579,7 +1611,7 @@ function showPage(name) {
 
   if (name === 'feed') loadFeed();
   if (name === 'map') initMap();
-  if (name === 'pets') loadPets();
+  if (name === 'pets') { loadPets(); loadSightings(); }
   if (name === 'matches') { loadMatches(); setMatchBadge(0); }
   if (name === 'messages') loadConversations();
   if (name === 'profile') loadProfile();
@@ -3079,6 +3111,73 @@ function setPetFilter(filter, btn) {
   document.querySelectorAll('#page-pets .feed-filter').forEach(b => b.className = 'feed-filter');
   btn.className = 'feed-filter active-' + (filter === 'all' ? 'all' : filter === 'lost' ? 'lost' : 'found');
   loadPets();
+}
+
+// ═══════════════════════════════════════════════════════
+// SIGHTINGS
+// ═══════════════════════════════════════════════════════
+let sightingType = '';
+
+function selectSightType(btn, type) {
+  sightingType = type;
+  document.getElementById('sight-type').value = type;
+  document.querySelectorAll('.sight-type-btn').forEach(b => {
+    b.style.background = 'white';
+    b.style.borderColor = 'var(--border)';
+    b.style.fontWeight = '400';
+  });
+  btn.style.background = 'var(--green-light)';
+  btn.style.borderColor = 'var(--green)';
+  btn.style.fontWeight = '600';
+}
+
+async function submitSighting() {
+  const type = document.getElementById('sight-type').value;
+  const address = document.getElementById('sight-address').value.trim();
+  const desc = document.getElementById('sight-desc').value.trim();
+
+  if (!type) { toast('Valitse eläimen tyyppi.', 'red'); return; }
+  if (!address) { toast('Kerro missä näit eläimen.', 'red'); return; }
+
+  const { error } = await sb.from('sightings').insert({
+    animal_type: type,
+    address,
+    description: desc || null
+  });
+
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+
+  toast('Havainto tallennettu! Kiitos 💛', 'green');
+  document.getElementById('sight-type').value = '';
+  document.getElementById('sight-address').value = '';
+  document.getElementById('sight-desc').value = '';
+  sightingType = '';
+  document.querySelectorAll('.sight-type-btn').forEach(b => { b.style.background = 'white'; b.style.borderColor = 'var(--border)'; b.style.fontWeight = '400'; });
+  document.getElementById('sighting-form').style.display = 'none';
+  loadSightings();
+}
+
+async function loadSightings() {
+  const el = document.getElementById('sightings-list');
+  const { data, error } = await sb.from('sightings').select('*').order('created_at', { ascending: false }).limit(20);
+  if (error || !data || data.length === 0) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px;border:1px dashed var(--border);border-radius:var(--radius);background:var(--paper);">Ei havaintoja vielä. Ole ensimmäinen!</div>';
+    return;
+  }
+  el.innerHTML = data.map(s => {
+    const icons = { kissa: '🐈', koira: '🐕', muu: '🐾' };
+    return `<div style="display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--amber-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[s.animal_type] || '🐾'}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+          <span style="font-size:13px;font-weight:600;">${s.animal_type === 'kissa' ? 'Kissa' : s.animal_type === 'koira' ? 'Koira' : 'Eläin'} havaittu</span>
+          <span style="font-size:11px;color:var(--ink3);">${timeAgo(s.created_at)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink2);">📍 ${esc(s.address)}</div>
+        ${s.description ? `<div style="font-size:12px;color:var(--ink3);margin-top:3px;">${esc(s.description)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════
