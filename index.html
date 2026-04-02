@@ -184,6 +184,7 @@ nav {
 }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-mid); animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
+@keyframes popIn { 0%{opacity:0;transform:scale(0.85)} 100%{opacity:1;transform:scale(1)} }
 .hero h1 { font-size: clamp(40px, 5.5vw, 72px); font-weight: 800; letter-spacing: -2px; margin-bottom: 20px; line-height: 1.05; }
 .hero h1 .accent { color: var(--green); }
 .hero-lead { font-size: 17px; color: var(--ink2); line-height: 1.7; margin-bottom: 40px; max-width: 480px; }
@@ -627,6 +628,27 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- SUCCESS MODAL -->
+<div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;">
+    <div style="font-size:64px;margin-bottom:12px;" id="success-icon">🎉</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;" id="success-title">Tapaus suljettu!</h2>
+    <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:28px;" id="success-body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
+    <div id="success-badge" style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:28px;">🏅</span>
+      <div style="text-align:left;">
+        <div style="font-size:13px;font-weight:700;color:var(--green-dark);">Merkintä profiiliin</div>
+        <div style="font-size:12px;color:var(--ink2);">+1 palautettu tapaus</div>
+      </div>
+    </div>
+    <div id="success-tip-prompt" style="margin-bottom:20px;display:none;">
+      <button onclick="document.getElementById('success-modal').style.display='none';openTipModal(successListingId)" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;margin-bottom:8px;">💸 Anna tippiä löytäjälle</button>
+      <a href="https://hesy.fi/lahjoita/" target="_blank" style="display:block;font-size:12px;color:var(--ink3);text-decoration:none;">Tai lahjoita HESY:lle →</a>
+    </div>
+    <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid var(--border);border-radius:14px;background:white;color:var(--ink2);cursor:pointer;">Etusivulle →</button>
+  </div>
+</div>
+
 <!-- TIP MODAL -->
 <div id="tip-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="closeTipModal(event)">
   <div style="background:white;border-radius:24px 24px 0 0;padding:32px 24px 40px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
@@ -760,6 +782,11 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="stat-item">
         <span class="stat-num" id="stat-total">—</span>
         <span class="stat-lbl">aktiivista ilmoitusta</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-resolved">—</span>
+        <span class="stat-lbl">palautettua 💛</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
@@ -1386,7 +1413,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="chat-name" id="chat-name">Keskustelu</div>
         <div class="chat-status" id="chat-listing-ref">—</div>
       </div>
-      <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩 Ilmoita</button>
+      <div style="display:flex;gap:8px;">
+        <button id="close-case-btn" onclick="closeCaseFromChat()" style="display:none;padding:6px 12px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✅ Tapaus suljettu</button>
+        <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩</button>
+      </div>
     </div>
     <div class="chat-verify" id="chat-verify-box" style="display:none;">
       <span>🔐</span>
@@ -1414,7 +1444,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="profile-email" id="profile-email">—</div>
       <div class="profile-stats">
         <div class="profile-stat"><div class="n" id="stat-my-listings">0</div><div class="l">Ilmoitusta</div></div>
-        <div class="profile-stat"><div class="n" id="stat-matches">0</div><div class="l">Matcheja</div></div>
+        <div class="profile-stat"><div class="n" id="stat-matches">0</div><div class="l">Palautettua 💛</div></div>
         <div class="profile-stat"><div class="n">★ —</div><div class="l">Arvostelu</div></div>
       </div>
     </div>
@@ -1692,6 +1722,7 @@ async function loadAllListings() {
     .from('listings')
     .select('*')
     .gt('expires_at', new Date().toISOString())
+    .neq('status', 'returned')
     .order('created_at', { ascending: false });
   if (error) { console.error(error); return []; }
   return data || [];
@@ -1868,15 +1899,12 @@ async function openListing(id) {
       <button class="btn-primary" style="border:none;" onclick="startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta →</button>
     </div>` : ''}
 
-    ${isOwn ? `
-    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Päivitä tila</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button onclick="updateListingStatus('${l.id}','match')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--blue);color:var(--blue);background:var(--blue-light);">Osuma löytyi</button>
-        <button onclick="updateListingStatus('${l.id}','agreed')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--amber);color:var(--amber);background:var(--amber-light);">Palautus sovittu</button>
-        <button onclick="updateListingStatus('${l.id}','returned')" style="padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1px solid var(--green);color:var(--green-dark);background:var(--green-light);">✓ Palautettu</button>
-      </div>
-    </div>
+    ${isOwn && status !== 'returned' ? `
+    <div style="background:linear-gradient(135deg,#E8F5EF,#F0FDF4);border:1.5px solid #A8D8BC;border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:12px;">Tavara löytyi ja palautettu omistajalle?</div>
+      <button onclick="updateListingStatus('${l.id}','returned')" style="padding:12px 28px;font-size:14px;font-weight:700;border:none;border-radius:20px;cursor:pointer;background:var(--green);color:white;width:100%;">✅ Merkitse tapaus ratkaistuksi</button>
+      <div style="font-size:11px;color:var(--ink3);margin-top:8px;">Ilmoitus poistetaan listalta ja saat merkinnän profiiliin.</div>
+    </div>` : ''}
     ${status === 'returned' ? `
     <div style="background:linear-gradient(135deg,#E8F5EF 0%,#FFF8E7 100%);border:1px solid #A8D8BC;border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
       <div style="font-size:28px;margin-bottom:8px;">💛</div>
@@ -1955,7 +1983,37 @@ async function deleteListing(id) {
 }
 
 async function updateListingStatus(id, status) {
-  toast('Tilapäivitys ei ole vielä käytössä.', 'amber');
+  const updates = { status };
+  if (status === 'returned') updates.expires_at = new Date(Date.now() - 1000).toISOString();
+  const { error } = await sb.from('listings').update(updates).eq('id', id).eq('user_id', currentUser.id);
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+  if (status === 'returned') showSuccessModal(id, true);
+  else { toast('Tila päivitetty!', 'green'); openListing(id); }
+}
+
+let successListingId = null;
+function showSuccessModal(listingId, isOwner) {
+  successListingId = listingId;
+  document.getElementById('success-tip-prompt').style.display = isOwner ? 'block' : 'none';
+  document.getElementById('success-modal').style.display = 'flex';
+  refreshResolvedCount();
+}
+
+async function closeCaseFromChat() {
+  if (!currentChatListingId) return;
+  if (!confirm('Merkitäänkö tapaus ratkaistuksi? Ilmoitus poistetaan listalta.')) return;
+  const updates = { status: 'returned', expires_at: new Date(Date.now() - 1000).toISOString() };
+  // Try as owner first, then just expire it
+  const { error } = await sb.from('listings').update(updates).eq('id', currentChatListingId);
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+  showSuccessModal(currentChatListingId, false);
+}
+
+function refreshResolvedCount() {
+  sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','returned').then(({ count }) => {
+    const el = document.getElementById('stat-resolved');
+    if (el && count !== null) el.textContent = count;
+  });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2520,17 +2578,25 @@ async function loadConversations() {
   `).join('');
 }
 
+let currentChatListingId = null;
 async function openChat(convId, conv) {
   currentConvId = convId;
+  currentChatListingId = null;
   showPage('chat');
   if (chatInterval) clearInterval(chatInterval);
+  document.getElementById('close-case-btn').style.display = 'none';
 
   const listingId = typeof conv === 'object' ? conv.listing_id : conv;
   if (listingId) {
-    const { data: l } = await sb.from('listings').select('title,type').eq('id', listingId).single();
+    const { data: l } = await sb.from('listings').select('title,type,status,user_id').eq('id', listingId).single();
     if (l) {
+      currentChatListingId = listingId;
       document.getElementById('chat-listing-ref').textContent = l.title;
       document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'flex' : 'none';
+      // Show close button only if case is not already returned
+      if (l.status !== 'returned') {
+        document.getElementById('close-case-btn').style.display = 'inline-flex';
+      }
     }
   }
 
@@ -2596,7 +2662,10 @@ async function loadProfile() {
   document.getElementById('profile-email').textContent = currentUser.email;
 
   const { data: listings } = await sb.from('listings').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-  document.getElementById('stat-my-listings').textContent = listings?.length || 0;
+  const active = (listings || []).filter(l => l.status !== 'returned');
+  const resolved = (listings || []).filter(l => l.status === 'returned');
+  document.getElementById('stat-my-listings').textContent = active.length;
+  document.getElementById('stat-matches').textContent = resolved.length;
 
   const myListings = document.getElementById('my-listings-list');
   if (!listings || listings.length === 0) {
@@ -2685,6 +2754,10 @@ function esc(str) {
   // Load home stats
   sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','active').then(({ count }) => {
     const el = document.getElementById('stat-total');
+    if (el && count !== null) el.textContent = count;
+  });
+  sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','returned').then(({ count }) => {
+    const el = document.getElementById('stat-resolved');
     if (el && count !== null) el.textContent = count;
   });
 
