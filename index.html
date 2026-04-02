@@ -1501,6 +1501,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="profile-stat"><div class="n">★ —</div><div class="l">Arvostelu</div></div>
       </div>
     </div>
+    <div id="profile-badge-card" style="display:none;" class="profile-card">
+      <div id="profile-badge-content"></div>
+    </div>
     <div class="profile-card">
       <div class="my-listings-title">Omat ilmoitukset</div>
       <div id="my-listings-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -2047,17 +2050,83 @@ async function deleteListing(id) {
 
 async function updateListingStatus(id, status) {
   const updates = { status };
-  if (status === 'returned') updates.expires_at = new Date(Date.now() - 1000).toISOString();
+  if (status === 'returned') {
+    updates.expires_at = new Date(Date.now() - 1000).toISOString();
+    // Try to find the finder via conversations
+    const { data: conv } = await sb.from('conversations').select('user_a,user_b').eq('listing_id', id).order('created_at', { ascending: false }).limit(1).single();
+    if (conv) {
+      const finderId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+      updates.finder_id = finderId;
+    }
+  }
   const { error } = await sb.from('listings').update(updates).eq('id', id).eq('user_id', currentUser.id);
   if (error) { toast('Virhe: ' + error.message, 'red'); return; }
-  if (status === 'returned') showSuccessModal(id, true);
+  if (status === 'returned') showSuccessModal(id, true, updates.finder_id || null);
   else { toast('Tila päivitetty!', 'green'); openListing(id); }
 }
 
+// ═══════════════════════════════════════════════════════
+// BADGE SYSTEM
+// ═══════════════════════════════════════════════════════
+function getBadge(count) {
+  if (count >= 10) return { icon: '💎', title: 'Findly-legenda', color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} palautettua` };
+  if (count >= 5)  return { icon: '🏆', title: 'Mestarietsijä',  color: '#C47A15', bg: '#FEF3E2', desc: `${count} palautettua` };
+  if (count >= 3)  return { icon: '⭐', title: 'Luotettava löytäjä', color: '#2463A8', bg: '#EBF2FB', desc: `${count} palautettua` };
+  if (count >= 1)  return { icon: '🌱', title: 'Löytäjä',        color: '#1A7A52', bg: '#E6F5EE', desc: `${count} palautettua` };
+  return null;
+}
+
+async function getFinderCount(userId) {
+  const { count } = await sb.from('listings')
+    .select('id', { count: 'exact', head: true })
+    .eq('finder_id', userId)
+    .eq('status', 'returned');
+  return count || 0;
+}
+
 let successListingId = null;
-function showSuccessModal(listingId, isOwner) {
+async function showSuccessModal(listingId, isOwner, finderId) {
   successListingId = listingId;
   document.getElementById('success-tip-prompt').style.display = isOwner ? 'block' : 'none';
+
+  // Show badge for finder
+  const badgeEl = document.getElementById('success-badge');
+  if (finderId) {
+    const count = await getFinderCount(finderId);
+    const badge = getBadge(count);
+    if (badge) {
+      badgeEl.innerHTML = `
+        <span style="font-size:32px;">${badge.icon}</span>
+        <div style="text-align:left;">
+          <div style="font-size:13px;font-weight:700;color:${badge.color};">${badge.title}</div>
+          <div style="font-size:12px;color:var(--ink2);">Löytäjä ansaitsi: ${badge.desc}</div>
+        </div>`;
+      badgeEl.style.background = badge.bg;
+      badgeEl.style.borderColor = badge.color + '44';
+      badgeEl.style.display = 'flex';
+    } else {
+      badgeEl.style.display = 'none';
+    }
+  } else {
+    // Own badge for the closer
+    const count = await getFinderCount(currentUser.id);
+    const newCount = count + 1;
+    const badge = getBadge(newCount);
+    if (badge) {
+      badgeEl.innerHTML = `
+        <span style="font-size:32px;">${badge.icon}</span>
+        <div style="text-align:left;">
+          <div style="font-size:13px;font-weight:700;color:${badge.color};">Ansaitsit: ${badge.title}!</div>
+          <div style="font-size:12px;color:var(--ink2);">${badge.desc} — profiilisi päivitetty</div>
+        </div>`;
+      badgeEl.style.background = badge.bg;
+      badgeEl.style.borderColor = badge.color + '44';
+      badgeEl.style.display = 'flex';
+    } else {
+      badgeEl.style.display = 'none';
+    }
+  }
+
   document.getElementById('success-modal').style.display = 'flex';
   refreshResolvedCount();
 }
@@ -2065,11 +2134,20 @@ function showSuccessModal(listingId, isOwner) {
 async function closeCaseFromChat() {
   if (!currentChatListingId) return;
   if (!confirm('Merkitäänkö tapaus ratkaistuksi? Ilmoitus poistetaan listalta.')) return;
+
+  // Find the other party (the finder)
+  const { data: conv } = await sb.from('conversations').select('user_a, user_b, listing_id').eq('id', currentConvId).single();
+  const { data: listing } = await sb.from('listings').select('user_id').eq('id', currentChatListingId).single();
+  let finderId = null;
+  if (conv && listing) {
+    finderId = conv.user_a === listing.user_id ? conv.user_b : conv.user_a;
+  }
+
   const updates = { status: 'returned', expires_at: new Date(Date.now() - 1000).toISOString() };
-  // Try as owner first, then just expire it
+  if (finderId) updates.finder_id = finderId;
   const { error } = await sb.from('listings').update(updates).eq('id', currentChatListingId);
   if (error) { toast('Virhe: ' + error.message, 'red'); return; }
-  showSuccessModal(currentChatListingId, false);
+  showSuccessModal(currentChatListingId, listing?.user_id === currentUser.id, finderId);
 }
 
 function refreshResolvedCount() {
@@ -2333,7 +2411,7 @@ function setFormType(type) {
 
   const noticeTexts = {
     lost: 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.',
-    found: 'Kiitos rehellisyydestäsi! Kuvaile yleisellä tasolla — yksityiskohdat vahvistetaan matchauksen jälkeen. <strong>Älä näytä kaikkia tunnistetietoja kuvassa.</strong>',
+    found: '💛 Auta hädässä olevaa kadottajaa ja ansaitse karmamitali — elämä palkitsee hyväntekijää! Kuvaile löytö yleisellä tasolla, yksityiskohdat vahvistetaan matchin jälkeen.',
     stolen: 'Tee ensin rikosilmoitus poliisille. Findly toimii täydentävänä palveluna.',
     pet: 'Eläinilmoitus — lisää mahdollisimman selkeä kuva. Push-ilmoitukset lähtevät 5 km säteellä.'
   };
@@ -2876,6 +2954,31 @@ async function loadProfile() {
   const resolved = (listings || []).filter(l => l.status === 'returned');
   document.getElementById('stat-my-listings').textContent = active.length;
   document.getElementById('stat-matches').textContent = resolved.length;
+
+  // Finder badge
+  const finderCount = await getFinderCount(currentUser.id);
+  const badge = getBadge(finderCount);
+  const badgeCard = document.getElementById('profile-badge-card');
+  if (badge) {
+    document.getElementById('profile-badge-content').innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-size:48px;line-height:1;">${badge.icon}</div>
+        <div>
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:4px;">LÖYTÄJÄN TITTELI</div>
+          <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:${badge.color};">${badge.title}</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:2px;">${badge.desc} palautettua</div>
+        </div>
+      </div>`;
+    badgeCard.style.display = 'block';
+  } else {
+    document.getElementById('profile-badge-content').innerHTML = `
+      <div style="text-align:center;padding:8px 0;">
+        <div style="font-size:32px;margin-bottom:8px;">🌱</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Ansaitse löytäjän titteli</div>
+        <div style="font-size:12px;color:var(--ink3);line-height:1.6;">Auta hädässä olevaa kadottajaa ja ansaitse karmamitali.<br>Elämä palkitsee hyväntekijää. 💛</div>
+      </div>`;
+    badgeCard.style.display = 'block';
+  }
 
   const myListings = document.getElementById('my-listings-list');
   if (!listings || listings.length === 0) {
