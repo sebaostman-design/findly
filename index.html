@@ -1476,6 +1476,7 @@ async function loadAllListings() {
   const { data, error } = await sb
     .from('listings')
     .select('*')
+    .gt('expires_at', new Date().toISOString())
     .order('created_at', { ascending: false });
   if (error) { console.error(error); return []; }
   return data || [];
@@ -1508,7 +1509,7 @@ function renderFeed() {
 async function loadPets() {
   const grid = document.getElementById('pets-grid');
   grid.innerHTML = '<div class="loading"><div class="spinner"></div>Ladataan...</div>';
-  const { data } = await sb.from('listings').select('*').eq('type','pet').order('created_at', { ascending: false });
+  const { data } = await sb.from('listings').select('*').eq('type','pet').gt('expires_at', new Date().toISOString()).order('created_at', { ascending: false });
   const items = data || [];
   if (items.length === 0) {
     grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🐾</div><div>Ei eläinilmoituksia vielä.</div></div>';
