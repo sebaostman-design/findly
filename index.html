@@ -1198,13 +1198,23 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           <textarea id="f-desc" placeholder="Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen." required></textarea>
         </div>
 
-        <!-- IMAGE GUIDANCE -->
-        <div class="form-group full">
-          <div class="notice-warn">
-            <span>🛡️</span>
-            <div>
-              <strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja kuvassa. Jätä osa tiedoista (esim. sarjanumero, nimi) varmistusta varten — oikea omistaja tietää ne jo valmiiksi.
+        <!-- IMAGE UPLOAD (owner only — not shown for 'found' type) -->
+        <div class="form-group full" id="image-upload-field">
+          <label>Kuva <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
+          <div id="image-drop-zone" onclick="document.getElementById('f-image').click()"
+            style="border:2px dashed var(--border);border-radius:var(--radius);padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;background:white;"
+            onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div id="image-placeholder">
+              <div style="font-size:32px;margin-bottom:8px;">📷</div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink2);">Lisää kuva tavarasta</div>
+              <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Klikkaa tai raahaa tiedosto tähän · max 5 MB</div>
             </div>
+            <img id="image-preview" src="" alt="" style="display:none;max-width:100%;max-height:200px;border-radius:10px;object-fit:cover;" />
+          </div>
+          <input type="file" id="f-image" accept="image/*" style="display:none;" onchange="previewImage(this)" />
+          <div class="notice-warn" style="margin-top:10px;">
+            <span>🛡️</span>
+            <div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>
           </div>
         </div>
 
@@ -1804,7 +1814,9 @@ function renderCard(l) {
   // Blur the address for privacy
   const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
-    <div class="feed-card-img">${icon}</div>
+    <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : ''}">
+      ${l.image_url ? `<img src="${l.image_url}" alt="" style="width:100%;height:100%;object-fit:cover;" />` : icon}
+    </div>
     <div class="feed-card-body">
       <div class="feed-card-top">
         <div class="feed-card-title">${esc(l.title)}</div>
@@ -1882,7 +1894,12 @@ async function openListing(id) {
   el.innerHTML = `
     <div class="form-page-back" onclick="goBack()">← Takaisin</div>
     ${statusHtml}
-    <div class="listing-hero-img">${icon}</div>
+    ${l.image_url
+      ? `<div style="width:100%;height:280px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;border:1px solid var(--border);">
+           <img src="${l.image_url}" alt="${esc(l.title)}" style="width:100%;height:100%;object-fit:cover;" />
+         </div>`
+      : `<div class="listing-hero-img">${icon}</div>`
+    }
     <div class="listing-meta">
       <span class="meta-badge ${badgeMap[l.type]||''}" style="padding:5px 14px;">${labelMap[l.type]||l.type}</span>
       <span class="meta-badge" style="background:var(--paper);border:1px solid var(--border);color:var(--ink2);padding:5px 14px;">${esc(l.category||'')}</span>
@@ -2220,6 +2237,7 @@ function setFormType(type) {
   document.getElementById('form-notice-text').innerHTML = noticeTexts[type];
   document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
   document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
+  document.getElementById('image-upload-field').style.display = type === 'found' ? 'none' : 'block';
   document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
 
   // found: make taken-to required
@@ -2246,6 +2264,24 @@ function selectVis(el, val) {
   document.querySelectorAll('.vis-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   document.getElementById('f-visibility').value = val;
+}
+
+// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// IMAGE PREVIEW
+// ═══════════════════════════════════════════════════════
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('Kuva on liian suuri (max 5 MB).', 'red'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('image-placeholder').style.display = 'none';
+    const img = document.getElementById('image-preview');
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2280,6 +2316,26 @@ async function submitListing(e) {
   btn.textContent = 'Julkaistaan...';
   btn.disabled = true;
 
+  // Upload image if provided (owner types only)
+  let image_url = null;
+  const imageFile = document.getElementById('f-image')?.files[0];
+  if (imageFile && currentFormType !== 'found') {
+    btn.textContent = 'Ladataan kuvaa...';
+    const ext = imageFile.name.split('.').pop();
+    const path = `${currentUser.id}/${Date.now()}.${ext}`;
+    const { data: uploadData, error: uploadError } = await sb.storage
+      .from('listing-images')
+      .upload(path, imageFile, { cacheControl: '3600', upsert: false });
+    if (uploadError) {
+      toast('Kuvan lataus epäonnistui: ' + uploadError.message, 'red');
+      btn.disabled = false; btn.textContent = 'Julkaise ilmoitus →';
+      return;
+    }
+    const { data: urlData } = sb.storage.from('listing-images').getPublicUrl(path);
+    image_url = urlData.publicUrl;
+    btn.textContent = 'Julkaistaan...';
+  }
+
   const payload = {
     user_id: currentUser.id,
     type: currentFormType,
@@ -2296,7 +2352,8 @@ async function submitListing(e) {
     taken_to_detail: document.getElementById('f-taken-to-detail')?.value?.trim() || null,
     police_report: null,
     subtype: currentFormType === 'pet' ? 'lost' : null,
-    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    image_url
   };
 
   console.log('Inserting payload:', payload);
@@ -2317,6 +2374,9 @@ async function submitListing(e) {
   document.querySelectorAll('.vis-opt').forEach((o,i) => { o.classList.toggle('selected', i === 0); });
   document.getElementById('f-visibility').value = 'public';
   document.getElementById('f-taken-to-val').value = '';
+  document.getElementById('f-image').value = '';
+  document.getElementById('image-placeholder').style.display = 'block';
+  document.getElementById('image-preview').style.display = 'none';
   selectedLat = null; selectedLng = null;
   if (formMarker) { formMarker.remove(); formMarker = null; }
   openListing(data.id);
