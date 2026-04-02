@@ -965,7 +965,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="why-card">
           <div class="why-icon">⚖️</div>
           <h3 data-i18n="why_law_title">Lain mukainen</h3>
-          <p data-i18n="why_law_desc">Findly tukee löytötavaralain (778/1988) noudattamista. Löytäjällä on oikeus 10 % löytöpalkkioon ja velvollisuus ilmoittaa löydöstä.</p>
+          <p data-i18n="why_law_desc">Findly tukee löytötavaralain (778/1988) noudattamista. Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota ja velvollisuus ilmoittaa löydöstä.</p>
         </div>
         <div class="why-card">
           <div class="why-icon">🎯</div>
@@ -1055,7 +1055,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         </div>
         <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
           <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;" data-i18n="faq_q2">Miten ilmoitan löydetystä tavarasta?</h3>
-          <p style="font-size:13px;color:var(--ink2);line-height:1.6;" data-i18n="faq_a2">Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin — löytöpalkinto voi olla jopa 10% tavaran arvosta.</p>
+          <p style="font-size:13px;color:var(--ink2);line-height:1.6;" data-i18n="faq_a2">Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin — Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota (enintään 10% tavaran arvosta).</p>
         </div>
         <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
           <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;" data-i18n="faq_q3">Onko Findly ilmainen?</h3>
@@ -1085,10 +1085,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           <div style="font-size:26px;flex-shrink:0;margin-top:2px;">⚖️</div>
           <div class="law-content">
             <h3 data-i18n="law_title" data-i18n-html="1">Löytötavaralaki (778/1988) — tiedä oikeutesi ja velvollisuutesi</h3>
-            <p data-i18n="law_text" data-i18n-html="1">Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on oikeus <strong>10% löytöpalkkioon</strong> tavaran käyvästä arvosta.</p>
+            <p data-i18n="law_text" data-i18n-html="1">Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on lain mukaan oikeus <strong>pyytää omistajalta löytöpalkkiota</strong> (enintään 10% tavaran käyvästä arvosta).</p>
             <div class="law-points">
               <span class="law-tag" data-i18n="law_tag1">📋 Ilmoita poliisille jos omistajaa ei löydy</span>
-              <span class="law-tag" data-i18n="law_tag2">💰 10% löytöpalkkio-oikeus</span>
+              <span class="law-tag" data-i18n="law_tag2">💰 Löytäjän oikeus pyytää palkkiota (max 10%)</span>
               <span class="law-tag" data-i18n="law_tag3">⏳ Omistajalla 3 kk hakea tavaransa</span>
               <span class="law-tag" data-i18n="law_tag4">🔒 Tarkat tiedot vasta matchin jälkeen</span>
               <span class="law-tag" data-i18n="law_tag5">🏢 Julkisesta tilasta löytynyt? Luovuta henkilökunnalle</span>
@@ -1836,11 +1836,11 @@ const translations = {
   why_verify_title:{ fi: 'Pakollinen verificaatio', sv: 'Obligatorisk verifiering', en: 'Mandatory verification' },
   why_verify_desc: { fi: 'Jokainen osumailmoitus vaatii todistuksen omistajuudesta. Löytäjä päättää hyväksyykö — ei suoraa kontaktia ennen vahvistusta.', sv: 'Varje träffanmälan kräver bevis på ägande. Upphittaren bestämmer om den godkänns — ingen direkt kontakt före verifiering.', en: 'Every match claim requires proof of ownership. The finder decides whether to approve — no direct contact before verification.' },
   why_law_title:  { fi: 'Lain mukainen', sv: 'Laglig', en: 'Legal compliance' },
-  why_law_desc:   { fi: 'Findly tukee löytötavaralain (778/1988) noudattamista. Löytäjällä on oikeus 10 % löytöpalkkioon ja velvollisuus ilmoittaa löydöstä.', sv: 'Findly stöder efterlevnaden av hittegodslagar (778/1988). Upphittaren har rätt till 10% hittelön och skyldighet att anmäla fyndet.', en: 'Findly supports compliance with the Lost Property Act (778/1988). The finder has the right to a 10% reward and a duty to report the find.' },
+  why_law_desc:   { fi: 'Findly tukee löytötavaralain (778/1988) noudattamista. Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota ja velvollisuus ilmoittaa löydöstä.', sv: 'Findly stöder efterlevnaden av hittegodslagar (778/1988). Upphittaren har enligt lag rätt att begära hittelön av ägaren och skyldighet att anmäla fyndet.', en: 'Findly supports compliance with the Lost Property Act (778/1988). The finder has a legal right to request a reward from the owner and a duty to report the find.' },
   why_match_title:{ fi: 'Älykäs matchaus', sv: 'Smart matchning', en: 'Smart matching' },
   why_match_desc: { fi: 'Ei manuaalista selailua — Findly vertaa ilmoituksia automaattisesti kategorian, ajan, sijainnin ja avainsanojen perusteella.', sv: 'Ingen manuell bläddring — Findly jämför anmälningar automatiskt baserat på kategori, tid, plats och nyckelord.', en: 'No manual browsing — Findly compares listings automatically by category, time, location and keywords.' },
   why_free_title: { fi: 'Täysin ilmainen', sv: 'Helt gratis', en: 'Completely free' },
-  why_free_desc:  { fi: 'Palvelu on ilmainen kaikille. Löytöpalkkio sovitaan suoraan käyttäjien kesken — Findly ei veloita välikomissiota.', sv: 'Tjänsten är gratis för alla. Hittelönen överenskommes direkt mellan användarna — Findly tar ingen provision.', en: 'The service is free for everyone. The finder\'s reward is agreed directly between users — Findly charges no commission.' },
+  why_free_desc:  { fi: 'Palvelu on ilmainen kaikille. Mahdollinen löytöpalkkio sovitaan omistajan ja löytäjän kesken — Findly ei veloita siitä komissiota.', sv: 'Tjänsten är gratis för alla. Eventuell hittelön överenskommes mellan ägaren och upphittaren — Findly tar ingen provision.', en: 'The service is free for everyone. Any finder\'s reward is agreed between owner and finder — Findly charges no commission on it.' },
   why_pets_title: { fi: 'Eläimet erikseen', sv: 'Djur separat', en: 'Pets separate' },
   why_pets_desc:  { fi: 'Eläinilmoituksissa chat aukeaa suoraan ilman vahvistusprosessia — nopea reagointi on tärkeintä.', sv: 'Djuranmälningar öppnar chatt direkt utan verifieringsprocess — snabb respons är viktigast.', en: 'Pet listings open chat directly without verification — fast response is what matters most.' },
 
@@ -1854,9 +1854,9 @@ const translations = {
 
   // ── LAW BANNER ──
   law_title:  { fi: 'Löytötavaralaki (778/1988) — tiedä oikeutesi ja velvollisuutesi', sv: 'Hittegodslagar (778/1988) — känn till dina rättigheter och skyldigheter', en: 'Lost Property Act (778/1988) — know your rights and obligations' },
-  law_text:   { fi: 'Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on oikeus <strong>10% löytöpalkkioon</strong> tavaran käyvästä arvosta.', sv: 'Upphittaren ska agera enligt hittegodslagar: <strong>informera ägaren</strong>, eller <strong>lämna till polisen</strong>, eller överlämna enligt hitteställets anvisningar. Upphittaren har rätt till <strong>10% hittelön</strong> av föremålets värde.', en: 'The finder must act in accordance with the Lost Property Act: <strong>notify the owner</strong>, or <strong>deliver to police</strong>, or hand over per the location\'s instructions. The finder has the right to <strong>10% finder\'s reward</strong> of the item\'s value.' },
+  law_text:   { fi: 'Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on lain mukaan oikeus <strong>pyytää omistajalta löytöpalkkiota</strong> (enintään 10% tavaran käyvästä arvosta).', sv: 'Upphittaren ska agera enligt hittegodslagar: <strong>informera ägaren</strong>, eller <strong>lämna till polisen</strong>, eller överlämna enligt hitteställets anvisningar. Upphittaren har enligt lag rätt att <strong>begära hittelön av ägaren</strong> (högst 10% av föremålets värde).', en: 'The finder must act in accordance with the Lost Property Act: <strong>notify the owner</strong>, or <strong>deliver to police</strong>, or hand over per the location\'s instructions. The finder has a legal right to <strong>request a reward from the owner</strong> (up to 10% of the item\'s value).' },
   law_tag1:   { fi: '📋 Ilmoita poliisille jos omistajaa ei löydy', sv: '📋 Anmäl till polisen om ägaren inte hittas', en: '📋 Report to police if owner is not found' },
-  law_tag2:   { fi: '💰 10% löytöpalkkio-oikeus', sv: '💰 10% hittelön-rättighet', en: '💰 10% finder\'s reward right' },
+  law_tag2:   { fi: '💰 Löytäjän oikeus pyytää palkkiota (max 10%)', sv: '💰 Upphittarens rätt att begära lön (max 10%)', en: '💰 Finder\'s right to request reward (max 10%)' },
   law_tag3:   { fi: '⏳ Omistajalla 3 kk hakea tavaransa', sv: '⏳ Ägaren har 3 mån att hämta', en: '⏳ Owner has 3 months to claim' },
   law_tag4:   { fi: '🔒 Tarkat tiedot vasta matchin jälkeen', sv: '🔒 Exakta uppgifter först efter matchning', en: '🔒 Exact details only after matching' },
   law_tag5:   { fi: '🏢 Julkisesta tilasta löytynyt? Luovuta henkilökunnalle', sv: '🏢 Hittat i offentlig lokal? Lämna till personalen', en: '🏢 Found in a public space? Hand it to staff' },
@@ -1865,7 +1865,7 @@ const translations = {
   faq_q1: { fi: 'Miten ilmoitan kadonneesta tavarasta?', sv: 'Hur anmäler jag ett förlorat föremål?', en: 'How do I report a lost item?' },
   faq_a1: { fi: 'Rekisteröidy ilmaiseksi, klikkaa "Kadotin tavaran" ja kuvaile tavara. Findly etsii automaattisesti vastaavia löytöilmoituksia ja ilmoittaa mahdollisesta matchista.', sv: 'Registrera dig gratis, klicka på "Jag tappade" och beskriv föremålet. Findly söker automatiskt efter matchande hitteanmälningar.', en: 'Register for free, click "I lost something" and describe the item. Findly automatically searches for matching found reports.' },
   faq_q2: { fi: 'Miten ilmoitan löydetystä tavarasta?', sv: 'Hur anmäler jag ett hittat föremål?', en: 'How do I report a found item?' },
-  faq_a2: { fi: 'Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin — löytöpalkinto voi olla jopa 10% tavaran arvosta.', sv: 'Klicka på "Jag hittade", fyll i ett kort formulär. Findly jämför din anmälan med förlorade föremål — hittelönen kan vara upp till 10% av föremålets värde.', en: 'Click "I found something", fill in a short form. Findly compares your report with lost items — the finder\'s reward can be up to 10% of the item\'s value.' },
+  faq_a2: { fi: 'Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin. Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota (enintään 10% tavaran arvosta).', sv: 'Klicka på "Jag hittade", fyll i ett kort formulär. Findly jämför din anmälan med förlorade föremål. Upphittaren har enligt lag rätt att begära hittelön av ägaren (högst 10% av föremålets värde).', en: 'Click "I found something", fill in a short form. Findly compares your report with lost items. The finder has a legal right to request a reward from the owner (up to 10% of the item\'s value).' },
   faq_q3: { fi: 'Onko Findly ilmainen?', sv: 'Är Findly gratis?', en: 'Is Findly free?' },
   faq_a3: { fi: 'Kyllä, täysin ilmainen. Voit jättää ja selata löytötavara-ilmoituksia maksutta. Findly toimii koko Suomessa.', sv: 'Ja, helt gratis. Du kan skapa och bläddra bland anmälningar utan kostnad. Findly fungerar i hela Finland.', en: 'Yes, completely free. You can create and browse listings at no cost. Findly works across all of Finland.' },
   faq_q4: { fi: 'Kuinka kauan ilmoitus on voimassa?', sv: 'Hur länge gäller en anmälan?', en: 'How long is a listing valid?' },
