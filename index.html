@@ -644,19 +644,37 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 </div>
 
 <!-- SUCCESS MODAL -->
-<div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;">
-  <div style="background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;">
+<div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
+  <div style="background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;margin:auto;">
     <div style="font-size:64px;margin-bottom:12px;" id="success-icon">🎉</div>
     <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;" id="success-title">Tapaus suljettu!</h2>
-    <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:28px;" id="success-body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
-    <div id="success-badge" style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+    <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:24px;" id="success-body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
+    <div id="success-badge" style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
       <span style="font-size:28px;">🏅</span>
       <div style="text-align:left;">
         <div style="font-size:13px;font-weight:700;color:var(--green-dark);">Merkintä profiiliin</div>
         <div style="font-size:12px;color:var(--ink2);">+1 palautettu tapaus</div>
       </div>
     </div>
-    <div id="success-tip-prompt" style="margin-bottom:20px;display:none;">
+
+    <!-- Story (optional) -->
+    <div style="text-align:left;background:var(--paper);border-radius:12px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">💬 Kerro miten kävi <span style="font-weight:400;color:var(--ink3);">(vapaaehtoinen)</span></div>
+      <textarea id="success-story" rows="2" placeholder="Esim: Lompakko löytyi rehellisen löytäjän ansiosta! Kaikki tallella." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none;resize:vertical;"></textarea>
+      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:white;cursor:pointer;">Tallenna tarina</button>
+    </div>
+
+    <!-- Share -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.05em;color:var(--ink3);margin-bottom:10px;">JAA ONNISTUMINEN</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button onclick="shareSuccess('wa')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#25D366;color:white;cursor:pointer;">WhatsApp</button>
+        <button onclick="shareSuccess('x')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#000;color:white;cursor:pointer;">X</button>
+        <button onclick="shareSuccess('copy')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--paper);color:var(--ink2);cursor:pointer;border:1px solid var(--border);">📋 Kopioi</button>
+      </div>
+    </div>
+
+    <div id="success-tip-prompt" style="margin-bottom:16px;display:none;">
       <button onclick="document.getElementById('success-modal').style.display='none';openTipModal(successListingId)" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;margin-bottom:8px;">💸 Anna tippiä löytäjälle</button>
       <a href="https://hesy.fi/lahjoita/" target="_blank" style="display:block;font-size:12px;color:var(--ink3);text-decoration:none;">Tai lahjoita HESY:lle →</a>
     </div>
@@ -953,6 +971,23 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           <h3>Eläimet erikseen</h3>
           <p>Eläinilmoitukset saavat automaattisen push-ilmoituksen 5 km säteellä. Helppo jakaa suoraan WhatsAppiin ja Instagramiin.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STORIES ── -->
+  <section style="background:white;padding:80px 0;">
+    <div class="wrap" style="max-width:800px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <div class="section-label">Findly-tarinat</div>
+        <div class="section-title">Tämä tarina päättyi hyvin</div>
+        <div class="section-sub">Oikeita kokemuksia Findly-käyttäjiltä. Jokainen palautus on pieni voitto.</div>
+      </div>
+      <div id="stories-feed" style="display:grid;gap:16px;">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+      <div id="stories-empty" style="display:none;text-align:center;padding:32px;color:var(--ink3);font-size:14px;">
+        Tarinoita ei ole vielä — ensimmäinen onnistuminen on tulossa! 💛
       </div>
     </div>
   </section>
@@ -2200,6 +2235,61 @@ async function closeCaseFromChat() {
   showSuccessModal(currentChatListingId, listing?.user_id === currentUser.id, finderId);
 }
 
+async function saveStory() {
+  const text = document.getElementById('success-story').value.trim();
+  if (!text) { toast('Kirjoita ensin tarinasi.', 'red'); return; }
+  if (!successListingId) return;
+  const { error } = await sb.from('listings').update({ story_text: text }).eq('id', successListingId);
+  if (error) { toast('Virhe: ' + error.message, 'red'); return; }
+  toast('Tarina tallennettu! Kiitos jakamisesta 💛', 'green');
+  document.getElementById('success-story').value = '';
+  document.getElementById('success-story').placeholder = '✓ Tallennettu!';
+}
+
+function shareSuccess(platform) {
+  const url = 'https://sebaostman-design.github.io/findly/';
+  const text = 'Kadotin tavaraa ja sain sen takaisin Findlyn kautta! Rehellisyys kannattaa 💛';
+  if (platform === 'wa') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+  } else if (platform === 'x') {
+    window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+  } else if (platform === 'copy') {
+    navigator.clipboard.writeText(text + ' ' + url).then(() => toast('Kopioitu leikepöydälle!', 'green'));
+  }
+}
+
+async function loadStories() {
+  const feed = document.getElementById('stories-feed');
+  const empty = document.getElementById('stories-empty');
+  if (!feed) return;
+  const { data } = await sb.from('listings')
+    .select('title, category, story_text, created_at')
+    .eq('status', 'returned')
+    .not('story_text', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(6);
+  if (!data || data.length === 0) {
+    feed.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  feed.style.display = 'grid';
+  feed.innerHTML = data.map(s => `
+    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;position:relative;">
+      <div style="position:absolute;top:-10px;right:16px;font-size:24px;">💛</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="font-size:24px;">${categoryIcon(s.category)}</span>
+        <div>
+          <div style="font-size:14px;font-weight:600;">${esc(s.title)}</div>
+          <div style="font-size:11px;color:var(--ink3);">Palautettu · ${timeAgo(s.created_at)}</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:var(--ink2);line-height:1.7;font-style:italic;">"${esc(s.story_text)}"</div>
+    </div>
+  `).join('');
+}
+
 function refreshResolvedCount() {
   sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','returned').then(({ count }) => {
     const el = document.getElementById('stat-resolved');
@@ -3230,7 +3320,8 @@ function esc(str) {
   const hash = new URLSearchParams(window.location.hash.replace('#', ''));
   const isEmailCallback = hash.get('type') === 'signup' || hash.get('access_token');
 
-  // Load home stats
+  // Load home stats + stories
+  loadStories();
   sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','active').then(({ count }) => {
     const el = document.getElementById('stat-total');
     if (el && count !== null) el.textContent = count;
