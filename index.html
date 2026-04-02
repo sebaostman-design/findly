@@ -524,9 +524,12 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
   font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
 }
-.score-high { background: var(--green-light); color: var(--green-dark); border: 1px solid #A8D8BC; }
+.score-high { background: var(--green-light); color: var(--green-dark); border: 1px solid #A8D8BC; animation: scorePulse 2s ease infinite; }
 .score-mid  { background: var(--amber-light); color: var(--amber); border: 1px solid #F0D080; }
 .score-low  { background: var(--paper); color: var(--ink3); border: 1px solid var(--border); }
+@keyframes scorePulse { 0%,100%{box-shadow:0 0 0 0 rgba(26,122,82,0.15)} 50%{box-shadow:0 0 0 6px rgba(26,122,82,0)} }
+.match-card.high-match { border-color: var(--green); border-width: 2px; background: linear-gradient(135deg, white 0%, #F0FDF4 100%); }
+.match-card.high-match:hover { box-shadow: 0 6px 24px rgba(26,122,82,0.18); }
 .match-card-meta { font-size: 12px; color: var(--ink3); margin-bottom: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
 .match-card-desc { font-size: 13px; color: var(--ink2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; }
 .match-tags { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -2736,7 +2739,8 @@ async function loadMatches() {
         const scoreCls = score >= 70 ? 'score-high' : score >= 45 ? 'score-mid' : 'score-low';
         const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
         const isPending = pendingListingIds.has(l.id);
-        return `<div class="match-card" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.7;' : ''}">
+        const highMatch = score >= 70;
+        return `<div class="match-card${highMatch && !isPending ? ' high-match' : ''}" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.65;' : ''}">
           <div class="match-card-icon">${categoryIcon(l.category)}</div>
           <div class="match-card-body">
             <div class="match-card-top">
@@ -2766,18 +2770,25 @@ async function loadMatches() {
     html += '</div>';
   }
 
-  const summaryColor = totalMatches > 0 ? 'var(--green-light)' : 'var(--paper)';
-  const summaryBorder = totalMatches > 0 ? '#A8D8BC' : 'var(--border)';
-  el.innerHTML = `
-    <div style="background:${summaryColor};border:1px solid ${summaryBorder};border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:12px;">
-      <span style="font-size:24px;">${totalMatches > 0 ? '🎯' : '🔍'}</span>
-      <div>
-        <div style="font-size:14px;font-weight:600;color:var(--ink);">${totalMatches > 0 ? `${totalMatches} mahdollista osumaa löytyi` : 'Ei osumia juuri nyt'}</div>
-        <div style="font-size:12px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})}</div>
-      </div>
-      <button onclick="loadMatches()" style="margin-left:auto;padding:7px 14px;font-size:12px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink2);">↻ Päivitä</button>
+  if (totalMatches > 0) {
+    el.innerHTML = `
+    <div style="background:linear-gradient(135deg,#E6F5EE 0%,#D4EDDA 50%,#FFF8E7 100%);border:2px solid var(--green);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
+      <div style="font-size:48px;margin-bottom:8px;">🎯</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green-dark);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? 'osuma löytyi!' : 'osumaa löytyi!'}</div>
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">Findly löysi mahdollisia matcheja ilmoituksillesi.</div>
+      <div style="font-size:11px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ Päivitä</a></div>
     </div>
     ${html}`;
+  } else {
+    el.innerHTML = `
+    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:28px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:8px;">🔍</div>
+      <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;">Ei osumia juuri nyt</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:4px;">Findly etsii jatkuvasti. Tarkista myöhemmin uudelleen!</div>
+      <div style="font-size:11px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ Päivitä</a></div>
+    </div>
+    ${html}`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════
