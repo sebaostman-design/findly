@@ -2296,7 +2296,7 @@ function renderFeed() {
     (l.address || '').toLowerCase().includes(search)
   );
   if (items.length === 0) {
-    grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🔍</div><div>Ei ilmoituksia tällä haulla.</div></div>';
+    grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🔍</div><div>' + {fi:'Ei ilmoituksia tällä haulla.',sv:'Inga anmälningar med denna sökning.',en:'No listings match this search.'}[currentLang] + '</div></div>';
     return;
   }
   grid.innerHTML = items.map(renderCard).join('');
@@ -2318,11 +2318,11 @@ async function loadPets() {
 
 function renderCard(l) {
   const icon = categoryIcon(l.category);
-  const badgeMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
+  const badgeMap = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen'), pet: typeLabel('pet') };
   const labelMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
   const timeStr = timeAgo(l.created_at);
   // Blur the address for privacy
-  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
+  const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : {fi:'Sijainti merkitty',sv:'Plats markerad',en:'Location marked'}[currentLang];
   return `<div class="feed-card" onclick="openListing('${l.id}')">
     <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : ''}">
       ${l.image_url ? `<img src="${l.image_url}" alt="" style="object-fit:contain;" />` : icon}
@@ -2345,7 +2345,7 @@ function renderCard(l) {
 function renderPetCard(l) {
   const icon = categoryIcon(l.category);
   const isLost = l.subtype !== 'found';
-  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : '';
+  const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : '';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
     <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : 'background:' + (isLost?'#FFF5E0':'#E8F5EF')}">
       ${l.image_url ? `<img src="${l.image_url}" alt="" style="object-fit:contain;" />` : icon}
@@ -2353,7 +2353,7 @@ function renderPetCard(l) {
     <div class="feed-card-body">
       <div class="feed-card-top">
         <div class="feed-card-title">${esc(l.title)}</div>
-        <span class="feed-card-badge ${isLost?'badge-lost':'badge-found'}">${isLost?'🔴 Kadonnut':'🟢 Löydetty'}</span>
+        <span class="feed-card-badge ${isLost?'badge-lost':'badge-found'}">${isLost?'🔴 '+typeLabel('lost'):'🟢 '+typeLabel('found')}</span>
       </div>
       ${displayAddr ? `<div class="feed-card-loc">📍 ${esc(displayAddr)}</div>` : ''}
       <div class="feed-card-desc">${esc(l.description||'')}</div>
@@ -2377,8 +2377,15 @@ async function openListing(id) {
 
   const icon = categoryIcon(l.category);
   const badgeMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
-  const labelMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
-  const takenToLabels = { police: '🏛️ Viety poliisille', info: '📍 Infopiste', lostfound: '📦 Löytötavaratoimisto', safe: '🔒 Säilössä turvallisesti', other: '✏️ Muu' };
+  const labelMap = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen'), pet: typeLabel('pet') };
+  const _tt = currentLang;
+  const takenToLabels = {
+    police: {fi:'🏛️ Viety poliisille',sv:'🏛️ Lämnad till polisen',en:'🏛️ Taken to police'}[_tt],
+    info: {fi:'📍 Infopiste',sv:'📍 Informationsdisk',en:'📍 Info desk'}[_tt],
+    lostfound: {fi:'📦 Löytötavaratoimisto',sv:'📦 Hittegodsbyrå',en:'📦 Lost property office'}[_tt],
+    safe: {fi:'🔒 Säilössä turvallisesti',sv:'🔒 Förvaras säkert',en:'🔒 Stored safely'}[_tt],
+    other: {fi:'✏️ Muu',sv:'✏️ Annat',en:'✏️ Other'}[_tt]
+  };
 
   const canContact = currentUser && currentUser.id !== l.user_id;
   const isOwn = currentUser && currentUser.id === l.user_id;
@@ -2401,7 +2408,7 @@ async function openListing(id) {
   }).join('')}</div>`;
 
   // Blur location display
-  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
+  const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : {fi:'Sijainti merkitty',sv:'Plats markerad',en:'Location marked'}[currentLang];
 
   el.innerHTML = `
     <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
@@ -2423,31 +2430,31 @@ async function openListing(id) {
 
     ${l.type === 'found' && l.taken_to ? `
     <div style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--green-dark);">
-      📦 <strong>Tavara on:</strong> ${takenToLabels[l.taken_to]||l.taken_to}
+      📦 <strong>${{fi:'Tavara on:',sv:'Föremålet är:',en:'Item is:'}[currentLang]}</strong> ${takenToLabels[l.taken_to]||l.taken_to}
       ${l.taken_to_detail ? `<br><span style="color:var(--ink2);">${esc(l.taken_to_detail)}</span>` : ''}
     </div>` : ''}
 
     ${l.type === 'stolen' ? `
     <div style="background:#FFF0F0;border:1px solid #E8A0A0;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#7A1A1A;">
-      🚨 Varastettu-ilmoitus — tee myös rikosilmoitus poliisille jos et ole jo tehnyt.
+      🚨 ${{fi:'Varastettu-ilmoitus — tee myös rikosilmoitus poliisille jos et ole jo tehnyt.',sv:'Stöldanmälan — gör också en polisanmälan om du inte redan gjort det.',en:'Theft report — also file a police report if you haven\'t already.'}[currentLang]}
     </div>` : ''}
 
     <div class="listing-info-grid">
       <div class="listing-info-card">
-        <div class="listing-info-label">Aika</div>
-        <div class="listing-info-value">${l.incident_time ? new Date(l.incident_time).toLocaleString('fi-FI') : '—'}</div>
+        <div class="listing-info-label">${{fi:'Aika',sv:'Tid',en:'Time'}[currentLang]}</div>
+        <div class="listing-info-value">${l.incident_time ? new Date(l.incident_time).toLocaleString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB') : '—'}</div>
       </div>
       <div class="listing-info-card">
-        <div class="listing-info-label">Ilmoitus jätetty</div>
-        <div class="listing-info-value">${new Date(l.created_at).toLocaleDateString('fi-FI')}</div>
+        <div class="listing-info-label">${{fi:'Ilmoitus jätetty',sv:'Anmälan skapad',en:'Posted'}[currentLang]}</div>
+        <div class="listing-info-value">${new Date(l.created_at).toLocaleDateString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB')}</div>
       </div>
       <div class="listing-info-card">
-        <div class="listing-info-label">Vanhenee</div>
+        <div class="listing-info-label">${{fi:'Vanhenee',sv:'Upphör',en:'Expires'}[currentLang]}</div>
         <div class="listing-info-value">${expiresIn(l.created_at)}</div>
       </div>
       <div class="listing-info-card">
-        <div class="listing-info-label">Sijainti</div>
-        <div class="listing-info-value">📍 ${esc(displayAddr)}<br><span style="font-size:11px;color:var(--ink3);">Tarkka sijainti matchin jälkeen</span></div>
+        <div class="listing-info-label">${{fi:'Sijainti',sv:'Plats',en:'Location'}[currentLang]}</div>
+        <div class="listing-info-value">📍 ${esc(displayAddr)}<br><span style="font-size:11px;color:var(--ink3);">${{fi:'Tarkka sijainti matchin jälkeen',sv:'Exakt plats efter matchning',en:'Exact location after matching'}[currentLang]}</span></div>
       </div>
     </div>
 
@@ -3253,11 +3260,11 @@ async function loadMatches() {
       return { listing: other, score: result.score, reasons: result.reasons };
     }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 5);
 
-    const typeLabel = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu' }[mine.type] || mine.type;
+    const typeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[mine.type] || mine.type;
     const typeBadge = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen' }[mine.type] || '';
 
     html += `<div class="match-group">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:8px;">SINUN ILMOITUKSESI</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:8px;">${{fi:'SINUN ILMOITUKSESI',sv:'DIN ANMÄLAN',en:'YOUR LISTING'}[currentLang]}</div>
       <div class="own-listing-pill" onclick="openListing('${mine.id}')" style="border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;background:white;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:4px;">
         <span style="font-size:28px;">${categoryIcon(mine.category)}</span>
         <div style="flex:1;">
@@ -3268,7 +3275,7 @@ async function loadMatches() {
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px;margin-left:24px;">
         <div style="width:2px;height:20px;background:var(--green);border-radius:2px;"></div>
-        <span style="font-size:12px;font-weight:600;color:var(--green);">↓ ${candidates.length} ${candidates.length === 1 ? 'mahdollinen osuma' : 'mahdollista osumaa'}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--green);">↓ ${candidates.length} ${candidates.length === 1 ? {fi:'mahdollinen osuma',sv:'möjlig träff',en:'possible match'}[currentLang] : {fi:'mahdollista osumaa',sv:'möjliga träffar',en:'possible matches'}[currentLang]}</span>
       </div>`;
 
     if (candidates.length === 0) {
@@ -3282,19 +3289,20 @@ async function loadMatches() {
     } else {
       totalMatches += candidates.length;
       html += candidates.map(({ listing: l, score, reasons }) => {
-        const scoreLabel = score >= 70 ? 'Korkea vastaavuus' : score >= 45 ? 'Kohtalainen vastaavuus' : 'Heikko vastaavuus';
+        const _sl = currentLang;
+        const scoreLabel = score >= 70 ? {fi:'Korkea vastaavuus',sv:'Hög matchning',en:'High match'}[_sl] : score >= 45 ? {fi:'Kohtalainen vastaavuus',sv:'Måttlig matchning',en:'Moderate match'}[_sl] : {fi:'Heikko vastaavuus',sv:'Svag matchning',en:'Weak match'}[_sl];
         const scoreCls = score >= 70 ? 'score-high' : score >= 45 ? 'score-mid' : 'score-low';
-        const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
+        const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : {fi:'Sijainti merkitty',sv:'Plats markerad',en:'Location marked'}[currentLang];
         const isPending = pendingListingIds.has(l.id);
         const highMatch = score >= 70;
-        const otherTypeLabel = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu' }[l.type] || l.type;
+        const otherTypeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[l.type] || l.type;
         return `<div class="match-card${highMatch && !isPending ? ' high-match' : ''}" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.65;' : ''}">
           <div class="match-card-icon" style="${l.image_url ? 'padding:0;overflow:hidden;border:none;' : ''}">${l.image_url ? `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);" />` : categoryIcon(l.category)}</div>
           <div class="match-card-body">
             <div class="match-card-top">
               <div>
                 <div class="match-card-title">${esc(l.title)}</div>
-                <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}-ilmoitus</div>
+                <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}${{fi:'-ilmoitus',sv:'-anmälan',en:' listing'}[currentLang]}</div>
               </div>
               <span class="match-score ${scoreCls}">${score}%</span>
             </div>
@@ -3328,18 +3336,18 @@ async function loadMatches() {
     el.innerHTML = `
     <div style="background:linear-gradient(135deg,#E6F5EE 0%,#D4EDDA 50%,#FFF8E7 100%);border:2px solid var(--green);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
       <div style="font-size:48px;margin-bottom:8px;">🎯</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green-dark);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? 'osuma löytyi!' : 'osumaa löytyi!'}</div>
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">Findly löysi mahdollisia matcheja ilmoituksillesi.</div>
-      <div style="font-size:11px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ Päivitä</a></div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green-dark);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">${{fi:'Findly löysi mahdollisia matcheja ilmoituksillesi.',sv:'Findly hittade möjliga matchningar för dina anmälningar.',en:'Findly found potential matches for your listings.'}[currentLang]}</div>
+      <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
     </div>
     ${html}`;
   } else {
     el.innerHTML = `
     <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:28px;text-align:center;">
       <div style="font-size:36px;margin-bottom:8px;">🔍</div>
-      <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;">Ei osumia juuri nyt</div>
-      <div style="font-size:13px;color:var(--ink3);margin-bottom:4px;">Findly etsii jatkuvasti. Tarkista myöhemmin uudelleen!</div>
-      <div style="font-size:11px;color:var(--ink3);">Päivitetty ${new Date().toLocaleTimeString('fi-FI', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ Päivitä</a></div>
+      <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;">${{fi:'Ei osumia juuri nyt',sv:'Inga träffar just nu',en:'No matches right now'}[currentLang]}</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:4px;">${{fi:'Findly etsii jatkuvasti. Tarkista myöhemmin uudelleen!',sv:'Findly söker hela tiden. Kolla igen senare!',en:'Findly keeps searching. Check again later!'}[currentLang]}</div>
+      <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
     </div>
     ${html}`;
   }
@@ -3405,7 +3413,7 @@ async function loadVerifyListingPreview(id) {
   const { data: l } = await sb.from('listings').select('*').eq('id', id).single();
   if (!l) return;
   const badgeMap = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen', pet: 'badge-pet' };
-  const labelMap = { lost: 'Kadonnut', found: 'Löydetty', stolen: 'Varastettu', pet: 'Eläin' };
+  const labelMap = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen'), pet: typeLabel('pet') };
   el.innerHTML = `
     <div class="vlp-icon">${categoryIcon(l.category)}</div>
     <div>
@@ -3742,23 +3750,35 @@ function categoryIcon(cat) {
   const map = { '📱 Puhelin': '📱', '💳 Lompakko / kortit': '💳', '🔑 Avaimet': '🔑', '👜 Laukku / reppu': '👜', '💎 Koru / kello': '💎', '🎧 Elektroniikka': '🎧', '🚲 Polkupyörä': '🚲', '🐕 Koira': '🐕', '🐈 Kissa': '🐈', '🐾 Muu eläin': '🐾' };
   return map[cat] || '📦';
 }
+function typeLabel(type) {
+  const L = currentLang;
+  const labels = {
+    lost:   { fi:'Kadonnut', sv:'Förlorad', en:'Lost' },
+    found:  { fi:'Löydetty', sv:'Hittad', en:'Found' },
+    stolen: { fi:'Varastettu', sv:'Stulen', en:'Stolen' },
+    pet:    { fi:'Eläin', sv:'Djur', en:'Pet' }
+  };
+  return labels[type]?.[L] || type;
+}
 function markerColor(type) {
   return { lost: '#D94040', found: '#1A7A52', stolen: '#A32D2D', pet: '#C47A15' }[type] || '#888';
 }
 function timeAgo(ts) {
   if (!ts) return '';
   const s = Math.floor((Date.now() - new Date(ts)) / 1000);
-  if (s < 60) return 'juuri nyt';
-  if (s < 3600) return Math.floor(s/60) + ' min sitten';
-  if (s < 86400) return Math.floor(s/3600) + 'h sitten';
-  return Math.floor(s/86400) + ' pv sitten';
+  const L = currentLang;
+  if (s < 60) return {fi:'juuri nyt',sv:'just nu',en:'just now'}[L];
+  if (s < 3600) return Math.floor(s/60) + {fi:' min sitten',sv:' min sedan',en:' min ago'}[L];
+  if (s < 86400) return Math.floor(s/3600) + {fi:'h sitten',sv:'h sedan',en:'h ago'}[L];
+  return Math.floor(s/86400) + {fi:' pv sitten',sv:' d sedan',en:'d ago'}[L];
 }
 function expiresIn(created) {
   const exp = new Date(new Date(created).getTime() + 7*24*60*60*1000);
   const d = Math.ceil((exp - Date.now()) / 86400000);
-  if (d <= 0) return '⚠️ Vanhentunut';
-  if (d === 1) return '⏳ Poistuu huomenna';
-  return '⏳ Poistuu ' + d + ' pv';
+  const L = currentLang;
+  if (d <= 0) return '⚠️ ' + {fi:'Vanhentunut',sv:'Utgången',en:'Expired'}[L];
+  if (d === 1) return '⏳ ' + {fi:'Poistuu huomenna',sv:'Försvinner imorgon',en:'Expires tomorrow'}[L];
+  return '⏳ ' + {fi:'Poistuu ',sv:'Försvinner om ',en:'Expires in '}[L] + d + {fi:' pv',sv:' d',en:'d'}[L];
 }
 function esc(str) {
   if (!str) return '';
