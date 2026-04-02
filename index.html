@@ -271,7 +271,8 @@ section { padding: 80px 0; }
   overflow: hidden; cursor: pointer; transition: all 0.2s;
 }
 .feed-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--green); }
-.feed-card-img { height: 160px; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 56px; }
+.feed-card-img { min-height: 120px; max-height: 240px; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 56px; }
+.feed-card-img img { width: 100%; height: 100%; object-fit: contain; background: var(--paper); }
 .feed-card-body { padding: 16px; }
 .feed-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
 .feed-card-title { font-size: 15px; font-weight: 600; color: var(--ink); }
@@ -1844,7 +1845,7 @@ function renderCard(l) {
   const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
     <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : ''}">
-      ${l.image_url ? `<img src="${l.image_url}" alt="" style="width:100%;height:100%;object-fit:cover;" />` : icon}
+      ${l.image_url ? `<img src="${l.image_url}" alt="" style="object-fit:contain;" />` : icon}
     </div>
     <div class="feed-card-body">
       <div class="feed-card-top">
@@ -1867,7 +1868,7 @@ function renderPetCard(l) {
   const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : '';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
     <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : 'background:' + (isLost?'#FFF5E0':'#E8F5EF')}">
-      ${l.image_url ? `<img src="${l.image_url}" alt="" style="width:100%;height:100%;object-fit:cover;" />` : icon}
+      ${l.image_url ? `<img src="${l.image_url}" alt="" style="object-fit:contain;" />` : icon}
     </div>
     <div class="feed-card-body">
       <div class="feed-card-top">
@@ -1926,8 +1927,8 @@ async function openListing(id) {
     <div class="form-page-back" onclick="goBack()">← Takaisin</div>
     ${statusHtml}
     ${l.image_url
-      ? `<div style="width:100%;height:280px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;border:1px solid var(--border);">
-           <img src="${l.image_url}" alt="${esc(l.title)}" style="width:100%;height:100%;object-fit:cover;" />
+      ? `<div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;border:1px solid var(--border);background:var(--paper);text-align:center;">
+           <img src="${l.image_url}" alt="${esc(l.title)}" style="max-width:100%;max-height:400px;object-fit:contain;display:block;margin:0 auto;" />
          </div>`
       : `<div class="listing-hero-img">${icon}</div>`
     }
