@@ -924,7 +924,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <a href="https://poliisi.fi/rikosilmoitus" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#A32D2D;text-decoration:none;border:1px solid #E8A0A0;padding:4px 12px;border-radius:20px;background:white;">Tee rikosilmoitus →</a>
     </div>
 
-    <form id="listing-form" onsubmit="submitListing(event)">
+    <form id="listing-form" onsubmit="submitListing(event)" novalidate>
       <div class="form-grid">
         <div class="form-group">
           <label>Kategoria *</label>
@@ -1896,10 +1896,22 @@ async function submitListing(e) {
   e.preventDefault();
   console.log('submitListing called, user:', currentUser?.id);
   if (!currentUser) {
-    showPage('new-listing'); // re-trigger gate
+    showPage('new-listing');
     return;
   }
-  // Validate found type requires taken-to selection
+
+  // Manual validation
+  const category = document.getElementById('f-category').value;
+  const title = document.getElementById('f-title').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const when = document.getElementById('f-when').value;
+  const phone = document.getElementById('f-phone').value.trim();
+
+  if (!category) { toast('Valitse kategoria.', 'red'); document.getElementById('f-category').focus(); return; }
+  if (!title) { toast('Kirjoita otsikko.', 'red'); document.getElementById('f-title').focus(); return; }
+  if (!desc) { toast('Kirjoita kuvaus.', 'red'); document.getElementById('f-desc').focus(); return; }
+  if (!when) { toast('Valitse päivämäärä ja kellonaika.', 'red'); document.getElementById('f-when').focus(); return; }
+  if (!phone) { toast('Kirjoita puhelinnumero.', 'red'); document.getElementById('f-phone').focus(); return; }
   if (currentFormType === 'found' && !document.getElementById('f-taken-to-val').value) {
     toast('Valitse mitä teit tavaralle.', 'red');
     return;
