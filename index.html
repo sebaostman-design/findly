@@ -539,7 +539,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <div class="nav-inner">
     <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
     <div class="nav-links">
-      <a onclick="showPage('matches')" style="font-weight:600;">🎯 Osumat</a>
+      <a onclick="showPage('matches')" style="font-weight:600;position:relative;">🎯 Osumat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
       <a onclick="showPage('map')">🗺️ Kartta</a>
       <a onclick="showPage('pets')">🐾 Eläimet</a>
       <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;">Ilmoitukset</a>
@@ -563,7 +563,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
 <!-- MOBILE MENU -->
 <div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:white;border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
-  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;font-weight:600;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat</a>
+  <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat<span id="match-badge-mobile" style="display:none;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()">🗺️ Kartta</a>
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()">🐾 Eläimet</a>
   <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()">Ilmoitukset</a>
@@ -1297,7 +1297,7 @@ function showPage(name) {
   if (name === 'feed') loadFeed();
   if (name === 'map') initMap();
   if (name === 'pets') loadPets();
-  if (name === 'matches') loadMatches();
+  if (name === 'matches') { loadMatches(); setMatchBadge(0); }
   if (name === 'messages') loadConversations();
   if (name === 'profile') loadProfile();
   if (name === 'new-listing') {
@@ -1358,7 +1358,39 @@ sb.auth.onAuthStateChange((event, session) => {
   if (currentUser && document.getElementById('page-auth').classList.contains('active')) {
     showPage('home');
   }
+  if (currentUser) {
+    setTimeout(updateMatchBadge, 1500);
+  } else {
+    setMatchBadge(0);
+  }
 });
+
+function setMatchBadge(count) {
+  const b1 = document.getElementById('match-badge');
+  const b2 = document.getElementById('match-badge-mobile');
+  if (count > 0) {
+    [b1, b2].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
+  } else {
+    [b1, b2].forEach(b => { if (b) b.style.display = 'none'; });
+  }
+}
+
+async function updateMatchBadge() {
+  if (!currentUser) return;
+  const [{ data: myListings }, { data: allOther }] = await Promise.all([
+    sb.from('listings').select('*').eq('user_id', currentUser.id).gt('expires_at', new Date().toISOString()),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).gt('expires_at', new Date().toISOString())
+  ]);
+  if (!myListings || myListings.length === 0) { setMatchBadge(0); return; }
+  let total = 0;
+  for (const mine of myListings) {
+    for (const other of (allOther || [])) {
+      const result = scoreMatch(mine, other);
+      if (result && result.score >= 20) total++;
+    }
+  }
+  setMatchBadge(total);
+}
 
 function updateNavAuth() {
   const anon = document.getElementById('nav-auth-area');
