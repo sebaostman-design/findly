@@ -891,6 +891,16 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-new-listing">
   <div class="form-page-wrap">
+
+    <!-- Login gate — shown when not logged in -->
+    <div id="new-listing-gate" style="display:none;text-align:center;padding:64px 20px;">
+      <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;">Kirjaudu sisään</h3>
+      <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
+      <button class="btn-primary" style="border:none;" onclick="showPage('auth')">Kirjaudu tai luo tili →</button>
+    </div>
+
+    <div id="new-listing-form-wrap">
     <div class="form-page-header">
       <div class="form-page-back" onclick="goBack()">← Takaisin</div>
       <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;">Uusi ilmoitus</h2>
@@ -1013,6 +1023,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
       <button type="submit" class="submit-btn lost" id="submit-btn" style="margin-top:20px;">Julkaise ilmoitus →</button>
     </form>
+    </div><!-- /new-listing-form-wrap -->
   </div>
 </div>
 
@@ -1289,7 +1300,18 @@ function showPage(name) {
   if (name === 'matches') loadMatches();
   if (name === 'messages') loadConversations();
   if (name === 'profile') loadProfile();
-  if (name === 'new-listing') initFormMap();
+  if (name === 'new-listing') {
+    const gate = document.getElementById('new-listing-gate');
+    const wrap = document.getElementById('new-listing-form-wrap');
+    if (currentUser) {
+      gate.style.display = 'none';
+      wrap.style.display = '';
+      initFormMap();
+    } else {
+      gate.style.display = 'block';
+      wrap.style.display = 'none';
+    }
+  }
 }
 
 function goBack() {
@@ -1872,9 +1894,9 @@ function selectVis(el, val) {
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
   e.preventDefault();
+  console.log('submitListing called, user:', currentUser?.id);
   if (!currentUser) {
-    toast('Kirjaudu sisään ensin!', 'red');
-    showPage('auth');
+    showPage('new-listing'); // re-trigger gate
     return;
   }
   // Validate found type requires taken-to selection
@@ -1906,12 +1928,15 @@ async function submitListing(e) {
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   };
 
+  console.log('Inserting payload:', payload);
   const { data, error } = await sb.from('listings').insert(payload).select().single();
+  console.log('Insert result:', { data, error });
   btn.disabled = false;
   setFormType(currentFormType);
 
   if (error) {
-    toast('Virhe julkaistaessa: ' + error.message, 'red');
+    toast('Virhe: ' + (error.message || JSON.stringify(error)), 'red');
+    console.error('Insert error:', error);
     return;
   }
 
