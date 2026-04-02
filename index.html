@@ -1119,7 +1119,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <div class="wrap">
       <div class="section-label">Eläinilmoitukset</div>
       <div class="section-title">Kadonneet &amp; löydetyt eläimet</div>
-      <div class="section-sub">Push-ilmoitukset lähtevät automaattisesti 5 km säteellä. Helppo jakaa WhatsAppiin ja Instagramiin.</div>
+      <div class="section-sub">Ilmoita kadonneesta tai löytyneestä lemmikistä. Jaa ilmoitus helposti lähipiirillesi.</div>
       <div style="margin:24px 0 20px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="feed-filter active-all" onclick="setPetFilter('all',this)">Kaikki</button>
         <button class="feed-filter" onclick="setPetFilter('lost',this)">🔴 Kadonneet</button>
@@ -1131,9 +1131,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div style="margin-top:28px;">
         <button class="btn-primary" style="border:none;background:var(--amber);" onclick="openFormTab('pet')">🐾 Lisää eläinilmoitus</button>
       </div>
-      <div class="notice-warn" style="margin-top:24px;">
-        <span style="font-size:18px;">📣</span>
-        <span>Eläinilmoitukset lähettävät push-ilmoituksen kaikille Findly-käyttäjille 5 km säteellä. WhatsApp- ja Instagram-jakolinkki generoidaan automaattisesti.</span>
+      <div class="notice-info" style="margin-top:24px;">
+        <span style="font-size:18px;">🐾</span>
+        <span>Lisää selkeä kuva ja sijainti. Mitä tarkemmat tiedot, sitä todennäköisemmin eläin löytää kotiin.</span>
       </div>
     </div>
   </section>
@@ -1167,8 +1167,18 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="ftype-btn" onclick="setFormType('pet')">🐾 Eläin</div>
     </div>
 
+    <!-- Pet subtype selector (lost/found) -->
+    <div id="pet-subtype-field" style="display:none;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Onko eläin kadonnut vai löytynyt?</div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="pet-sub-btn" onclick="setPetSubtype('lost',this)" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;font-weight:600;cursor:pointer;">🔴 Kadonnut</button>
+        <button type="button" class="pet-sub-btn" onclick="setPetSubtype('found',this)" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:white;font-size:14px;font-weight:600;cursor:pointer;">🟢 Löysin eläimen</button>
+      </div>
+      <input type="hidden" id="f-pet-subtype" value="lost" />
+    </div>
+
     <div id="form-notice" class="notice-info" style="margin-bottom:20px;">
-      <span>🔴</span>
+      <span id="form-notice-icon">🔴</span>
       <span id="form-notice-text">Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.</span>
     </div>
 
@@ -1223,7 +1233,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
             <img id="image-preview" src="" alt="" style="display:none;max-width:100%;max-height:200px;border-radius:10px;object-fit:cover;" />
           </div>
           <input type="file" id="f-image" accept="image/*" style="display:none;" onchange="previewImage(this)" />
-          <div class="notice-warn" style="margin-top:10px;">
+          <div class="notice-warn" style="margin-top:10px;" id="image-guidance">
             <span>🛡️</span>
             <div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>
           </div>
@@ -1814,10 +1824,12 @@ function renderFeed() {
 async function loadPets() {
   const grid = document.getElementById('pets-grid');
   grid.innerHTML = '<div class="loading"><div class="spinner"></div>Ladataan...</div>';
-  const { data } = await sb.from('listings').select('*').eq('type','pet').gt('expires_at', new Date().toISOString()).order('created_at', { ascending: false });
-  const items = data || [];
+  const { data } = await sb.from('listings').select('*').eq('type','pet').gt('expires_at', new Date().toISOString()).neq('status','returned').order('created_at', { ascending: false });
+  let items = data || [];
+  if (petFilter === 'lost') items = items.filter(l => l.subtype !== 'found');
+  if (petFilter === 'found') items = items.filter(l => l.subtype === 'found');
   if (items.length === 0) {
-    grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🐾</div><div>Ei eläinilmoituksia vielä.</div></div>';
+    grid.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🐾</div><div>Ei eläinilmoituksia' + (petFilter !== 'all' ? ' tällä suodattimella' : ' vielä') + '.</div></div>';
     return;
   }
   grid.innerHTML = items.map(renderPetCard).join('');
@@ -1852,18 +1864,20 @@ function renderCard(l) {
 function renderPetCard(l) {
   const icon = categoryIcon(l.category);
   const isLost = l.subtype !== 'found';
+  const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : '';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
-    <div class="feed-card-img" style="background:${isLost?'#FFF5E0':'#E8F5EF'}">${icon}</div>
+    <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : 'background:' + (isLost?'#FFF5E0':'#E8F5EF')}">
+      ${l.image_url ? `<img src="${l.image_url}" alt="" style="width:100%;height:100%;object-fit:cover;" />` : icon}
+    </div>
     <div class="feed-card-body">
       <div class="feed-card-top">
         <div class="feed-card-title">${esc(l.title)}</div>
         <span class="feed-card-badge ${isLost?'badge-lost':'badge-found'}">${isLost?'🔴 Kadonnut':'🟢 Löydetty'}</span>
       </div>
-      <div class="feed-card-loc">📍 ${esc(l.address||'')}</div>
+      ${displayAddr ? `<div class="feed-card-loc">📍 ${esc(displayAddr)}</div>` : ''}
       <div class="feed-card-desc">${esc(l.description||'')}</div>
-      <div style="display:flex;gap:8px;padding-top:10px;margin-top:8px;border-top:1px solid var(--border);">
-        <button onclick="event.stopPropagation();shareWA('${l.id}')" style="flex:1;padding:7px;font-size:11px;font-weight:600;border-radius:8px;cursor:pointer;border:none;background:#25D366;color:white;">WhatsApp</button>
-        <button onclick="event.stopPropagation();shareIG('${l.id}')" style="flex:1;padding:7px;font-size:11px;font-weight:600;border-radius:8px;cursor:pointer;border:none;background:#E1306C;color:white;">Instagram</button>
+      <div class="feed-card-footer">
+        <span class="feed-card-time">${timeAgo(l.created_at)} · ${expiresIn(l.created_at)}</span>
       </div>
     </div>
   </div>`;
@@ -2413,27 +2427,49 @@ function setFormType(type) {
     lost: 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.',
     found: '💛 Auta hädässä olevaa kadottajaa ja ansaitse karmamitali — elämä palkitsee hyväntekijää! Kuvaile löytö yleisellä tasolla, yksityiskohdat vahvistetaan matchin jälkeen.',
     stolen: 'Tee ensin rikosilmoitus poliisille. Findly toimii täydentävänä palveluna.',
-    pet: 'Eläinilmoitus — lisää mahdollisimman selkeä kuva. Push-ilmoitukset lähtevät 5 km säteellä.'
+    pet: '🐾 Lisää selkeä kuva ja mahdollisimman tarkka kuvaus lemmikistä — rotu, väri, erityispiirteet.'
   };
 
   document.getElementById('form-notice-text').innerHTML = noticeTexts[type];
+  document.getElementById('form-notice-icon').textContent = type === 'pet' ? '🐾' : '🔴';
   document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
   document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
+  document.getElementById('pet-subtype-field').style.display = type === 'pet' ? 'block' : 'none';
   document.getElementById('image-upload-field').style.display = type === 'found' ? 'none' : 'block';
   document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
+
+  // Update image guidance for pet type
+  const imgGuide = document.getElementById('image-guidance');
+  if (imgGuide) {
+    imgGuide.innerHTML = type === 'pet'
+      ? '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Lisää mahdollisimman selkeä kuva lemmikistä. Näytä eläimen väri, koko ja erityispiirteet.</div>'
+      : '<span>🛡️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>';
+  }
 
   // found: make taken-to required
   const takenToVal = document.getElementById('f-taken-to-val');
   if (type === 'found') takenToVal.required = true;
   else takenToVal.required = false;
 
-  document.getElementById('f-when-label').textContent = type === 'found' ? 'Milloin löysit *' : type === 'stolen' ? 'Milloin tapahtui *' : 'Milloin katosi *';
-  document.getElementById('f-location-label').textContent = type === 'found' ? 'Löytöpaikka *' : type === 'stolen' ? 'Tapahtumapaikka *' : 'Katoamispaikka *';
+  const whenLabels = { found: 'Milloin löysit *', stolen: 'Milloin tapahtui *', pet: 'Milloin katosi / löytyi *', lost: 'Milloin katosi *' };
+  document.getElementById('f-when-label').textContent = whenLabels[type] || 'Milloin katosi *';
+  const locLabels = { found: 'Löytöpaikka *', stolen: 'Tapahtumapaikka *', pet: 'Missä eläin katosi / löytyi *', lost: 'Katoamispaikka *' };
+  document.getElementById('f-location-label').textContent = locLabels[type] || 'Katoamispaikka *';
 
   const submitBtn = document.getElementById('submit-btn');
   const btnLabels = { lost: 'Julkaise kadonnut-ilmoitus →', found: 'Julkaise löytöilmoitus →', stolen: 'Julkaise varastettu-ilmoitus →', pet: 'Julkaise eläinilmoitus →' };
   submitBtn.textContent = btnLabels[type];
   submitBtn.className = 'submit-btn ' + type;
+}
+
+function setPetSubtype(subtype, btn) {
+  document.getElementById('f-pet-subtype').value = subtype;
+  document.querySelectorAll('.pet-sub-btn').forEach(b => {
+    b.style.background = 'white';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = subtype === 'lost' ? '#FFF5E0' : '#E8F5EF';
+  btn.style.borderColor = subtype === 'lost' ? '#D4A04A' : '#6DC29B';
 }
 
 function selectLoc(el, val) {
@@ -2533,7 +2569,7 @@ async function submitListing(e) {
     taken_to: document.getElementById('f-taken-to-val')?.value || null,
     taken_to_detail: document.getElementById('f-taken-to-detail')?.value?.trim() || null,
     police_report: null,
-    subtype: currentFormType === 'pet' ? 'lost' : null,
+    subtype: currentFormType === 'pet' ? (document.getElementById('f-pet-subtype')?.value || 'lost') : null,
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     image_url
   };
