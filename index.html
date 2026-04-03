@@ -2759,10 +2759,12 @@ async function updateListingStatus(id, status) {
 // BADGE SYSTEM
 // ═══════════════════════════════════════════════════════
 function getBadge(count) {
-  if (count >= 10) return { icon: '💎', title: 'Findly-legenda', color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} palautettua` };
-  if (count >= 5)  return { icon: '🏆', title: 'Mestarietsijä',  color: '#C47A15', bg: '#FEF3E2', desc: `${count} palautettua` };
-  if (count >= 3)  return { icon: '⭐', title: 'Luotettava löytäjä', color: '#2463A8', bg: '#EBF2FB', desc: `${count} palautettua` };
-  if (count >= 1)  return { icon: '🌱', title: 'Löytäjä',        color: '#1A7A52', bg: '#E6F5EE', desc: `${count} palautettua` };
+  const L = currentLang;
+  const karma = {fi:'karmaa',sv:'karma',en:'karma'}[L];
+  if (count >= 10) return { icon: '💎', title: {fi:'Findly-legenda',sv:'Findly-legend',en:'Findly Legend'}[L], color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} ${karma}` };
+  if (count >= 5)  return { icon: '🏆', title: {fi:'Mestarietsijä',sv:'Mästarletare',en:'Master Finder'}[L],  color: '#C47A15', bg: '#FEF3E2', desc: `${count} ${karma}` };
+  if (count >= 3)  return { icon: '⭐', title: {fi:'Luotettava löytäjä',sv:'Pålitlig upphittare',en:'Trusted Finder'}[L], color: '#2463A8', bg: '#EBF2FB', desc: `${count} ${karma}` };
+  if (count >= 1)  return { icon: '🌱', title: {fi:'Löytäjä',sv:'Upphittare',en:'Finder'}[L],        color: '#1A7A52', bg: '#E6F5EE', desc: `${count} ${karma}` };
   return null;
 }
 
@@ -3997,9 +3999,9 @@ async function loadProfile() {
       <div style="display:flex;align-items:center;gap:16px;">
         <div style="font-size:48px;line-height:1;">${badge.icon}</div>
         <div>
-          <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:4px;">LÖYTÄJÄN TITTELI</div>
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:4px;">${{fi:'KARMA',sv:'KARMA',en:'KARMA'}[currentLang]}</div>
           <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:${badge.color};">${badge.title}</div>
-          <div style="font-size:12px;color:var(--ink2);margin-top:2px;">${badge.desc} palautettua</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:2px;">✨ ${badge.desc}</div>
         </div>
       </div>`;
     badgeCard.style.display = 'block';
@@ -4007,8 +4009,8 @@ async function loadProfile() {
     document.getElementById('profile-badge-content').innerHTML = `
       <div style="text-align:center;padding:8px 0;">
         <div style="font-size:32px;margin-bottom:8px;">🌱</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Ansaitse löytäjän titteli</div>
-        <div style="font-size:12px;color:var(--ink3);line-height:1.6;">Auta hädässä olevaa kadottajaa ja ansaitse karmamitali.<br>Elämä palkitsee hyväntekijää. 💛</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">${{fi:'Ansaitse ensimmäinen karmasi',sv:'Förtjäna din första karma',en:'Earn your first karma'}[currentLang]}</div>
+        <div style="font-size:12px;color:var(--ink3);line-height:1.6;">${{fi:'Auta hädässä olevaa kadottajaa ja ansaitse karmaa.<br>Elämä palkitsee hyväntekijää. ✨',sv:'Hjälp någon som tappat något och förtjäna karma.<br>Livet belönar goda gärningar. ✨',en:'Help someone who lost something and earn karma.<br>Life rewards good deeds. ✨'}[currentLang]}</div>
       </div>`;
     badgeCard.style.display = 'block';
   }
