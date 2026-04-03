@@ -3849,15 +3849,16 @@ async function loadMessages() {
     const own = m.sender_id === currentUser?.id;
     const isVerifyMsg = m.content.startsWith('🔐 OSUMAILMOITUS');
     if (isVerifyMsg && !own) {
-      // Show structured verify request for listing owner
+      // Check if already responded (any message after this one from current user contains ✅ or ❌ or ❓)
+      const alreadyResponded = data.some(other => other.sender_id === currentUser?.id && other.created_at > m.created_at && (other.content.startsWith('✅') || other.content.startsWith('❌') || other.content.startsWith('❓')));
       return `<div style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--ink);">
         <div style="font-weight:600;margin-bottom:8px;color:var(--green-dark);">🔐 Osumailmoitus saapui</div>
         <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;">${esc(m.content.replace('🔐 OSUMAILMOITUS\n\n',''))}</pre>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+        ${alreadyResponded ? `<div style="margin-top:12px;font-size:12px;color:var(--ink3);font-style:italic;">${{fi:'✓ Olet jo vastannut tähän pyyntöön',sv:'✓ Du har redan svarat på denna förfrågan',en:'✓ You have already responded to this request'}[currentLang]}</div>` : `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
           <button onclick="replyVerify('accepted')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✓ Hyväksy</button>
           <button onclick="replyVerify('more')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);">Pyydä lisätietoa</button>
           <button onclick="replyVerify('rejected')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);">✗ Hylkää</button>
-        </div>
+        </div>`}
         <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
       </div>`;
     }
