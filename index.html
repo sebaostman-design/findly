@@ -3450,6 +3450,7 @@ async function loadMatches() {
 
   el.innerHTML = '<div class="loading"><div class="spinner"></div>Lasketaan osumia...</div>';
 
+  try {
   // Load user's own listings + all other listings + existing conversations
   const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id),
@@ -3480,7 +3481,7 @@ async function loadMatches() {
       return { listing: other, score: result.score, reasons: result.reasons };
     }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 5);
 
-    const typeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[mine.type] || mine.type;
+    const typeLbl = typeLabel(mine.type);
     const typeBadge = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen' }[mine.type] || '';
 
     html += `<div class="match-group">
@@ -3489,7 +3490,7 @@ async function loadMatches() {
         <span style="font-size:28px;">${categoryIcon(mine.category)}</span>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:600;">${esc(mine.title)}</div>
-          <div style="font-size:12px;color:var(--ink3);">${typeLabel} · ${mine.address ? mine.address.split(',')[0] : ''} · ${expiresIn(mine.created_at)}</div>
+          <div style="font-size:12px;color:var(--ink3);">${typeLbl} · ${mine.address ? mine.address.split(',')[0] : ''} · ${expiresIn(mine.created_at)}</div>
         </div>
         <span class="feed-card-badge ${typeBadge}" style="font-size:10px;">${typeLabel}</span>
       </div>
@@ -3570,6 +3571,9 @@ async function loadMatches() {
       <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
     </div>
     ${html}`;
+  }
+  } catch(err) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--red);font-size:14px;">Virhe osumien latauksessa. <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">Yritä uudelleen</a></div>';
   }
 }
 
