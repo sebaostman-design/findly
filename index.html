@@ -3321,28 +3321,39 @@ function scoreMatch(mine, other) {
   if (mine.incident_time && other.incident_time) {
     const diff = Math.abs(new Date(mine.incident_time) - new Date(other.incident_time));
     const hours = diff / 3600000;
-    if (hours <= 6)       { score += 30; reasons.push({ label: 'Sama aika', hit: true }); }
+    if (hours <= 6)       { score += 30; reasons.push({ label: {fi:'Sama aika',sv:'Samma tid',en:'Same time'}[currentLang], hit: true }); }
     else if (hours <= 24) { score += 20; reasons.push({ label: '±24h', hit: true }); }
     else if (hours <= 72) { score += 10; reasons.push({ label: '±72h', hit: false }); }
   }
 
-  // Location proximity
+  // Location proximity (softer — items travel via buses, people etc.)
   if (mine.lat && mine.lng && other.lat && other.lng) {
     const dist = getDistanceMeters(mine.lat, mine.lng, other.lat, other.lng);
-    if (dist < 500)       { score += 30; reasons.push({ label: 'Sama alue', hit: true }); }
-    else if (dist < 1500) { score += 20; reasons.push({ label: '<1.5 km', hit: true }); }
-    else if (dist < 5000) { score += 10; reasons.push({ label: '<5 km', hit: false }); }
-    else return 0; // Too far, skip entirely
+    if (dist < 500)        { score += 30; reasons.push({ label: {fi:'Sama alue',sv:'Samma område',en:'Same area'}[currentLang], hit: true }); }
+    else if (dist < 1500)  { score += 25; reasons.push({ label: '<1.5 km', hit: true }); }
+    else if (dist < 5000)  { score += 15; reasons.push({ label: '<5 km', hit: true }); }
+    else if (dist < 15000) { score += 5; reasons.push({ label: '<15 km', hit: false }); }
+    else if (score < 50) return 0; // Only skip if score is also low
   }
 
-  // Keyword overlap (title + description)
+  // Keyword overlap — Finnish-aware (stem matching for inflected words)
+  const stopWords = ['löydetty','kadonnut','tavara','paikka','lähellä','sitten','tämä','joka','olen','minun','kanssa','ollut','myös','tässä','siinä','mutta','koska','kuin','hyvin','paljon','vähän','ihan','aika','noin'];
   const myText = ((mine.title || '') + ' ' + (mine.description || '')).toLowerCase();
   const otherText = ((other.title || '') + ' ' + (other.description || '')).toLowerCase();
-  const keywords = myText.split(/\s+/).filter(w => w.length > 4 && !['löydetty','kadonnut','tavara','paikka'].includes(w));
-  const hits = [...new Set(keywords.filter(w => otherText.includes(w)))];
+  const myWords = myText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
+  const otherWords = otherText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
+
+  // Match if words share a common stem (min 3 chars)
+  const hits = [];
+  for (const w of new Set(myWords)) {
+    const stem = w.substring(0, Math.max(3, Math.floor(w.length * 0.7)));
+    if (otherWords.some(ow => ow.startsWith(stem) || w.startsWith(ow.substring(0, Math.max(3, Math.floor(ow.length * 0.7)))))) {
+      hits.push(w);
+    }
+  }
   if (hits.length > 0) {
-    score += Math.min(hits.length * 8, 24);
-    reasons.push({ label: hits.slice(0,2).join(', '), hit: true });
+    score += Math.min(hits.length * 6, 24);
+    reasons.push({ label: hits.slice(0,3).join(', '), hit: true });
   }
 
   return { score: Math.min(score, 100), reasons };
