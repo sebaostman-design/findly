@@ -2273,7 +2273,7 @@ async function updateMatchBadge() {
   if (!currentUser) return;
   const [{ data: myListings }, { data: allOther }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id).gt('expires_at', new Date().toISOString()),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).gt('expires_at', new Date().toISOString())
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']).gt('expires_at', new Date().toISOString())
   ]);
   if (!myListings || myListings.length === 0) { setMatchBadge(0); return; }
   let total = 0;
@@ -2930,7 +2930,7 @@ async function pollForNotifications() {
   // Check for new matches
   const [{ data: mine }, { data: others }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id).gt('expires_at', new Date().toISOString()),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).gt('expires_at', new Date().toISOString())
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']).gt('expires_at', new Date().toISOString())
   ]);
   if (!mine) return;
   let count = 0;
@@ -3300,20 +3300,28 @@ function getDistanceMeters(lat1, lng1, lat2, lng2) {
 }
 
 function scoreMatch(mine, other) {
-  // Must be opposite types: lost↔found
-  const valid = (mine.type === 'lost' && other.type === 'found') ||
-                (mine.type === 'found' && other.type === 'lost');
-  if (!valid) return 0;
+  // Must be opposite types: lost↔found, or pet with opposite subtypes
+  const isItemMatch = (mine.type === 'lost' && other.type === 'found') ||
+                      (mine.type === 'found' && other.type === 'lost');
+  const isPetMatch = mine.type === 'pet' && other.type === 'pet' &&
+                     mine.subtype !== other.subtype &&
+                     (mine.subtype === 'lost' || mine.subtype === 'found') &&
+                     (other.subtype === 'lost' || other.subtype === 'found');
+  if (!isItemMatch && !isPetMatch) return 0;
 
   let score = 0;
   const reasons = [];
 
-  // Category match (required base)
+  // Category match (required for items, flexible for pets)
   if (mine.category && other.category && mine.category === other.category) {
     score += 40;
     reasons.push({ label: mine.category.split(' ').slice(1).join(' ') || mine.category, hit: true });
+  } else if (isPetMatch) {
+    // Pets: different animal type still gets some score (someone might misidentify breed)
+    score += 15;
+    reasons.push({ label: mine.category.split(' ').slice(1).join(' ') || '🐾', hit: false });
   } else if (mine.category && other.category) {
-    // Different category = no match
+    // Different category = no match for items
     return 0;
   }
 
@@ -3378,7 +3386,7 @@ async function loadMatches() {
   // Load user's own listings + all other listings + existing conversations
   const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']),
     sb.from('conversations').select('listing_id').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
   ]);
   // Set of listing IDs where user already has a conversation
