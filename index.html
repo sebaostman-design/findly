@@ -2883,6 +2883,27 @@ async function closeCaseFromChat() {
   const updates = { status: 'returned', expires_at: new Date(Date.now() - 1000).toISOString(), finder_id: finderId };
   const { error } = await sb.from('listings').update(updates).eq('id', currentChatListingId);
   if (error) { toast(t('toast_error') + error.message, 'red'); return; }
+
+  // Send a closing message in the chat so BOTH parties see what happened
+  const L = currentLang;
+  const finderBadge = getBadge(await getFinderCount(finderId));
+  let closeMsg = '🎉 ' + {fi:'TAPAUS SULJETTU',sv:'ÄRENDE AVSLUTAT',en:'CASE CLOSED'}[L] + '\n\n';
+  closeMsg += {fi:'Tavara on palautettu onnistuneesti omistajalleen!',sv:'Föremålet har returnerats framgångsrikt till ägaren!',en:'The item has been successfully returned to its owner!'}[L] + '\n\n';
+  if (finderBadge) {
+    closeMsg += '🏅 ' + {fi:'Löytäjä ansaitsi: ',sv:'Upphittaren fick: ',en:'Finder earned: '}[L] + finderBadge.icon + ' ' + finderBadge.title + ' (' + finderBadge.desc + ')\n\n';
+  }
+  closeMsg += {fi:'💛 Kiitos molemmille! Rehellisyys ja yhteistyö tekivät tämän mahdolliseksi.',sv:'💛 Tack till er båda! Ärlighet och samarbete gjorde detta möjligt.',en:'💛 Thanks to both of you! Honesty and cooperation made this possible.'}[L];
+
+  await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: closeMsg });
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', currentConvId);
+
+  // Send push notification to the other party
+  sendNotification(
+    'Findly — ' + {fi:'Tapaus suljettu!',sv:'Ärende avslutat!',en:'Case closed!'}[L],
+    {fi:'Tavara palautettu onnistuneesti. Katso viestit.',sv:'Föremålet returnerat. Se meddelanden.',en:'Item returned successfully. Check messages.'}[L]
+  );
+
+  loadMessages();
   showSuccessModal(currentChatListingId, currentUserIsOwner, finderId);
 }
 
@@ -4098,8 +4119,25 @@ async function loadMessages() {
     const isAcceptMsg = m.content.startsWith('✅ OMISTAJUUS VAHVISTETTU');
     if (isAcceptMsg) {
       return `<div style="background:linear-gradient(135deg,#E8F5EF,#FFF8E7);border:2px solid var(--green);border-radius:var(--radius);padding:18px;font-size:13px;color:var(--ink);margin:8px 0;">
-        <div style="font-size:16px;font-weight:700;color:var(--green-dark);margin-bottom:10px;">🎉 Omistajuus vahvistettu!</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green-dark);margin-bottom:10px;">🎉 ${esc({fi:'Omistajuus vahvistettu!',sv:'Ägande bekräftat!',en:'Ownership verified!'}[currentLang])}</div>
         <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;line-height:1.7;">${esc(m.content.replace('✅ OMISTAJUUS VAHVISTETTU\n\n🎉 Vastaus hyväksytty — tämä on oikea omistaja!\n\n',''))}</pre>
+        <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
+    const isCloseMsg = m.content.startsWith('🎉 TAPAUS SULJETTU') || m.content.startsWith('🎉 ÄRENDE AVSLUTAT') || m.content.startsWith('🎉 CASE CLOSED');
+    if (isCloseMsg) {
+      return `<div style="background:linear-gradient(135deg,#FFF8E7,#FFE4B5);border:2px solid #DAA520;border-radius:var(--radius);padding:20px;font-size:13px;color:var(--ink);margin:8px 0;text-align:center;">
+        <div style="font-size:32px;margin-bottom:8px;">🎉</div>
+        <div style="font-size:16px;font-weight:700;color:#DAA520;margin-bottom:10px;">${esc({fi:'Tapaus suljettu!',sv:'Ärende avslutat!',en:'Case closed!'}[currentLang])}</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;line-height:1.7;text-align:left;">${esc(m.content.replace(/^🎉 (TAPAUS SULJETTU|ÄRENDE AVSLUTAT|CASE CLOSED)\n\n/,''))}</pre>
+        <div style="font-size:10px;color:var(--ink3);margin-top:10px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
+    const isQuestionMsg = m.content.startsWith('❓ KYSYMYS ENNEN VÄITETTÄ') || m.content.startsWith('❓ FRÅGA INNAN') || m.content.startsWith('❓ QUESTION BEFORE');
+    if (isQuestionMsg) {
+      return `<div style="background:var(--blue-light);border:1.5px solid var(--blue);border-radius:var(--radius);padding:16px;font-size:13px;color:var(--ink);margin:8px 0;">
+        <div style="font-weight:600;margin-bottom:8px;color:var(--blue);">❓ ${esc({fi:'Kysymys ennen väitettä',sv:'Fråga innan anspråk',en:'Question before claim'}[currentLang])}</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;line-height:1.6;">${esc(m.content.replace(/^❓ [^\n]+\n\n[^\n]+\n\n/,''))}</pre>
         <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
       </div>`;
     }
