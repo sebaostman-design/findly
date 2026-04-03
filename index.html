@@ -1395,8 +1395,11 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
         <div class="form-group full">
           <label id="f-location-label" data-i18n="form_location">Katoamispaikka *</label>
-          <input type="text" id="f-address" placeholder="Kirjoita osoite tai paikka, esim. Kampin keskus, Hämeentie 12..." style="margin-bottom:10px;" />
-          <div style="font-size:12px;color:var(--ink3);margin-bottom:8px;text-align:center;">— tai merkitse kartalta —</div>
+          <div style="position:relative;">
+            <input type="text" id="f-address" placeholder="Kirjoita osoite tai paikka, esim. Kampin keskus, Hämeentie 12..." style="margin-bottom:0;" autocomplete="off" oninput="geocodeSearch(this.value)" onfocus="if(this.value.length>2)geocodeSearch(this.value)" />
+            <div id="geocode-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--border);border-top:none;border-radius:0 0 12px 12px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,0.1);"></div>
+          </div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 8px;text-align:center;">— tai merkitse kartalta —</div>
           <div class="form-map-pick">
             <div id="form-map"></div>
             <div class="form-map-hint" data-i18n="form_map_hint">Klikkaa kartalta merkitäksesi sijainti</div>
@@ -3209,6 +3212,54 @@ function filterMap(type, btn) {
 // ═══════════════════════════════════════════════════════
 // FORM MAP
 // ═══════════════════════════════════════════════════════
+let geocodeTimeout = null;
+function geocodeSearch(query) {
+  clearTimeout(geocodeTimeout);
+  const el = document.getElementById('geocode-results');
+  if (!query || query.length < 3) { el.style.display = 'none'; return; }
+  geocodeTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MAPBOX_TOKEN}&language=fi&country=fi&types=address,poi,place,locality,neighborhood&limit=5`);
+      const data = await res.json();
+      if (!data.features || data.features.length === 0) { el.style.display = 'none'; return; }
+      el.style.display = 'block';
+      el.innerHTML = data.features.map(f => {
+        const icon = f.place_type.includes('poi') ? '📍' : f.place_type.includes('address') ? '🏠' : '📌';
+        return `<div onclick="selectGeoResult('${esc(f.place_name)}',${f.center[1]},${f.center[0]})" style="padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:10px;transition:background 0.1s;" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background='white'">
+          <span style="font-size:16px;flex-shrink:0;">${icon}</span>
+          <div style="min-width:0;">
+            <div style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(f.text)}</div>
+            <div style="font-size:11px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(f.place_name)}</div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) { el.style.display = 'none'; }
+  }, 300);
+}
+
+function selectGeoResult(placeName, lat, lng) {
+  document.getElementById('f-address').value = placeName;
+  document.getElementById('f-lat').value = lat;
+  document.getElementById('f-lng').value = lng;
+  document.getElementById('geocode-results').style.display = 'none';
+  selectedLat = lat;
+  selectedLng = lng;
+  // Move form map marker if map exists
+  if (formMap) {
+    if (formMarker) formMarker.remove();
+    formMarker = new mapboxgl.Marker({ color: '#1A7A52' }).setLngLat([lng, lat]).addTo(formMap);
+    formMap.flyTo({ center: [lng, lat], zoom: 15 });
+  }
+}
+
+// Close geocode results when clicking outside
+document.addEventListener('click', e => {
+  const el = document.getElementById('geocode-results');
+  if (el && !e.target.closest('#f-address') && !e.target.closest('#geocode-results')) {
+    el.style.display = 'none';
+  }
+});
+
 function initFormMap() {
   if (formMap) return;
   setTimeout(() => {
