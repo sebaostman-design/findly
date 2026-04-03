@@ -814,7 +814,10 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
             <div class="task-card-sub" data-i18n="hero_found_sub">Ilmoita löydöstäsi</div>
           </div>
         </div>
-        <button class="btn-check-matches" onclick="showPage('matches')" data-i18n="hero_matches">🔔 Tarkista osumat</button>
+        <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
+          <span id="hero-match-text" data-i18n="hero_matches">🔔 Tarkista osumat</span>
+          <span id="hero-match-badge" style="display:none;background:var(--green);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:4px;"></span>
+        </button>
       </div>
       <div class="hero-visual">
         <div class="floating-card">
@@ -2262,10 +2265,17 @@ sb.auth.onAuthStateChange((event, session) => {
 function setMatchBadge(count) {
   const b1 = document.getElementById('match-badge');
   const b2 = document.getElementById('match-badge-mobile');
+  const b3 = document.getElementById('hero-match-badge');
+  const heroBtn = document.getElementById('hero-match-btn');
+  const heroText = document.getElementById('hero-match-text');
   if (count > 0) {
-    [b1, b2].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
+    [b1, b2, b3].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
+    if (heroBtn) { heroBtn.style.borderColor = 'var(--green)'; heroBtn.style.borderStyle = 'solid'; heroBtn.style.background = 'var(--green-light)'; heroBtn.style.color = 'var(--green-dark)'; }
+    if (heroText) heroText.textContent = '🎯 ' + count + ' ' + {fi:'osumaa!',sv:'träffar!',en:'matches!'}[currentLang];
   } else {
-    [b1, b2].forEach(b => { if (b) b.style.display = 'none'; });
+    [b1, b2, b3].forEach(b => { if (b) b.style.display = 'none'; });
+    if (heroBtn) { heroBtn.style.borderColor = ''; heroBtn.style.borderStyle = ''; heroBtn.style.background = ''; heroBtn.style.color = ''; }
+    if (heroText) heroText.textContent = {fi:'🔔 Tarkista osumat',sv:'🔔 Kolla träffar',en:'🔔 Check matches'}[currentLang];
   }
 }
 
