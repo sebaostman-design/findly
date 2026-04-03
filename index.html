@@ -3293,16 +3293,52 @@ async function submitListing(e) {
       .neq('user_id', currentUser.id).in('type', ['lost','found','pet'])
       .gt('expires_at', new Date().toISOString()).neq('status', 'returned');
     let matchCount = 0;
+    let bestMatch = null;
+    let bestScore = 0;
     for (const other of (others || [])) {
       const result = scoreMatch(data, other);
-      if (result && result.score >= 20) matchCount++;
+      if (result && result.score >= 20) {
+        matchCount++;
+        if (result.score > bestScore) { bestScore = result.score; bestMatch = other; }
+      }
     }
     if (matchCount > 0) {
       setMatchBadge(matchCount);
-      toast('🎯 ' + matchCount + {fi:' mahdollinen osuma löytyi!',sv:' möjlig träff hittad!',en:' possible match found!'}[currentLang], 'green');
       sendNotification('Findly — ' + {fi:'Osuma löytyi!',sv:'Träff hittad!',en:'Match found!'}[currentLang], matchCount + {fi:' mahdollinen osuma ilmoituksellesi',sv:' möjlig träff för din anmälan',en:' possible match for your listing'}[currentLang]);
+      showMatchAlert(matchCount, bestMatch, bestScore);
     }
   }, 1500);
+}
+
+function showMatchAlert(count, bestMatch, score) {
+  const L = currentLang;
+  const scoreLabel = score >= 70 ? {fi:'Korkea',sv:'Hög',en:'High'}[L] : score >= 45 ? {fi:'Kohtalainen',sv:'Måttlig',en:'Moderate'}[L] : {fi:'Mahdollinen',sv:'Möjlig',en:'Possible'}[L];
+  const el = document.createElement('div');
+  el.id = 'match-alert';
+  el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:600;max-width:400px;width:calc(100% - 48px);background:white;border:2px solid var(--green);border-radius:20px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);animation:popIn 0.3s ease;';
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="font-size:32px;">🎯</div>
+      <div>
+        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;color:var(--green-dark);">${count} ${count === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[L] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[L]}</div>
+        <div style="font-size:12px;color:var(--ink3);">${{fi:'Findly löysi automaattisesti',sv:'Findly hittade automatiskt',en:'Findly found automatically'}[L]}</div>
+      </div>
+    </div>
+    ${bestMatch ? `<div style="background:var(--paper);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <div style="font-size:20px;">${categoryIcon(bestMatch.category)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(bestMatch.title)}</div>
+        <div style="font-size:11px;color:var(--ink3);">${bestMatch.address ? ({fi:'lähellä ',sv:'nära ',en:'near '}[L] + bestMatch.address.split(',')[0]) : ''}</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--green);background:var(--green-light);padding:4px 10px;border-radius:20px;">${score}%</div>
+    </div>` : ''}
+    <div style="display:flex;gap:8px;">
+      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:white;cursor:pointer;">${{fi:'Katso osumat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
+      <button onclick="document.getElementById('match-alert').remove()" style="padding:11px 16px;font-size:14px;border:1.5px solid var(--border);border-radius:12px;background:white;color:var(--ink3);cursor:pointer;">${{fi:'Myöhemmin',sv:'Senare',en:'Later'}[L]}</button>
+    </div>`;
+  document.body.appendChild(el);
+  // Auto-remove after 15 seconds
+  setTimeout(() => { const a = document.getElementById('match-alert'); if (a) a.remove(); }, 15000);
 }
 
 // ═══════════════════════════════════════════════════════
