@@ -3286,6 +3286,23 @@ async function submitListing(e) {
   selectedLat = null; selectedLng = null;
   if (formMarker) { formMarker.remove(); formMarker = null; }
   openListing(data.id);
+
+  // Immediate match check after publishing
+  setTimeout(async () => {
+    const { data: others } = await sb.from('listings').select('*')
+      .neq('user_id', currentUser.id).in('type', ['lost','found','pet'])
+      .gt('expires_at', new Date().toISOString()).neq('status', 'returned');
+    let matchCount = 0;
+    for (const other of (others || [])) {
+      const result = scoreMatch(data, other);
+      if (result && result.score >= 20) matchCount++;
+    }
+    if (matchCount > 0) {
+      setMatchBadge(matchCount);
+      toast('🎯 ' + matchCount + {fi:' mahdollinen osuma löytyi!',sv:' möjlig träff hittad!',en:' possible match found!'}[currentLang], 'green');
+      sendNotification('Findly — ' + {fi:'Osuma löytyi!',sv:'Träff hittad!',en:'Match found!'}[currentLang], matchCount + {fi:' mahdollinen osuma ilmoituksellesi',sv:' möjlig träff för din anmälan',en:' possible match for your listing'}[currentLang]);
+    }
+  }, 1500);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3312,16 +3329,20 @@ function scoreMatch(mine, other) {
   let score = 0;
   const reasons = [];
 
-  // Category match (required for items, flexible for pets)
-  if (mine.category && other.category && mine.category === other.category) {
+  // Category match (flexible — users often miscategorize)
+  const catA = mine.category || '';
+  const catB = other.category || '';
+  if (catA && catB && catA === catB) {
     score += 40;
-    reasons.push({ label: mine.category.split(' ').slice(1).join(' ') || mine.category, hit: true });
+    reasons.push({ label: catA.split(' ').slice(1).join(' ') || catA, hit: true });
   } else if (isPetMatch) {
-    // Pets: different animal type still gets some score (someone might misidentify breed)
     score += 15;
-    reasons.push({ label: mine.category.split(' ').slice(1).join(' ') || '🐾', hit: false });
-  } else if (mine.category && other.category) {
-    // Different category = no match for items
+    reasons.push({ label: catA.split(' ').slice(1).join(' ') || '🐾', hit: false });
+  } else if (catA === 'Muu' || catB === 'Muu') {
+    // One is "Other" — let keywords decide
+    score += 5;
+  } else if (catA && catB) {
+    // Different specific category = no match
     return 0;
   }
 
