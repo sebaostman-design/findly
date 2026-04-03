@@ -3452,9 +3452,10 @@ async function loadMatches() {
 
   try {
   // Load user's own listings + all other listings + existing conversations
+  const now = new Date().toISOString();
   const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
-    sb.from('listings').select('*').eq('user_id', currentUser.id),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']),
+    sb.from('listings').select('*').eq('user_id', currentUser.id).neq('status','returned').gt('expires_at', now),
+    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']).neq('status','returned').gt('expires_at', now),
     sb.from('conversations').select('listing_id').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
   ]);
   // Set of listing IDs where user already has a conversation
