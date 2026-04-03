@@ -3808,6 +3808,38 @@ async function loadMatches() {
 // ═══════════════════════════════════════════════════════
 // VERIFY FLOW
 // ═══════════════════════════════════════════════════════
+// Shared: find or create ONE conversation per listing+user pair
+async function getOrCreateConversation(listingId, otherUserId) {
+  // Search for ANY conversation for this listing involving current user
+  const { data: existing } = await sb.from('conversations')
+    .select('id')
+    .eq('listing_id', listingId)
+    .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
+    .limit(1)
+    .maybeSingle();
+
+  if (existing) return { convId: existing.id, isNew: false };
+
+  // Also check if current user has ANY conversation for this listing
+  const { data: anyExisting } = await sb.from('conversations')
+    .select('id')
+    .eq('listing_id', listingId)
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .limit(1)
+    .maybeSingle();
+
+  if (anyExisting) return { convId: anyExisting.id, isNew: false };
+
+  // Create new
+  const { data: conv, error } = await sb.from('conversations').insert({
+    listing_id: listingId,
+    user_a: currentUser.id,
+    user_b: otherUserId
+  }).select().single();
+  if (error) { toast(t('toast_error') + error.message, 'red'); return { convId: null, isNew: false }; }
+  return { convId: conv.id, isNew: true };
+}
+
 // Soft inquiry — ask a question before claiming
 async function askMatchQuestion(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
@@ -3817,22 +3849,9 @@ async function askMatchQuestion(listingId, ownerId) {
 
   const { data: listing } = await sb.from('listings').select('type,title').eq('id', listingId).single();
 
-  // Create or find conversation
-  const { data: existing } = await sb.from('conversations')
-    .select('id').eq('listing_id', listingId)
-    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
-    .limit(1).single();
-
-  let convId;
-  if (existing) {
-    convId = existing.id;
-  } else {
-    const { data: conv, error } = await sb.from('conversations').insert({
-      listing_id: listingId, user_a: currentUser.id, user_b: ownerId
-    }).select().single();
-    if (error) { toast(t('toast_error') + error.message, 'red'); return; }
-    convId = conv.id;
-  }
+  // Create or find conversation (check both user orders)
+  const { convId } = await getOrCreateConversation(listingId, ownerId);
+  if (!convId) return;
 
   const msg = '❓ ' + {fi:'KYSYMYS ENNEN VÄITETTÄ',sv:'FRÅGA INNAN ANSPRÅK',en:'QUESTION BEFORE CLAIM'}[L] + '\n\n' +
     {fi:'Haluaisin varmistaa ennen kuin väitän tavaraa omakseni:',sv:'Jag vill kontrollera innan jag hävdar ägande:',en:'I want to verify before claiming ownership:'}[L] + '\n\n"' +
@@ -3869,26 +3888,10 @@ async function startDirectChat(listingId, ownerId) {
   // Determine the listing type for context-aware intro message
   const { data: listing } = await sb.from('listings').select('type,title').eq('id', listingId).single();
 
-  // Check if conversation already exists
-  const { data: existing } = await sb.from('conversations')
-    .select('id')
-    .eq('listing_id', listingId)
-    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
-    .limit(1)
-    .single();
+  const { convId, isNew } = await getOrCreateConversation(listingId, ownerId);
+  if (!convId) return;
 
-  let convId;
-  if (existing) {
-    convId = existing.id;
-  } else {
-    const { data: conv, error } = await sb.from('conversations').insert({
-      listing_id: listingId,
-      user_a: currentUser.id,
-      user_b: ownerId
-    }).select().single();
-    if (error) { toast(t('toast_error') + error.message, 'red'); return; }
-    convId = conv.id;
-
+  if (isNew) {
     // Role-aware intro message
     let introMsg;
     if (listing?.type === 'pet') {
@@ -3962,25 +3965,8 @@ async function submitVerifyRequest() {
   if (!secret) { toast(t('toast_verify_secret'), 'red'); return; }
   if (!phone) { toast(t('toast_verify_phone'), 'red'); return; }
 
-  // Check if conversation already exists
-  const { data: existing } = await sb.from('conversations')
-    .select('*')
-    .eq('listing_id', verifyListingId)
-    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
-    .maybeSingle();
-
-  let convId;
-  if (existing) {
-    convId = existing.id;
-  } else {
-    const { data: conv, error } = await sb.from('conversations').insert({
-      listing_id: verifyListingId,
-      user_a: currentUser.id,
-      user_b: verifyOwnerId
-    }).select().single();
-    if (error) { toast(t('toast_error') + error.message, 'red'); return; }
-    convId = conv.id;
-  }
+  const { convId } = await getOrCreateConversation(verifyListingId, verifyOwnerId);
+  if (!convId) return;
 
   // Send structured verification message
   const verifyMsg = `🔐 OSUMAILMOITUS\n\n✔️ Tunnistava yksityiskohta:\n"${secret}"\n\n📱 Puhelinnumero: ${phone}${question ? `\n\n❓ Kysymys löytäjälle: ${question}` : ''}`;
