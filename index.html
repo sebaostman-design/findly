@@ -2629,11 +2629,18 @@ async function openListing(id) {
 
     ${l.lat && l.lng ? `<div id="listing-map"></div>` : ''}
 
-    ${canContact && l.type !== 'stolen' && l.type !== 'pet' ? `
+    ${canContact && l.type === 'lost' ? `
     <div class="contact-card">
-      <h3>Ilmoita osumasta</h3>
-      <p>Käy läpi lyhyt vahvistusprosessi ennen yhteydenottoa. Sijainti ja yhteystiedot jaetaan vasta vahvistuksen jälkeen.</p>
-      <button class="btn-primary" style="border:none;" onclick="startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta →</button>
+      <h3>${{fi:'Löysitkö tämän tavaran?',sv:'Hittade du detta föremål?',en:'Did you find this item?'}[currentLang]}</h3>
+      <p>${{fi:'Ilmoita löydöstäsi omistajalle. Chat aukeaa suoraan — omistaja todistaa omistajuutensa sinulle.',sv:'Meddela ägaren om ditt fynd. Chatten öppnas direkt — ägaren bevisar sitt ägande.',en:'Notify the owner about your find. Chat opens directly — the owner will prove their ownership to you.'}[currentLang]}</p>
+      <button class="btn-primary" style="border:none;" onclick="startDirectChat('${l.id}','${l.user_id}')">${{fi:'💬 Ilmoita löydöstä omistajalle →',sv:'💬 Meddela ägaren →',en:'💬 Notify the owner →'}[currentLang]}</button>
+    </div>` : ''}
+
+    ${canContact && l.type === 'found' ? `
+    <div class="contact-card">
+      <h3>${{fi:'Onko tämä sinun tavarasi?',sv:'Är detta ditt föremål?',en:'Is this your item?'}[currentLang]}</h3>
+      <p>${{fi:'Todista omistajuutesi kertomalla jotain, mitä vain oikea omistaja tietää. Löytäjä tarkistaa vastauksesi ennen kuin yhteystiedot jaetaan.',sv:'Bevisa ditt ägande genom att berätta något som bara den riktiga ägaren vet. Upphittaren granskar ditt svar.',en:'Prove your ownership by sharing something only the real owner would know. The finder will review your answer.'}[currentLang]}</p>
+      <button class="btn-primary" style="border:none;" onclick="startVerifyFlow('${l.id}','${l.user_id}')">${{fi:'🔐 Tämä on minun — todista omistajuus →',sv:'🔐 Den är min — bevisa ägande →',en:'🔐 This is mine — prove ownership →'}[currentLang]}</button>
     </div>` : ''}
 
     ${canContact && l.type === 'pet' ? `
@@ -3190,7 +3197,7 @@ function setFormType(type) {
 
   const noticeTexts = {
     lost: 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.',
-    found: '💛 Auta hädässä olevaa kadottajaa ja ansaitse karmamitali! Kuvaile löytö yleisellä tasolla. <strong>Jos tavara löytyi julkisesta tilasta</strong> (bussi, kauppakeskus), luovuta se ensisijaisesti henkilökunnalle.',
+    found: '💛 Auta hädässä olevaa kadottajaa ja ansaitse karmaa! Kuvaile löytö <strong>yleisellä tasolla</strong> — omistaja todistaa omistajuutensa kuvailemalla tavaraa tarkemmin. <strong>Jos tavara löytyi julkisesta tilasta</strong> (bussi, kauppakeskus), luovuta se ensisijaisesti henkilökunnalle.',
     stolen: 'Tee ensin rikosilmoitus poliisille. Findly toimii täydentävänä palveluna.',
     pet: '🐾 Lisää selkeä kuva ja mahdollisimman tarkka kuvaus lemmikistä — rotu, väri, erityispiirteet.'
   };
@@ -3200,15 +3207,19 @@ function setFormType(type) {
   document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
   document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
   document.getElementById('pet-subtype-field').style.display = type === 'pet' ? 'block' : 'none';
-  document.getElementById('image-upload-field').style.display = (type === 'found' || type === 'lost') ? 'none' : 'block';
+  document.getElementById('image-upload-field').style.display = type === 'lost' ? 'none' : 'block';
   document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
 
-  // Update image guidance for pet type
+  // Update image guidance based on type
   const imgGuide = document.getElementById('image-guidance');
   if (imgGuide) {
-    imgGuide.innerHTML = type === 'pet'
-      ? '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Lisää mahdollisimman selkeä kuva lemmikistä. Näytä eläimen väri, koko ja erityispiirteet.</div>'
-      : '<span>🛡️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>';
+    if (type === 'pet') {
+      imgGuide.innerHTML = '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Lisää mahdollisimman selkeä kuva lemmikistä. Näytä eläimen väri, koko ja erityispiirteet.</div>';
+    } else if (type === 'found') {
+      imgGuide.innerHTML = '<span>📍</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Voit kuvata paikan johon jätit tavaran — esim. penkki, pylväs tai muu tunnistettava kohta. <strong>Älä kuvaa itse tavaraa liian tarkasti</strong> — omistaja todistaa omistajuutensa kuvailemalla sitä.</div>';
+    } else {
+      imgGuide.innerHTML = '<span>🛡️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>';
+    }
   }
 
   // found: make taken-to required
@@ -3304,7 +3315,7 @@ async function submitListing(e) {
   // Upload image if provided (owner types only)
   let image_url = null;
   const imageFile = document.getElementById('f-image')?.files[0];
-  if (imageFile && currentFormType !== 'found' && currentFormType !== 'lost') {
+  if (imageFile && currentFormType !== 'lost') {
     btn.textContent = 'Ladataan kuvaa...';
     const ext = imageFile.name.split('.').pop();
     const path = `${currentUser.id}/${Date.now()}.${ext}`;
