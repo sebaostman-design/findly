@@ -3810,25 +3810,23 @@ async function loadMatches() {
 // ═══════════════════════════════════════════════════════
 // Shared: find or create ONE conversation per listing+user pair
 async function getOrCreateConversation(listingId, otherUserId) {
-  // Search for ANY conversation for this listing involving current user
-  const { data: existing } = await sb.from('conversations')
-    .select('id')
-    .eq('listing_id', listingId)
-    .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
-    .limit(1)
-    .maybeSingle();
-
-  if (existing) return { convId: existing.id, isNew: false };
-
-  // Also check if current user has ANY conversation for this listing
-  const { data: anyExisting } = await sb.from('conversations')
+  // Check 1: conversation for this exact listing with these users
+  const { data: exact } = await sb.from('conversations')
     .select('id')
     .eq('listing_id', listingId)
     .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
     .limit(1)
     .maybeSingle();
+  if (exact) return { convId: exact.id, isNew: false };
 
-  if (anyExisting) return { convId: anyExisting.id, isNew: false };
+  // Check 2: ANY conversation between these two users (covers reverse listing_id)
+  const { data: between } = await sb.from('conversations')
+    .select('id')
+    .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (between) return { convId: between.id, isNew: false };
 
   // Create new
   const { data: conv, error } = await sb.from('conversations').insert({
