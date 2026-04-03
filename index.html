@@ -2729,17 +2729,30 @@ async function updateListingStatus(id, status) {
   const updates = { status };
   if (status === 'returned') {
     updates.expires_at = new Date(Date.now() - 1000).toISOString();
-    // Try to find the finder via conversations
+    // Determine finder correctly based on listing type
+    const { data: listingData } = await sb.from('listings').select('type').eq('id', id).single();
     const { data: conv } = await sb.from('conversations').select('user_a,user_b').eq('listing_id', id).order('created_at', { ascending: false }).limit(1).single();
-    if (conv) {
-      const finderId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+    let finderId = null;
+    if (conv && listingData) {
+      if (listingData.type === 'found') {
+        // Current user created a 'found' listing — they ARE the finder
+        finderId = currentUser.id;
+      } else {
+        // Current user created a 'lost' listing — the other party is the finder
+        finderId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+      }
       updates.finder_id = finderId;
     }
   }
   const { error } = await sb.from('listings').update(updates).eq('id', id).eq('user_id', currentUser.id);
   if (error) { toast(t('toast_error') + error.message, 'red'); return; }
-  if (status === 'returned') showSuccessModal(id, true, updates.finder_id || null);
-  else { toast(t('toast_status_update'), 'green'); openListing(id); }
+  if (status === 'returned') {
+    // isOwner = person who LOST the item (not necessarily listing creator)
+    const isOwner = !updates.finder_id || updates.finder_id !== currentUser.id;
+    showSuccessModal(id, isOwner, updates.finder_id || null);
+  } else {
+    toast(t('toast_status_update'), 'green'); openListing(id);
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2764,7 +2777,25 @@ async function getFinderCount(userId) {
 let successListingId = null;
 async function showSuccessModal(listingId, isOwner, finderId) {
   successListingId = listingId;
+  const L = currentLang;
+  const isFinder = finderId === currentUser.id;
+
+  // Tip prompt only for OWNER (person who lost the item) — they tip the finder
   document.getElementById('success-tip-prompt').style.display = isOwner ? 'block' : 'none';
+
+  // Success message differs by role
+  const titleEl = document.getElementById('success-title');
+  const bodyEl = document.getElementById('success-body');
+  if (isOwner) {
+    titleEl.textContent = {fi:'Tavara palautettu!',sv:'Föremålet returnerat!',en:'Item returned!'}[L];
+    bodyEl.textContent = {fi:'Hienoa — tavarasi on takaisin! Haluatko kiittää löytäjää?',sv:'Fantastiskt — ditt föremål är tillbaka! Vill du tacka upphittaren?',en:'Great — your item is back! Want to thank the finder?'}[L];
+  } else if (isFinder) {
+    titleEl.textContent = {fi:'Kiitos rehellisyydestäsi!',sv:'Tack för din ärlighet!',en:'Thanks for your honesty!'}[L];
+    bodyEl.textContent = {fi:'Teit hyvän teon — tavara on palautettu omistajalleen. Ansaitsit merkinnän profiiliisi.',sv:'Du gjorde en god gärning — föremålet har returnerats till ägaren. Du fick en profilanteckning.',en:'You did a good deed — the item has been returned to its owner. You earned a profile badge.'}[L];
+  } else {
+    titleEl.textContent = {fi:'Tapaus suljettu!',sv:'Ärende avslutat!',en:'Case closed!'}[L];
+    bodyEl.textContent = {fi:'Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.',sv:'Anmälan har tagits bort och markerats som löst.',en:'Listing has been removed and marked as resolved.'}[L];
+  }
 
   // Show badge for finder
   const badgeEl = document.getElementById('success-badge');
@@ -2772,11 +2803,13 @@ async function showSuccessModal(listingId, isOwner, finderId) {
     const count = await getFinderCount(finderId);
     const badge = getBadge(count);
     if (badge) {
+      const badgeLabel = isFinder
+        ? {fi:'Ansaitsit: '+badge.title+'!',sv:'Du fick: '+badge.title+'!',en:'You earned: '+badge.title+'!'}[L]
+        : {fi:'Löytäjä ansaitsi: '+badge.desc,sv:'Upphittaren fick: '+badge.desc,en:'Finder earned: '+badge.desc}[L];
       badgeEl.innerHTML = `
         <span style="font-size:32px;">${badge.icon}</span>
         <div style="text-align:left;">
-          <div style="font-size:13px;font-weight:700;color:${badge.color};">${badge.title}</div>
-          <div style="font-size:12px;color:var(--ink2);">Löytäjä ansaitsi: ${badge.desc}</div>
+          <div style="font-size:13px;font-weight:700;color:${badge.color};">${badgeLabel}</div>
         </div>`;
       badgeEl.style.background = badge.bg;
       badgeEl.style.borderColor = badge.color + '44';
@@ -2785,23 +2818,7 @@ async function showSuccessModal(listingId, isOwner, finderId) {
       badgeEl.style.display = 'none';
     }
   } else {
-    // Own badge for the closer
-    const count = await getFinderCount(currentUser.id);
-    const newCount = count + 1;
-    const badge = getBadge(newCount);
-    if (badge) {
-      badgeEl.innerHTML = `
-        <span style="font-size:32px;">${badge.icon}</span>
-        <div style="text-align:left;">
-          <div style="font-size:13px;font-weight:700;color:${badge.color};">Ansaitsit: ${badge.title}!</div>
-          <div style="font-size:12px;color:var(--ink2);">${badge.desc} — profiilisi päivitetty</div>
-        </div>`;
-      badgeEl.style.background = badge.bg;
-      badgeEl.style.borderColor = badge.color + '44';
-      badgeEl.style.display = 'flex';
-    } else {
-      badgeEl.style.display = 'none';
-    }
+    badgeEl.style.display = 'none';
   }
 
   document.getElementById('success-modal').style.display = 'flex';
@@ -2810,21 +2827,36 @@ async function showSuccessModal(listingId, isOwner, finderId) {
 
 async function closeCaseFromChat() {
   if (!currentChatListingId) return;
-  if (!confirm('Merkitäänkö tapaus ratkaistuksi? Ilmoitus poistetaan listalta.')) return;
+  if (!confirm({fi:'Merkitäänkö tapaus ratkaistuksi? Ilmoitus poistetaan listalta.',sv:'Markera ärendet som löst? Anmälan tas bort.',en:'Mark case as resolved? Listing will be removed.'}[currentLang])) return;
 
-  // Find the other party (the finder)
   const { data: conv } = await sb.from('conversations').select('user_a, user_b, listing_id').eq('id', currentConvId).single();
-  const { data: listing } = await sb.from('listings').select('user_id').eq('id', currentChatListingId).single();
-  let finderId = null;
-  if (conv && listing) {
-    finderId = conv.user_a === listing.user_id ? conv.user_b : conv.user_a;
+  const { data: listing } = await sb.from('listings').select('user_id,type').eq('id', currentChatListingId).single();
+  if (!conv || !listing) return;
+
+  // Determine roles correctly:
+  // The listing creator is the one who posted (could be lost OR found)
+  // The other party in the conversation is the responder
+  const listingOwnerId = listing.user_id;
+  const otherPartyId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+
+  // Finder = the person who FOUND the item
+  // If listing type is 'found', the listing creator IS the finder
+  // If listing type is 'lost', the OTHER party is the finder
+  let finderId, ownerId;
+  if (listing.type === 'found') {
+    finderId = listingOwnerId;
+    ownerId = otherPartyId;
+  } else {
+    finderId = otherPartyId;
+    ownerId = listingOwnerId;
   }
 
-  const updates = { status: 'returned', expires_at: new Date(Date.now() - 1000).toISOString() };
-  if (finderId) updates.finder_id = finderId;
+  const currentUserIsOwner = currentUser.id === ownerId;
+
+  const updates = { status: 'returned', expires_at: new Date(Date.now() - 1000).toISOString(), finder_id: finderId };
   const { error } = await sb.from('listings').update(updates).eq('id', currentChatListingId);
   if (error) { toast(t('toast_error') + error.message, 'red'); return; }
-  showSuccessModal(currentChatListingId, listing?.user_id === currentUser.id, finderId);
+  showSuccessModal(currentChatListingId, currentUserIsOwner, finderId);
 }
 
 async function saveStory() {
