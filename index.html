@@ -1221,11 +1221,16 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
           <button class="feed-filter" onclick="filterMap('lost',this)" data-i18n="feed_lost">🔍 Kadonneet</button>
           <button class="feed-filter" onclick="filterMap('found',this)" data-i18n="feed_found">📦 Löydetyt</button>
           <button class="feed-filter" onclick="filterMap('pet',this)" data-i18n="feed_pets">🐾 Eläimet</button>
+          <button class="feed-filter" onclick="toggleMapStories(this)" id="map-stories-btn" style="border-color:var(--amber);color:var(--amber);">💛 Palautetut</button>
         </div>
         <p style="font-size:12px;color:var(--ink3);margin-top:10px;" data-i18n="map_notice">📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.</p>
       </div>
     </div>
     <div id="mapbox-container"></div>
+    <div id="map-stats" style="position:absolute;bottom:24px;left:24px;background:white;border-radius:14px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.15);font-size:12px;z-index:10;pointer-events:none;">
+      <div style="font-weight:700;font-size:13px;" id="map-stat-count">— ilmoitusta</div>
+      <div style="color:var(--ink3);" id="map-stat-returned">— palautettua 💛</div>
+    </div>
   </div>
 </div>
 
@@ -3098,11 +3103,27 @@ function reportChat() {
 // ═══════════════════════════════════════════════════════
 // MAP — blurred circles instead of exact pins
 // ═══════════════════════════════════════════════════════
+let mapReturnedListings = [];
+let showStories = false;
+
 async function initMap() {
+  // Load both active and returned listings
+  const [active, returned] = await Promise.all([
+    loadAllListings(),
+    sb.from('listings').select('*').eq('status','returned').not('lat','is',null).order('created_at',{ascending:false}).limit(50).then(r => r.data || [])
+  ]);
+  allListings = active;
+  mapReturnedListings = returned;
+
+  // Update stats overlay
+  const statCount = document.getElementById('map-stat-count');
+  const statReturned = document.getElementById('map-stat-returned');
+  if (statCount) statCount.textContent = active.length + ' ' + {fi:'ilmoitusta',sv:'anmälningar',en:'listings'}[currentLang];
+  if (statReturned) statReturned.textContent = returned.length + ' ' + {fi:'palautettua',sv:'returnerade',en:'returned'}[currentLang] + ' 💛';
+
   if (mapInstance) {
-    const listings = await loadAllListings();
-    allListings = listings;
-    updateMapMarkers(listings);
+    updateMapMarkers(active);
+    if (showStories) addStoryMarkers(returned);
     return;
   }
   mapInstance = new mapboxgl.Map({
@@ -3113,10 +3134,40 @@ async function initMap() {
   });
   mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
   mapInstance.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }));
-  mapInstance.on('load', async () => {
-    const listings = await loadAllListings();
-    allListings = listings;
-    updateMapMarkers(listings);
+  mapInstance.on('load', () => {
+    updateMapMarkers(active);
+    if (showStories) addStoryMarkers(returned);
+  });
+}
+
+function toggleMapStories(btn) {
+  showStories = !showStories;
+  btn.className = showStories ? 'feed-filter active-all' : 'feed-filter';
+  btn.style.borderColor = showStories ? 'var(--amber)' : '';
+  btn.style.background = showStories ? 'var(--amber-light)' : '';
+  btn.style.color = showStories ? 'var(--amber)' : 'var(--amber)';
+  if (showStories) {
+    addStoryMarkers(mapReturnedListings);
+  } else {
+    document.querySelectorAll('.map-marker-story').forEach(m => m.remove());
+  }
+}
+
+function addStoryMarkers(listings) {
+  document.querySelectorAll('.map-marker-story').forEach(m => m.remove());
+  listings.filter(l => l.lat && l.lng).forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'map-marker-story';
+    el.style.cssText = 'width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FFA500);border:2px solid #DAA520;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(218,165,32,0.4);animation:pulse 2s infinite;';
+    el.textContent = '💛';
+    const storyText = l.story_text ? `<div style="font-style:italic;color:#555;margin-top:8px;line-height:1.5;">"${esc(l.story_text)}"</div>` : '';
+    const popup = new mapboxgl.Popup({ offset: 25, maxWidth: '260px' }).setHTML(`
+      <div style="font-size:14px;font-weight:700;color:#DAA520;margin-bottom:4px;">💛 ${esc(l.title)}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:6px;">${{fi:'Palautettu onnistuneesti',sv:'Returnerad framgångsrikt',en:'Successfully returned'}[currentLang]} · ${timeAgo(l.created_at)}</div>
+      ${storyText}
+      <div style="font-size:11px;color:#aaa;margin-top:8px;">${categoryIcon(l.category)} ${esc(l.category || '')}</div>
+    `);
+    new mapboxgl.Marker(el).setLngLat([l.lng, l.lat]).setPopup(popup).addTo(mapInstance);
   });
 }
 
@@ -3137,9 +3188,9 @@ function updateMapMarkers(listings) {
     el.textContent = l.type === 'pet' ? '🐾' : (l.type === 'found' ? '📦' : '🔍');
     const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
       <div class="popup-title">${esc(l.title)}</div>
-      <div class="popup-loc">📍 lähellä ${esc((l.address||'').split(',')[0])} · ${timeAgo(l.created_at)}</div>
-      <div style="font-size:11px;color:#8A9E93;margin-bottom:8px;">Tarkka sijainti matchin jälkeen</div>
-      <button class="popup-btn" onclick="openListing('${l.id}')">Avaa ilmoitus</button>
+      <div class="popup-loc">📍 ${{fi:'lähellä ',sv:'nära ',en:'near '}[currentLang]}${esc((l.address||'').split(',')[0])} · ${timeAgo(l.created_at)}</div>
+      <div style="font-size:11px;color:#8A9E93;margin-bottom:8px;">${{fi:'Tarkka sijainti matchin jälkeen',sv:'Exakt plats efter matchning',en:'Exact location after matching'}[currentLang]}</div>
+      <button class="popup-btn" onclick="openListing('${l.id}')">${{fi:'Avaa ilmoitus',sv:'Öppna anmälan',en:'Open listing'}[currentLang]}</button>
     `);
     new mapboxgl.Marker(el).setLngLat([blurred.lng, blurred.lat]).setPopup(popup).addTo(mapInstance);
   });
