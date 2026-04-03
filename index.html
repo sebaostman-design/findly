@@ -3827,6 +3827,14 @@ async function loadMessages() {
         <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
       </div>`;
     }
+    const isAcceptMsg = m.content.startsWith('✅ OMISTAJUUS VAHVISTETTU');
+    if (isAcceptMsg) {
+      return `<div style="background:linear-gradient(135deg,#E8F5EF,#FFF8E7);border:2px solid var(--green);border-radius:var(--radius);padding:18px;font-size:13px;color:var(--ink);margin:8px 0;">
+        <div style="font-size:16px;font-weight:700;color:var(--green-dark);margin-bottom:10px;">🎉 Omistajuus vahvistettu!</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;line-height:1.7;">${esc(m.content.replace('✅ OMISTAJUUS VAHVISTETTU\n\n🎉 Vastaus hyväksytty — tämä on oikea omistaja!\n\n',''))}</pre>
+        <div style="font-size:10px;color:var(--ink3);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
     return `<div class="msg-row ${own?'own':''}">
       <div class="msg-bubble ${own?'own':'other'}">${esc(m.content)}</div>
       <div class="msg-time">${timeAgo(m.created_at)}</div>
@@ -3836,10 +3844,54 @@ async function loadMessages() {
 }
 
 async function replyVerify(decision) {
-  const msgs = { accepted: '✅ Hyväksytty! Otetaan yhteyttä sijainnin sopimiseksi.', more: '❓ Pyydän lisätietoja — voitko kertoa jotain muuta tavarasta?', rejected: '❌ Hylätty — en tunnista tätä omakseni.' };
-  const input = document.getElementById('chat-input');
-  input.value = msgs[decision];
-  sendMessage();
+  if (decision === 'more') {
+    document.getElementById('chat-input').value = '❓ Pyydän lisätietoja — voitko kertoa jotain muuta tavarasta?';
+    sendMessage();
+    return;
+  }
+  if (decision === 'rejected') {
+    document.getElementById('chat-input').value = '❌ Hylätty — vastaus ei täsmää. Jos tämä on virhe, ota uudelleen yhteyttä.';
+    sendMessage();
+    return;
+  }
+  // ACCEPTED — reveal contact info and guide to next steps
+  if (!currentChatListingId) return;
+  const { data: listing } = await sb.from('listings').select('*').eq('id', currentChatListingId).single();
+  const { data: conv } = await sb.from('conversations').select('user_a,user_b').eq('id', currentConvId).single();
+  if (!listing || !conv) return;
+
+  // Find the owner (the one who made the verify request = the other party)
+  const ownerId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+
+  // Get owner's contact from the verify message
+  const { data: msgs } = await sb.from('messages').select('content').eq('conversation_id', currentConvId).order('created_at', { ascending: true }).limit(5);
+  let ownerPhone = '';
+  if (msgs) {
+    for (const m of msgs) {
+      const phoneMatch = m.content.match(/📱 Puhelinnumero: ([+\d\s]+)/);
+      if (phoneMatch) { ownerPhone = phoneMatch[1].trim(); break; }
+    }
+  }
+
+  // Build comprehensive acceptance message
+  const addr = listing.address ? listing.address.split(',')[0] : '';
+  let acceptMsg = '✅ OMISTAJUUS VAHVISTETTU\n\n';
+  acceptMsg += '🎉 Vastaus hyväksytty — tämä on oikea omistaja!\n\n';
+  if (ownerPhone) acceptMsg += '📱 Omistajan puhelinnumero: ' + ownerPhone + '\n';
+  if (listing.lat && listing.lng) acceptMsg += '📍 Sijainti: ' + (addr || 'Katso kartalta') + '\n';
+  acceptMsg += '\n📋 SEURAAVAT ASKELEET:\n';
+  acceptMsg += '1. Sopikaa palautusaika ja -paikka\n';
+  acceptMsg += '2. Tavara luovutetaan ja todetaan kuntoiseksi\n';
+  acceptMsg += '3. Klikkaa "Sulje tapaus" alla kun palautus on tehty\n';
+  if (listing.reward) acceptMsg += '\n💰 Omistaja on tarjonnut ' + listing.reward + '€ palkkion.\n';
+
+  await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: acceptMsg });
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', currentConvId);
+
+  // Update listing status to 'match'
+  await sb.from('listings').update({ status: 'match' }).eq('id', currentChatListingId);
+
+  loadMessages();
 }
 
 async function sendMessage() {
