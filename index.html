@@ -2267,9 +2267,11 @@ sb.auth.onAuthStateChange((event, session) => {
     setTimeout(updateMatchBadge, 1500);
     setTimeout(updateMsgBadge, 2000);
     setTimeout(askNotificationPermission, 3000);
+    startInAppPolling();
   } else {
     setMatchBadge(0);
     setMsgBadge(0);
+    if (inAppPollInterval) { clearInterval(inAppPollInterval); inAppPollInterval = null; }
   }
 });
 
@@ -3019,7 +3021,21 @@ function sendNotification(title, body, url) {
 let notifPollInterval = null;
 function startNotificationPolling() {
   if (notifPollInterval) return;
-  notifPollInterval = setInterval(pollForNotifications, 15000);
+  notifPollInterval = setInterval(pollForNotifications, 10000);
+}
+
+// In-app polling — runs for ALL logged-in users (not just notification-permitted)
+let inAppPollInterval = null;
+function startInAppPolling() {
+  if (inAppPollInterval) return;
+  inAppPollInterval = setInterval(() => {
+    if (!currentUser) return;
+    updateMsgBadge();
+    // Auto-refresh conversations list if on messages page
+    if (document.getElementById('page-messages')?.classList.contains('active')) {
+      loadConversations();
+    }
+  }, 8000);
 }
 
 async function pollForNotifications() {
