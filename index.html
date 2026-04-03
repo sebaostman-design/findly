@@ -3559,6 +3559,7 @@ async function loadMatches() {
 
   for (const mine of myListings) {
     const candidates = (allOther || []).map(other => {
+      if (isDismissed(mine.id, other.id)) return null;
       const result = scoreMatch(mine, other);
       if (!result || result.score < 20) return null;
       return { listing: other, score: result.score, reasons: result.reasons };
@@ -3624,9 +3625,13 @@ async function loadMatches() {
                 ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">${{fi:'⏳ Odottaa vastausta — Avaa viestit',sv:'⏳ Väntar på svar — Öppna meddelanden',en:'⏳ Awaiting response — Open messages'}[currentLang]}</button>`
                 : l.type === 'pet' || mine.type === 'found'
                   ? `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? {fi:'💬 Ilmoita löydöstä omistajalle',sv:'💬 Meddela ägaren om fyndet',en:'💬 Notify owner about your find'}[currentLang] : {fi:'💬 Avaa chat',sv:'💬 Öppna chatt',en:'💬 Open chat'}[currentLang]}</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>`
-                  : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">${{fi:'🔐 Tämä on minun — todista omistajuus',sv:'🔐 Den är min — bevisa ägande',en:'🔐 This is mine — prove ownership'}[currentLang]}</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>`}
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>
+              <button style="padding:9px 14px;font-size:12px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink3);" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')">${{fi:'✕ Ei minun',sv:'✕ Inte min',en:'✕ Not mine'}[currentLang]}</button>`
+                  : `<div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">${{fi:'🔐 Tämä on minun',sv:'🔐 Den är min',en:'🔐 This is mine'}[currentLang]}</button>
+              <button style="padding:9px 18px;font-size:13px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--blue);background:var(--blue-light);color:var(--blue);" onclick="event.stopPropagation();askMatchQuestion('${l.id}','${l.user_id}')">${{fi:'❓ Kysy lisätietoja',sv:'❓ Fråga mer',en:'❓ Ask for details'}[currentLang]}</button>
+              <button style="padding:9px 14px;font-size:12px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink3);" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')">${{fi:'✕ Ei minun',sv:'✕ Inte min',en:'✕ Not mine'}[currentLang]}</button>
+              </div>`}
             </div>
           </div>
         </div>`;
@@ -3663,6 +3668,60 @@ async function loadMatches() {
 // ═══════════════════════════════════════════════════════
 // VERIFY FLOW
 // ═══════════════════════════════════════════════════════
+// Soft inquiry — ask a question before claiming
+async function askMatchQuestion(listingId, ownerId) {
+  if (!currentUser) { showPage('auth'); return; }
+  const L = currentLang;
+  const question = prompt({fi:'Kirjoita kysymys löytäjälle. Esim: "Mikä väri laukussa oli?" tai "Oliko sisällä avaimia?"',sv:'Skriv en fråga till upphittaren. T.ex: "Vilken färg var väskan?" eller "Fanns det nycklar i den?"',en:'Write a question for the finder. E.g.: "What color was the bag?" or "Were there keys inside?"'}[L]);
+  if (!question || !question.trim()) return;
+
+  const { data: listing } = await sb.from('listings').select('type,title').eq('id', listingId).single();
+
+  // Create or find conversation
+  const { data: existing } = await sb.from('conversations')
+    .select('id').eq('listing_id', listingId)
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .limit(1).single();
+
+  let convId;
+  if (existing) {
+    convId = existing.id;
+  } else {
+    const { data: conv, error } = await sb.from('conversations').insert({
+      listing_id: listingId, user_a: currentUser.id, user_b: ownerId
+    }).select().single();
+    if (error) { toast(t('toast_error') + error.message, 'red'); return; }
+    convId = conv.id;
+  }
+
+  const msg = '❓ ' + {fi:'KYSYMYS ENNEN VÄITETTÄ',sv:'FRÅGA INNAN ANSPRÅK',en:'QUESTION BEFORE CLAIM'}[L] + '\n\n' +
+    {fi:'Haluaisin varmistaa ennen kuin väitän tavaraa omakseni:',sv:'Jag vill kontrollera innan jag hävdar ägande:',en:'I want to verify before claiming ownership:'}[L] + '\n\n"' +
+    question.trim() + '"\n\n' +
+    {fi:'Koskee ilmoitusta: ',sv:'Gäller anmälan: ',en:'Regarding listing: '}[L] + (listing?.title || '');
+
+  await sb.from('messages').insert({ conversation_id: convId, sender_id: currentUser.id, content: msg });
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', convId);
+  toast({fi:'Kysymys lähetetty! Saat vastauksen viesteihin.',sv:'Fråga skickad! Du får svar i meddelanden.',en:'Question sent! You\'ll get a reply in messages.'}[L], 'green');
+  updateMsgBadge();
+}
+
+// Dismiss a match — store in localStorage
+function dismissMatch(myListingId, otherListingId) {
+  const key = 'dismissed_' + myListingId;
+  const dismissed = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!dismissed.includes(otherListingId)) {
+    dismissed.push(otherListingId);
+    localStorage.setItem(key, JSON.stringify(dismissed));
+  }
+  toast({fi:'Osuma piilotettu.',sv:'Träff dold.',en:'Match hidden.'}[currentLang], 'green');
+  loadMatches();
+}
+
+function isDismissed(myListingId, otherListingId) {
+  const dismissed = JSON.parse(localStorage.getItem('dismissed_' + myListingId) || '[]');
+  return dismissed.includes(otherListingId);
+}
+
 async function startDirectChat(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
   if (currentUser.id === ownerId) { toast(t('toast_no_self_msg'), 'red'); return; }
