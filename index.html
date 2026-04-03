@@ -3539,12 +3539,12 @@ async function loadMatches() {
             </div>
             <div class="match-card-actions">
               ${isPending
-                ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
-                : l.type === 'pet'
-                  ? `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;background:var(--amber);" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">💬 Avaa chat</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>`
-                  : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Ilmoita osumasta</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">Katso ilmoitus</button>`}
+                ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">${{fi:'⏳ Odottaa vastausta — Avaa viestit',sv:'⏳ Väntar på svar — Öppna meddelanden',en:'⏳ Awaiting response — Open messages'}[currentLang]}</button>`
+                : l.type === 'pet' || mine.type === 'found'
+                  ? `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? {fi:'💬 Ilmoita löydöstä omistajalle',sv:'💬 Meddela ägaren om fyndet',en:'💬 Notify owner about your find'}[currentLang] : {fi:'💬 Avaa chat',sv:'💬 Öppna chatt',en:'💬 Open chat'}[currentLang]}</button>
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>`
+                  : `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">${{fi:'🔐 Tämä on minun — todista omistajuus',sv:'🔐 Den är min — bevisa ägande',en:'🔐 This is mine — prove ownership'}[currentLang]}</button>
+              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>`}
             </div>
           </div>
         </div>`;
@@ -3585,6 +3585,9 @@ async function startDirectChat(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
   if (currentUser.id === ownerId) { toast(t('toast_no_self_msg'), 'red'); return; }
 
+  // Determine the listing type for context-aware intro message
+  const { data: listing } = await sb.from('listings').select('type,title').eq('id', listingId).single();
+
   // Check if conversation already exists
   const { data: existing } = await sb.from('conversations')
     .select('id')
@@ -3604,11 +3607,20 @@ async function startDirectChat(listingId, ownerId) {
     }).select().single();
     if (error) { toast(t('toast_error') + error.message, 'red'); return; }
     convId = conv.id;
-    // Send automatic intro message
+
+    // Role-aware intro message
+    let introMsg;
+    if (listing?.type === 'pet') {
+      introMsg = '🐾 Hei! Otin yhteyttä eläinilmoituksestasi.';
+    } else if (listing?.type === 'lost') {
+      introMsg = '📦 Hei! Olen löytänyt tavaran joka saattaa olla sinun: "' + (listing?.title || '') + '". Ota yhteyttä niin sovitaan palautuksesta.';
+    } else {
+      introMsg = '🔍 Hei! Tavarasi saattaa olla minun. Kerron lisää chatissa.';
+    }
     await sb.from('messages').insert({
       conversation_id: convId,
       sender_id: currentUser.id,
-      content: '🐾 Hei! Otin yhteyttä eläinilmoituksestasi. Kerron lisää chatissa.'
+      content: introMsg
     });
   }
 
