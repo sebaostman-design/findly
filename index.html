@@ -765,7 +765,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <button class="nav-cta" onclick="showPage('new-listing')" data-i18n="nav_new">+ Tee ilmoitus</button>
       </div>
       <div id="nav-user-area" style="display:none;flex-direction:row;gap:10px;align-items:center;">
-        <button class="nav-auth-btn" onclick="showPage('messages')" data-i18n="nav_messages">💬 Viestit</button>
+        <button class="nav-auth-btn" onclick="showPage('messages')" style="position:relative;" data-i18n="nav_messages">💬 Viestit<span id="msg-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;min-width:14px;text-align:center;line-height:14px;"></span></button>
         <button class="nav-cta" onclick="showPage('new-listing')" data-i18n="nav_new">+ Tee ilmoitus</button>
         <button class="nav-auth-btn" onclick="showPage('profile')" id="nav-profile-btn">👤</button>
       </div>
@@ -783,7 +783,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()" data-i18n="nav_pets">🐾 Eläimet</a>
   <a style="font-size:15px;color:var(--ink3);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()" data-i18n="nav_feed">Ilmoitukset</a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
-    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit</a>
+    <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;margin-left:6px;"></span></a>
     <a style="font-size:15px;color:var(--ink);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
   </div>
   <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()" data-i18n="nav_new">+ Tee ilmoitus</a>
@@ -2192,7 +2192,7 @@ function showPage(name) {
   if (name === 'map') initMap();
   if (name === 'pets') { loadPets(); loadSightings(); }
   if (name === 'matches') { loadMatches(); setMatchBadge(0); }
-  if (name === 'messages') loadConversations();
+  if (name === 'messages') { loadConversations(); setMsgBadge(0); lastSeenMsgTime = new Date().toISOString(); localStorage.setItem('findly-last-msg', lastSeenMsgTime); }
   if (name === 'profile') loadProfile();
   if (name === 'new-listing') {
     const gate = document.getElementById('new-listing-gate');
@@ -2256,11 +2256,35 @@ sb.auth.onAuthStateChange((event, session) => {
   }
   if (currentUser) {
     setTimeout(updateMatchBadge, 1500);
+    setTimeout(updateMsgBadge, 2000);
     setTimeout(askNotificationPermission, 3000);
   } else {
     setMatchBadge(0);
+    setMsgBadge(0);
   }
 });
+
+function setMsgBadge(count) {
+  const b1 = document.getElementById('msg-badge');
+  const b2 = document.getElementById('msg-badge-mobile');
+  if (count > 0) {
+    [b1, b2].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
+  } else {
+    [b1, b2].forEach(b => { if (b) b.style.display = 'none'; });
+  }
+}
+
+let lastSeenMsgTime = localStorage.getItem('findly-last-msg') || '2000-01-01';
+
+async function updateMsgBadge() {
+  if (!currentUser) { setMsgBadge(0); return; }
+  const { data } = await sb.from('conversations')
+    .select('id, updated_at')
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .gt('updated_at', lastSeenMsgTime)
+    .order('updated_at', { ascending: false });
+  setMsgBadge(data?.length || 0);
+}
 
 function setMatchBadge(count) {
   const b1 = document.getElementById('match-badge');
@@ -2928,13 +2952,16 @@ async function pollForNotifications() {
     .order('updated_at', { ascending: false });
 
   if (convs) {
+    let newMsgCount = 0;
     for (const c of convs) {
       const prev = lastMessageCount[c.id];
       if (prev && new Date(c.updated_at) > new Date(prev)) {
-        sendNotification('Findly — Uusi viesti 💬', 'Sinulle on saapunut uusi viesti.');
+        sendNotification('Findly — Uusi viesti 💬', {fi:'Sinulle on saapunut uusi viesti.',sv:'Du har fått ett nytt meddelande.',en:'You have a new message.'}[currentLang]);
+        newMsgCount++;
       }
       lastMessageCount[c.id] = c.updated_at;
     }
+    if (newMsgCount > 0) updateMsgBadge();
   }
 
   // Check for new matches
