@@ -1626,10 +1626,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <div class="chat-name" id="chat-name">Keskustelu</div>
         <div class="chat-status" id="chat-listing-ref">—</div>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button id="close-case-btn" onclick="closeCaseFromChat()" style="display:none;padding:6px 12px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;" data-i18n="msg_close_case">✅ Tapaus suljettu</button>
-        <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩</button>
-      </div>
+      <button class="report-btn" onclick="reportChat()" title="Ilmoita väärinkäytöstä">🚩</button>
     </div>
     <div class="chat-verify" id="chat-verify-box" style="display:none;">
       <span>🔐</span>
@@ -1637,6 +1634,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     </div>
     <div class="chat-messages" id="chat-messages">
       <div class="loading"><div class="spinner"></div>Ladataan viestejä...</div>
+    </div>
+    <div id="close-case-bar" style="display:none;padding:10px 16px;background:var(--green-light);border-top:1px solid #A8D8BC;text-align:center;">
+      <button id="close-case-btn" onclick="closeCaseFromChat()" style="padding:10px 24px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✅ Sulje tapaus — tavara palautettu</button>
     </div>
     <div class="chat-input-bar">
       <input class="chat-input" id="chat-input" placeholder="Kirjoita viesti..." onkeydown="if(event.key==='Enter')sendMessage()" />
@@ -1902,7 +1902,7 @@ const translations = {
   msg_label:      { fi: 'Viestit', sv: 'Meddelanden', en: 'Messages' },
   msg_title:      { fi: 'Keskustelut', sv: 'Konversationer', en: 'Conversations' },
   msg_placeholder:{ fi: 'Kirjoita viesti...', sv: 'Skriv ett meddelande...', en: 'Write a message...' },
-  msg_close_case: { fi: '✅ Tapaus suljettu', sv: '✅ Ärende avslutat', en: '✅ Case closed' },
+  msg_close_case: { fi: '✅ Sulje tapaus — tavara palautettu', sv: '✅ Stäng ärende — föremålet returnerat', en: '✅ Close case — item returned' },
   msg_verify_warn:{ fi: 'Turvamuistutus: Varmista omistajuus ennen luovutusta — pyydä jotain, mitä vain oikea omistaja tietää. Älä luovuta tavaraa ennen vahvistusta.', sv: 'Säkerhetspåminnelse: Verifiera ägande innan överlämning — be om något som bara den riktiga ägaren vet. Lämna inte över föremålet innan verifiering.', en: 'Security reminder: Verify ownership before handover — ask for something only the real owner would know. Don\'t hand over the item before verification.' },
 
   // ── PROFILE ──
@@ -3779,7 +3779,7 @@ async function openChat(convId, conv) {
   currentChatListingId = null;
   showPage('chat');
   if (chatInterval) clearInterval(chatInterval);
-  document.getElementById('close-case-btn').style.display = 'none';
+  document.getElementById('close-case-bar').style.display = 'none';
 
   const listingId = typeof conv === 'object' ? conv.listing_id : conv;
   if (listingId) {
@@ -3790,7 +3790,7 @@ async function openChat(convId, conv) {
       document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'flex' : 'none';
       // Show close button only if case is not already returned
       if (l.status !== 'returned') {
-        document.getElementById('close-case-btn').style.display = 'inline-flex';
+        document.getElementById('close-case-bar').style.display = 'block';
       }
     }
   }
