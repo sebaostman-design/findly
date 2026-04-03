@@ -3873,17 +3873,52 @@ async function replyVerify(decision) {
     }
   }
 
-  // Build comprehensive acceptance message
+  // Build comprehensive acceptance message with item location
   const addr = listing.address ? listing.address.split(',')[0] : '';
+  const takenToMap = {
+    police: '🏛️ Tavara on viety poliisille',
+    info: '📍 Tavara on infopisteellä',
+    lostfound: '📦 Tavara on löytötavaratoimistossa',
+    safe: '🔒 Tavara on löytäjän hallussa turvallisesti',
+    other: '📋 Muu sijainti'
+  };
+
   let acceptMsg = '✅ OMISTAJUUS VAHVISTETTU\n\n';
   acceptMsg += '🎉 Vastaus hyväksytty — tämä on oikea omistaja!\n\n';
+
+  // WHERE IS THE ITEM — most important info
+  if (listing.taken_to) {
+    acceptMsg += '📦 TAVARAN SIJAINTI:\n';
+    acceptMsg += (takenToMap[listing.taken_to] || listing.taken_to) + '\n';
+    if (listing.taken_to_detail) acceptMsg += '   ➜ ' + listing.taken_to_detail + '\n';
+    acceptMsg += '\n';
+    if (listing.taken_to === 'police') {
+      acceptMsg += '⚖️ Tavara noudetaan poliisilta. Ota mukaasi henkilöllisyystodistus.\n\n';
+    } else if (listing.taken_to === 'lostfound') {
+      acceptMsg += '⚖️ Ota yhteyttä löytötavaratoimistoon ja ilmoita tavaran tiedot.\n\n';
+    } else if (listing.taken_to === 'info') {
+      acceptMsg += '⚖️ Tavara on noudettavissa infopisteeltä. Varaudu todistamaan omistajuus.\n\n';
+    }
+  }
+
+  // Contact info
   if (ownerPhone) acceptMsg += '📱 Omistajan puhelinnumero: ' + ownerPhone + '\n';
-  if (listing.lat && listing.lng) acceptMsg += '📍 Sijainti: ' + (addr || 'Katso kartalta') + '\n';
+  if (listing.contact && listing.type === 'found') acceptMsg += '📱 Löytäjän puhelinnumero: ' + listing.contact + '\n';
+  if (addr) acceptMsg += '📍 Ilmoitettu sijainti: ' + addr + '\n';
+
+  // Next steps depend on where the item is
   acceptMsg += '\n📋 SEURAAVAT ASKELEET:\n';
-  acceptMsg += '1. Sopikaa palautusaika ja -paikka\n';
-  acceptMsg += '2. Tavara luovutetaan ja todetaan kuntoiseksi\n';
+  if (listing.taken_to === 'police' || listing.taken_to === 'lostfound' || listing.taken_to === 'info') {
+    acceptMsg += '1. Nouda tavara ilmoitetusta paikasta\n';
+    acceptMsg += '2. Ota tarvittaessa yhteyttä löytäjään lisätiedoista\n';
+  } else {
+    acceptMsg += '1. Sopikaa turvallinen palautuspaikka ja -aika\n';
+    acceptMsg += '2. Tavara luovutetaan ja todetaan kuntoiseksi\n';
+  }
   acceptMsg += '3. Klikkaa "Sulje tapaus" alla kun palautus on tehty\n';
+
   if (listing.reward) acceptMsg += '\n💰 Omistaja on tarjonnut ' + listing.reward + '€ palkkion.\n';
+  acceptMsg += '\n⚖️ Löytötavaralain mukaan löytäjällä on oikeus pyytää löytöpalkkiota (enintään 10% tavaran arvosta). Palkkio sovitaan osapuolten kesken.';
 
   await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: acceptMsg });
   await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', currentConvId);
