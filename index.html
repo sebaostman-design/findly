@@ -103,6 +103,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { overflow-x: hidden; max-width: 100vw; }
 :root {
   --green: #1A7A52; --green-mid: #2EA872; --green-light: #E6F5EE; --green-dark: #0D4A31;
   --red: #D94040; --red-light: #FEF0F0;
@@ -621,8 +622,32 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
   .steps-grid { grid-template-columns: 1fr; }
   .why-grid { grid-template-columns: 1fr; }
   .stat-divider { display: none; }
-  .stats-bar-inner { justify-content: flex-start; gap: 0; }
-  .stat-item { padding: 14px 20px; align-items: flex-start; }
+  .stats-bar-inner { justify-content: flex-start; gap: 0; flex-wrap: wrap; }
+  .stat-item { padding: 12px 16px; align-items: flex-start; }
+  .wrap { padding: 0 16px !important; }
+  .hero { padding: 60px 0 40px; }
+  .hero h1 { font-size: 36px !important; letter-spacing: -1px; }
+  .hero-lead { font-size: 15px; }
+  .section-title { font-size: 22px !important; }
+  .match-card { flex-direction: column; }
+  .match-card-icon { width: 40px; height: 40px; font-size: 20px; }
+  .match-card-top { flex-direction: column; gap: 6px; }
+  .match-card-actions { flex-direction: column; }
+  .match-card-actions button, .match-card-actions .btn-primary, .match-card-actions .btn-secondary { width: 100%; text-align: center; }
+  .feed-card-img { min-height: 100px; max-height: 180px; }
+  .nav-inner { padding: 0 16px; height: 60px; }
+  .nav-logo { font-size: 20px; }
+  .category-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
+  .category-card { padding: 16px 10px !important; }
+  .cat-icon { font-size: 28px !important; }
+  .cat-label { font-size: 11px !important; }
+}
+@media (max-width: 420px) {
+  .task-cards { grid-template-columns: 1fr; }
+  .category-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-bar-inner { justify-content: center; }
+  .stat-item { padding: 10px 12px; }
+  .stat-num { font-size: 18px !important; }
 }
 @media (min-width: 1200px) {
   .feed-grid { grid-template-columns: repeat(4, 1fr); }
@@ -755,7 +780,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;" data-i18n="nav_feed">Ilmoitukset</a>
     </div>
     <div class="nav-right">
-      <div id="lang-switcher" style="display:flex;gap:4px;margin-right:8px;">
+      <div id="lang-switcher" style="display:flex;gap:2px;margin-right:6px;flex-shrink:0;">
         <button onclick="setLang('fi')" class="lang-btn lang-active" title="Suomi" style="padding:4px 6px;border:1.5px solid transparent;border-radius:6px;background:none;cursor:pointer;font-size:16px;line-height:1;">🇫🇮</button>
         <button onclick="setLang('sv')" class="lang-btn" title="Svenska" style="padding:4px 6px;border:1.5px solid transparent;border-radius:6px;background:none;cursor:pointer;font-size:16px;line-height:1;">🇸🇪</button>
         <button onclick="setLang('en')" class="lang-btn" title="English" style="padding:4px 6px;border:1.5px solid transparent;border-radius:6px;background:none;cursor:pointer;font-size:16px;line-height:1;">🇬🇧</button>
@@ -937,19 +962,19 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <h2 class="section-title">Miksi Findly eikä Facebook?</h2>
         <p class="section-sub">Perinteinen tapa on selata ryhmiä ja toivoa parasta. Findly tekee saman automaattisesti ja turvallisesti.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--radius-lg);overflow:hidden;border:1.5px solid var(--border);">
-        <div style="background:var(--paper);padding:16px 20px;font-size:13px;font-weight:600;color:var(--ink3);">Facebook-ryhmät</div>
-        <div style="background:var(--green-light);padding:16px 20px;font-size:13px;font-weight:600;color:var(--green-dark);">Findly</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink2);">❌ Selaat satoja postauksia manuaalisesti</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink);">✅ Automaattinen matchaus — osumat tulevat sinulle</div>
-        <div style="background:var(--paper);padding:14px 20px;font-size:13px;color:var(--ink2);">❌ Kaikki tiedot julkisia kaikille</div>
-        <div style="background:var(--paper);padding:14px 20px;font-size:13px;color:var(--ink);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink2);">❌ Ei tapaa todistaa omistajuutta</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
-        <div style="background:var(--paper);padding:14px 20px;font-size:13px;color:var(--ink2);">❌ Tarkka sijainti näkyy kaikille</div>
-        <div style="background:var(--paper);padding:14px 20px;font-size:13px;color:var(--ink);">✅ Sijainti blurrattu 300–500 m tarkkuuteen</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink2);">❌ Ei huijaussuojaa</div>
-        <div style="background:white;padding:14px 20px;font-size:13px;color:var(--ink);">✅ Ilmoitusnappi + rate limit + moderointi</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--radius-lg);overflow:hidden;border:1.5px solid var(--border);word-break:break-word;">
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;font-weight:600;color:var(--ink3);">Facebook-ryhmät</div>
+        <div style="background:var(--green-light);padding:12px 14px;font-size:12px;font-weight:600;color:var(--green-dark);">Findly</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Selaat satoja postauksia manuaalisesti</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Automaattinen matchaus — osumat tulevat sinulle</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Kaikki tiedot julkisia kaikille</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei tapaa todistaa omistajuutta</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Tarkka sijainti näkyy kaikille</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Sijainti blurrattu 300–500 m tarkkuuteen</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei huijaussuojaa</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Ilmoitusnappi + rate limit + moderointi</div>
       </div>
     </div>
   </section>
@@ -1067,7 +1092,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
         <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:800;color:white;margin-bottom:16px;line-height:1.3;" data-i18n="vibes_title">Findly on hyvän mielen palvelu</h2>
         <p style="font-size:16px;color:rgba(255,255,255,0.65);line-height:1.8;max-width:620px;margin:0 auto;" data-i18n="vibes_desc">Tavoitteemme on yksinkertainen: saattaa kadonnut tavara takaisin omistajalleen. Jokainen onnistunut palautus tuottaa hyvää mieltä — sekä omistajalle että löytäjälle. Rehellisyys kannattaa, ja Findly tekee siitä helppoa.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px;">
         <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:24px;">
           <div style="font-size:28px;margin-bottom:12px;">💸</div>
           <div style="font-size:15px;font-weight:700;color:white;margin-bottom:8px;" data-i18n="vibes_tip_title">Vapaaehtoinen tippipalkkio</div>
@@ -1104,7 +1129,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
     <div class="wrap">
       <div class="section-label" data-i18n="faq_label">Usein kysyttyä</div>
       <div class="section-title" style="margin-bottom:40px;" data-i18n="faq_title">Löytötavara-palvelun UKK</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:960px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:20px;max-width:960px;margin:0 auto;">
         <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
           <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;" data-i18n="faq_q1">Miten ilmoitan kadonneesta tavarasta?</h3>
           <p style="font-size:13px;color:var(--ink2);line-height:1.6;" data-i18n="faq_a1">Rekisteröidy ilmaiseksi, klikkaa "Kadotin tavaran" ja kuvaile tavara. Findly etsii automaattisesti vastaavia löytöilmoituksia ja ilmoittaa mahdollisesta matchista.</p>
