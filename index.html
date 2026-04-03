@@ -2823,6 +2823,15 @@ async function showSuccessModal(listingId, isOwner, finderId) {
     badgeEl.style.display = 'none';
   }
 
+  // Role-aware story placeholder
+  const storyEl = document.getElementById('success-story');
+  if (storyEl) {
+    storyEl.value = '';
+    storyEl.placeholder = isFinder
+      ? {fi:'Esim: Löysin lompakon ja sain palautettua omistajalle helposti. Tästä tuli hyvä mieli!',sv:'T.ex: Jag hittade en plånbok och kunde enkelt returnera den. Det kändes bra!',en:'E.g.: I found a wallet and easily returned it to the owner. Felt great!'}[L]
+      : {fi:'Esim: Lompakkoni löytyi rehellisen löytäjän ansiosta! Kaikki oli tallella.',sv:'T.ex: Min plånbok hittades tack vare en ärlig upphittare! Allt var kvar.',en:'E.g.: My wallet was found thanks to an honest finder! Everything was intact.'}[L];
+  }
+
   document.getElementById('success-modal').style.display = 'flex';
   refreshResolvedCount();
 }
