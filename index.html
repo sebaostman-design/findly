@@ -3362,6 +3362,20 @@ function setFormType(type) {
   const btnLabels = { lost: 'Julkaise kadonnut-ilmoitus →', found: 'Julkaise löytöilmoitus →', stolen: 'Julkaise varastettu-ilmoitus →', pet: 'Julkaise eläinilmoitus →' };
   submitBtn.textContent = btnLabels[type];
   submitBtn.className = 'submit-btn ' + type;
+
+  // Type-aware placeholders
+  const titleEl = document.getElementById('f-title');
+  const descEl = document.getElementById('f-desc');
+  if (type === 'pet') {
+    titleEl.placeholder = {fi:'Esim: Ruskea labradori, harmaa kissa...',sv:'T.ex: Brun labrador, grå katt...',en:'E.g.: Brown labrador, gray cat...'}[currentLang];
+    descEl.placeholder = {fi:'Rotu, väri, koko, erityispiirteet, onko panta, mikronäyte...',sv:'Ras, färg, storlek, särskilda drag, har halsband, mikrochip...',en:'Breed, color, size, distinguishing features, collar, microchip...'}[currentLang];
+  } else if (type === 'found') {
+    titleEl.placeholder = {fi:'Esim: Musta lompakko, avainnippu...',sv:'T.ex: Svart plånbok, nyckelknippa...',en:'E.g.: Black wallet, set of keys...'}[currentLang];
+    descEl.placeholder = {fi:'Kuvaile yleisellä tasolla. Älä paljasta kaikkia tunnistetietoja — omistaja todistaa omistajuutensa.',sv:'Beskriv på en allmän nivå. Avslöja inte alla detaljer — ägaren bevisar sitt ägande.',en:'Describe at a general level. Don\'t reveal all details — the owner will prove ownership.'}[currentLang];
+  } else {
+    titleEl.placeholder = {fi:'Esim: Musta Nike-reppu, iPhone 15 Pro...',sv:'T.ex: Svart Nike-ryggsäck, iPhone 15 Pro...',en:'E.g.: Black Nike backpack, iPhone 15 Pro...'}[currentLang];
+    descEl.placeholder = {fi:'Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen.',sv:'Färg, märke, särskilda drag. Avslöja inte alla detaljer — de bekräftas efter matchning.',en:'Color, brand, distinguishing features. Don\'t reveal all details — they\'re confirmed after matching.'}[currentLang];
+  }
 }
 
 function setPetSubtype(subtype, btn) {
