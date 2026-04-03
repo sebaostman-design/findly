@@ -3804,28 +3804,71 @@ async function submitVerifyRequest() {
 // ═══════════════════════════════════════════════════════
 async function loadConversations() {
   if (!currentUser) {
-    document.getElementById('conversations-list').innerHTML = '<p style="color:var(--ink3);">Kirjaudu sisään nähdäksesi viestisi.</p>';
+    document.getElementById('conversations-list').innerHTML = `<p style="color:var(--ink3);">${{fi:'Kirjaudu sisään nähdäksesi viestisi.',sv:'Logga in för att se dina meddelanden.',en:'Log in to see your messages.'}[currentLang]}</p>`;
     return;
   }
   const el = document.getElementById('conversations-list');
   el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const { data } = await sb.from('conversations')
-    .select('*, listings(title,type)')
+    .select('*, listings(title,type,category,status)')
     .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
     .order('updated_at', { ascending: false });
   if (!data || data.length === 0) {
-    el.innerHTML = '<p style="color:var(--ink3);">Ei vielä keskusteluja.</p>';
+    el.innerHTML = `<div style="text-align:center;padding:32px;color:var(--ink3);">
+      <div style="font-size:36px;margin-bottom:12px;">💬</div>
+      <div style="font-size:14px;">${{fi:'Ei vielä keskusteluja',sv:'Inga konversationer ännu',en:'No conversations yet'}[currentLang]}</div>
+      <div style="font-size:12px;margin-top:6px;">${{fi:'Kun saat osuman ja otat yhteyttä, keskustelu ilmestyy tähän.',sv:'När du får en träff och tar kontakt visas konversationen här.',en:'When you get a match and make contact, the conversation appears here.'}[currentLang]}</div>
+    </div>`;
     return;
   }
-  el.innerHTML = data.map(c => `
-    <div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="width:44px;height:44px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💬</div>
-      <div>
-        <div style="font-size:14px;font-weight:600;">${esc(c.listings?.title||'Ilmoitus')}</div>
-        <div style="font-size:12px;color:var(--ink3);margin-top:3px;">${timeAgo(c.updated_at||c.created_at)}</div>
+
+  // Get last message for each conversation
+  const convIds = data.map(c => c.id);
+  const { data: lastMsgs } = await sb.from('messages')
+    .select('conversation_id, content, sender_id, created_at')
+    .in('conversation_id', convIds)
+    .order('created_at', { ascending: false });
+
+  const lastMsgMap = {};
+  if (lastMsgs) {
+    for (const m of lastMsgs) {
+      if (!lastMsgMap[m.conversation_id]) lastMsgMap[m.conversation_id] = m;
+    }
+  }
+
+  el.innerHTML = data.map(c => {
+    const isUnread = new Date(c.updated_at) > new Date(lastSeenMsgTime);
+    const lastMsg = lastMsgMap[c.id];
+    const icon = c.listings ? categoryIcon(c.listings.category) : '💬';
+    const statusBadge = c.listings?.status === 'returned'
+      ? `<span style="font-size:10px;background:var(--green-light);color:var(--green-dark);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Suljettu',sv:'Stängd',en:'Closed'}[currentLang]}</span>`
+      : c.listings?.status === 'match'
+        ? `<span style="font-size:10px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Aktiivinen',sv:'Aktiv',en:'Active'}[currentLang]}</span>`
+        : '';
+
+    let preview = '';
+    if (lastMsg) {
+      const isOwn = lastMsg.sender_id === currentUser.id;
+      let text = lastMsg.content.substring(0, 60);
+      if (text.startsWith('🔐 OSUMAILMOITUS')) text = {fi:'🔐 Osumailmoitus lähetetty',sv:'🔐 Träffanmälan skickad',en:'🔐 Match claim sent'}[currentLang];
+      else if (text.startsWith('✅ OMISTAJUUS')) text = {fi:'✅ Omistajuus vahvistettu',sv:'✅ Ägande bekräftat',en:'✅ Ownership verified'}[currentLang];
+      preview = (isOwn ? {fi:'Sinä: ',sv:'Du: ',en:'You: '}[currentLang] : '') + text;
+      if (lastMsg.content.length > 60) preview += '...';
+    }
+
+    return `<div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:${isUnread ? 'var(--green-light)' : 'white'};border:1.5px solid ${isUnread ? 'var(--green)' : 'var(--border)'};border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='${isUnread ? 'var(--green)' : 'var(--border)'}'" >
+      <div style="width:48px;height:48px;border-radius:50%;background:${isUnread ? 'white' : 'var(--paper)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border);">${icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;">
+          <div style="font-size:14px;font-weight:${isUnread ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.listings?.title || {fi:'Ilmoitus',sv:'Anmälan',en:'Listing'}[currentLang])}</div>
+          ${statusBadge}
+        </div>
+        ${preview ? `<div style="font-size:12px;color:var(--ink3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(preview)}</div>` : ''}
+        <div style="font-size:11px;color:var(--ink3);margin-top:3px;">${timeAgo(c.updated_at||c.created_at)}</div>
       </div>
-    </div>
-  `).join('');
+      ${isUnread ? '<div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>' : ''}
+    </div>`;
+  }).join('');
 }
 
 let currentChatListingId = null;
