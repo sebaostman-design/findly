@@ -3886,8 +3886,13 @@ async function openChat(convId, conv) {
       currentChatListingId = listingId;
       document.getElementById('chat-listing-ref').textContent = l.title;
       document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'flex' : 'none';
-      // Show close button only if case is not already returned
-      if (l.status !== 'returned') {
+      // Show close button only to the OWNER (person who lost the item)
+      // If listing type is 'lost', the listing creator is the owner
+      // If listing type is 'found', the OTHER party is the owner
+      const isOwnerInChat = (l.type === 'lost' && l.user_id === currentUser.id) ||
+                            (l.type === 'found' && l.user_id !== currentUser.id) ||
+                            l.type === 'pet';
+      if (l.status !== 'returned' && isOwnerInChat) {
         document.getElementById('close-case-bar').style.display = 'block';
       }
     }
