@@ -1391,11 +1391,12 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
 
         <div class="form-group full">
           <label id="f-location-label" data-i18n="form_location">Katoamispaikka *</label>
+          <input type="text" id="f-address" placeholder="Kirjoita osoite tai paikka, esim. Kampin keskus, Hämeentie 12..." style="margin-bottom:10px;" />
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:8px;text-align:center;">— tai merkitse kartalta —</div>
           <div class="form-map-pick">
             <div id="form-map"></div>
             <div class="form-map-hint" data-i18n="form_map_hint">Klikkaa kartalta merkitäksesi sijainti</div>
           </div>
-          <input type="text" id="f-address" placeholder="Tai kirjoita alue / kaupunginosa..." />
           <input type="hidden" id="f-lat" />
           <input type="hidden" id="f-lng" />
           <p style="font-size:11px;color:var(--ink3);margin-top:6px;">📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.</p>
@@ -3199,7 +3200,7 @@ function setFormType(type) {
   document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
   document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
   document.getElementById('pet-subtype-field').style.display = type === 'pet' ? 'block' : 'none';
-  document.getElementById('image-upload-field').style.display = type === 'found' ? 'none' : 'block';
+  document.getElementById('image-upload-field').style.display = (type === 'found' || type === 'lost') ? 'none' : 'block';
   document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
 
   // Update image guidance for pet type
@@ -3303,7 +3304,7 @@ async function submitListing(e) {
   // Upload image if provided (owner types only)
   let image_url = null;
   const imageFile = document.getElementById('f-image')?.files[0];
-  if (imageFile && currentFormType !== 'found') {
+  if (imageFile && currentFormType !== 'found' && currentFormType !== 'lost') {
     btn.textContent = 'Ladataan kuvaa...';
     const ext = imageFile.name.split('.').pop();
     const path = `${currentUser.id}/${Date.now()}.${ext}`;
