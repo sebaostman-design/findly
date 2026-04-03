@@ -1217,10 +1217,9 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
       <div class="map-header-inner">
         <h2 data-i18n="map_title">Karttanäkymä</h2>
         <div class="map-controls-bar">
-          <button class="feed-filter active-all" onclick="filterMap('all',this)" data-i18n="feed_all">Kaikki</button>
-          <button class="feed-filter" onclick="filterMap('lost',this)" data-i18n="feed_lost">🔍 Kadonneet</button>
-          <button class="feed-filter" onclick="filterMap('found',this)" data-i18n="feed_found">📦 Löydetyt</button>
-          <button class="feed-filter" onclick="filterMap('pet',this)" data-i18n="feed_pets">🐾 Eläimet</button>
+          <button class="feed-filter active-all" onclick="filterMap('all',this)">Kaikki</button>
+          <button class="feed-filter" onclick="filterMap('items',this)">🔍 Tavarat</button>
+          <button class="feed-filter" onclick="filterMap('pet',this)">🐾 Eläimet</button>
           <button class="feed-filter" onclick="toggleMapStories(this)" id="map-stories-btn" style="border-color:var(--amber);color:var(--amber);">💛 Palautetut</button>
         </div>
         <p style="font-size:12px;color:var(--ink3);margin-top:10px;" data-i18n="map_notice">📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.</p>
@@ -3197,9 +3196,12 @@ function updateMapMarkers(listings) {
 }
 
 function filterMap(type, btn) {
-  document.querySelectorAll('.map-controls-bar .feed-filter').forEach(b => b.className = 'feed-filter');
-  btn.className = 'feed-filter active-' + (type === 'all' ? 'all' : type);
-  const filtered = type === 'all' ? allListings : allListings.filter(l => l.type === type);
+  document.querySelectorAll('.map-controls-bar .feed-filter').forEach(b => { b.className = 'feed-filter'; if (b.id === 'map-stories-btn') { b.style.borderColor = 'var(--amber)'; b.style.color = 'var(--amber)'; } });
+  btn.className = 'feed-filter active-' + (type === 'all' ? 'all' : type === 'items' ? 'lost' : type);
+  let filtered;
+  if (type === 'all') filtered = allListings;
+  else if (type === 'items') filtered = allListings.filter(l => l.type === 'lost' || l.type === 'found' || l.type === 'stolen');
+  else filtered = allListings.filter(l => l.type === type);
   updateMapMarkers(filtered);
 }
 
