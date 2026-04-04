@@ -3056,11 +3056,8 @@ function startInAppPolling() {
   inAppPollInterval = setInterval(() => {
     if (!currentUser) return;
     updateMsgBadge();
-    // Auto-refresh conversations list if on messages page
-    if (document.getElementById('page-messages')?.classList.contains('active')) {
-      loadConversations();
-    }
-  }, 8000);
+    updateMatchBadge();
+  }, 12000);
 }
 
 async function pollForNotifications() {
@@ -4099,6 +4096,8 @@ let currentChatListingId = null;
 async function openChat(convId, conv) {
   currentConvId = convId;
   currentChatListingId = null;
+  lastMessageId = null;
+  lastChatMsgCount = 0;
   showPage('chat');
   if (chatInterval) clearInterval(chatInterval);
   document.getElementById('close-case-bar').style.display = 'none';
@@ -4127,16 +4126,20 @@ async function openChat(convId, conv) {
 }
 
 let lastMessageId = null;
+let lastChatMsgCount = 0;
 async function loadMessages() {
   const el = document.getElementById('chat-messages');
   const { data } = await sb.from('messages').select('*').eq('conversation_id', currentConvId).order('created_at', { ascending: true });
   if (!data) return;
+  // Skip re-render if nothing changed
+  if (data.length === lastChatMsgCount && data[data.length - 1]?.id === lastMessageId) return;
   // Notify on new incoming message
   const latest = data[data.length - 1];
   if (lastMessageId && latest && latest.id !== lastMessageId && latest.sender_id !== currentUser?.id) {
     sendNotification('Findly — Uusi viesti 💬', latest.content.substring(0, 80));
   }
-  if (latest) lastMessageId = latest.id;
+  lastMessageId = latest?.id;
+  lastChatMsgCount = data.length;
   const wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 40;
   el.innerHTML = data.map(m => {
     const own = m.sender_id === currentUser?.id;
