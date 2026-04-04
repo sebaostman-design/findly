@@ -2212,6 +2212,8 @@ let claimsToday = 0;
 // NAVIGATION
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
+  // Clean up chat polling when leaving chat page
+  if (name !== 'chat' && chatInterval) { clearInterval(chatInterval); chatInterval = null; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const el = document.getElementById('page-' + name);
   if (el) {
@@ -3502,7 +3504,7 @@ async function submitListing(e) {
       .upload(path, imageFile, { cacheControl: '3600', upsert: false });
     if (uploadError) {
       toast(t('toast_upload_fail') + uploadError.message, 'red');
-      btn.disabled = false; btn.textContent = 'Julkaise ilmoitus →';
+      btn.disabled = false; setFormType(currentFormType);
       return;
     }
     const { data: urlData } = sb.storage.from('listing-images').getPublicUrl(path);
@@ -3866,13 +3868,22 @@ async function getOrCreateConversation(listingId, otherUserId) {
     .maybeSingle();
   if (between) return { convId: between.id, isNew: false };
 
-  // Create new
+  // Create new — if duplicate error, retry read
   const { data: conv, error } = await sb.from('conversations').insert({
     listing_id: listingId,
     user_a: currentUser.id,
     user_b: otherUserId
   }).select().single();
-  if (error) { toast(t('toast_error') + error.message, 'red'); return { convId: null, isNew: false }; }
+  if (error) {
+    // Might be a race condition — try reading again
+    const { data: retry } = await sb.from('conversations')
+      .select('id').eq('listing_id', listingId)
+      .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+      .limit(1).maybeSingle();
+    if (retry) return { convId: retry.id, isNew: false };
+    toast(t('toast_error') + error.message, 'red');
+    return { convId: null, isNew: false };
+  }
   return { convId: conv.id, isNew: true };
 }
 
@@ -4006,11 +4017,12 @@ async function submitVerifyRequest() {
 
   // Send structured verification message
   const verifyMsg = `🔐 OSUMAILMOITUS\n\n✔️ Tunnistava yksityiskohta:\n"${secret}"\n\n📱 Puhelinnumero: ${phone}${question ? `\n\n❓ Kysymys löytäjälle: ${question}` : ''}`;
-  await sb.from('messages').insert({
+  const { error: msgErr } = await sb.from('messages').insert({
     conversation_id: convId,
     sender_id: currentUser.id,
     content: verifyMsg
   });
+  if (msgErr) { toast(t('toast_error') + msgErr.message, 'red'); return; }
   await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', convId);
 
   // Increment claim counter
@@ -4099,7 +4111,7 @@ async function openChat(convId, conv) {
   lastMessageId = null;
   lastChatMsgCount = 0;
   showPage('chat');
-  if (chatInterval) clearInterval(chatInterval);
+  if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
   document.getElementById('close-case-bar').style.display = 'none';
 
   const listingId = typeof conv === 'object' ? conv.listing_id : conv;
@@ -4194,12 +4206,12 @@ async function loadMessages() {
 async function replyVerify(decision) {
   if (decision === 'more') {
     document.getElementById('chat-input').value = '❓ Pyydän lisätietoja — voitko kertoa jotain muuta tavarasta?';
-    sendMessage();
+    await sendMessage();
     return;
   }
   if (decision === 'rejected') {
     document.getElementById('chat-input').value = '❌ Hylätty — vastaus ei täsmää. Jos tämä on virhe, ota uudelleen yhteyttä.';
-    sendMessage();
+    await sendMessage();
     return;
   }
   // ACCEPTED — reveal contact info and guide to next steps
@@ -4283,8 +4295,10 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: text });
+  const { error } = await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: text });
+  if (error) { toast(t('toast_error') + error.message, 'red'); input.value = text; return; }
   await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', currentConvId);
+  lastChatMsgCount = 0; // Force re-render
   loadMessages();
 }
 
