@@ -2883,11 +2883,24 @@ async function showSuccessModal(listingId, isOwner, finderId) {
 
 async function closeCaseFromChat() {
   if (!currentChatListingId) return;
+
+  // Check if already closed
+  const { data: check } = await sb.from('listings').select('status').eq('id', currentChatListingId).single();
+  if (check?.status === 'returned') {
+    document.getElementById('close-case-bar').style.display = 'none';
+    toast({fi:'Tapaus on jo suljettu.',sv:'Ärendet är redan avslutat.',en:'Case is already closed.'}[currentLang], 'green');
+    return;
+  }
+
   if (!confirm({fi:'Merkitäänkö tapaus ratkaistuksi? Ilmoitus poistetaan listalta.',sv:'Markera ärendet som löst? Anmälan tas bort.',en:'Mark case as resolved? Listing will be removed.'}[currentLang])) return;
+
+  // Disable button immediately to prevent double-clicks
+  const closeBtn = document.getElementById('close-case-btn');
+  if (closeBtn) { closeBtn.disabled = true; closeBtn.style.opacity = '0.5'; closeBtn.textContent = {fi:'Suljetaan...',sv:'Stänger...',en:'Closing...'}[currentLang]; }
 
   const { data: conv } = await sb.from('conversations').select('user_a, user_b, listing_id').eq('id', currentConvId).single();
   const { data: listing } = await sb.from('listings').select('user_id,type').eq('id', currentChatListingId).single();
-  if (!conv || !listing) return;
+  if (!conv || !listing) { if (closeBtn) { closeBtn.disabled = false; closeBtn.style.opacity = '1'; } return; }
 
   // Determine roles correctly:
   // The listing creator is the one who posted (could be lost OR found)
@@ -2925,6 +2938,9 @@ async function closeCaseFromChat() {
 
   await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: closeMsg });
   await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', currentConvId);
+
+  // Hide the close button — case is done
+  document.getElementById('close-case-bar').style.display = 'none';
 
   // Send push notification to the other party
   sendNotification(
@@ -4069,12 +4085,15 @@ async function loadConversations() {
     }
   }
 
-  el.innerHTML = data.map(c => {
-    const isUnread = new Date(c.updated_at) > new Date(lastSeenMsgTime);
+  const activeConvs = data.filter(c => c.listings?.status !== 'returned');
+  const archivedConvs = data.filter(c => c.listings?.status === 'returned');
+
+  function renderConvCard(c, isArchived) {
+    const isUnread = !isArchived && new Date(c.updated_at) > new Date(lastSeenMsgTime);
     const lastMsg = lastMsgMap[c.id];
     const icon = c.listings ? categoryIcon(c.listings.category) : '💬';
-    const statusBadge = c.listings?.status === 'returned'
-      ? `<span style="font-size:10px;background:var(--green-light);color:var(--green-dark);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Suljettu',sv:'Stängd',en:'Closed'}[currentLang]}</span>`
+    const statusBadge = isArchived
+      ? `<span style="font-size:10px;background:var(--green-light);color:var(--green-dark);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Palautettu',sv:'Returnerad',en:'Returned'}[currentLang]}</span>`
       : c.listings?.status === 'match'
         ? `<span style="font-size:10px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Aktiivinen',sv:'Aktiv',en:'Active'}[currentLang]}</span>`
         : '';
@@ -4089,7 +4108,11 @@ async function loadConversations() {
       if (lastMsg.content.length > 60) preview += '...';
     }
 
-    return `<div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:${isUnread ? 'var(--green-light)' : 'white'};border:1.5px solid ${isUnread ? 'var(--green)' : 'var(--border)'};border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='${isUnread ? 'var(--green)' : 'var(--border)'}'" >
+    const bg = isArchived ? 'var(--paper)' : (isUnread ? 'var(--green-light)' : 'white');
+    const border = isArchived ? 'var(--border)' : (isUnread ? 'var(--green)' : 'var(--border)');
+    const opacity = isArchived ? '0.75' : '1';
+
+    return `<div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:${bg};border:1.5px solid ${border};border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;opacity:${opacity};" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='${border}'" >
       <div style="width:48px;height:48px;border-radius:50%;background:${isUnread ? 'white' : 'var(--paper)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border);">${icon}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;">
@@ -4101,7 +4124,29 @@ async function loadConversations() {
       </div>
       ${isUnread ? '<div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>' : ''}
     </div>`;
-  }).join('');
+  }
+
+  let html = '';
+  if (activeConvs.length > 0) {
+    html += activeConvs.map(c => renderConvCard(c, false)).join('');
+  } else {
+    html += `<div style="text-align:center;padding:24px;color:var(--ink3);font-size:13px;">${{fi:'Ei aktiivisia keskusteluja',sv:'Inga aktiva konversationer',en:'No active conversations'}[currentLang]}</div>`;
+  }
+
+  if (archivedConvs.length > 0) {
+    html += `<div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">
+      <div onclick="document.getElementById('archived-convs').style.display=document.getElementById('archived-convs').style.display==='none'?'block':'none';this.querySelector('.archive-arrow').textContent=document.getElementById('archived-convs').style.display==='none'?'▸':'▾'" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:12px;user-select:none;">
+        <span class="archive-arrow" style="font-size:12px;color:var(--ink3);">▸</span>
+        <span style="font-size:13px;font-weight:600;color:var(--ink2);">${{fi:'Arkisto',sv:'Arkiv',en:'Archive'}[currentLang]}</span>
+        <span style="font-size:11px;color:var(--ink3);background:var(--paper);padding:2px 8px;border-radius:10px;">${archivedConvs.length}</span>
+      </div>
+      <div id="archived-convs" style="display:none;">
+        ${archivedConvs.map(c => renderConvCard(c, true)).join('')}
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 let currentChatListingId = null;
@@ -4347,16 +4392,40 @@ async function loadProfile() {
   if (!listings || listings.length === 0) {
     myListings.innerHTML = '<p style="color:var(--ink3);font-size:13px;">Ei vielä ilmoituksia.</p>';
   } else {
-    myListings.innerHTML = listings.map(l => `
-      <div onclick="openListing('${l.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+    function renderListingRow(l) {
+      const isResolved = l.status === 'returned';
+      return `<div onclick="openListing('${l.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;${isResolved ? 'opacity:0.6;' : ''}">
         <div style="font-size:24px;">${categoryIcon(l.category)}</div>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:500;">${esc(l.title)}</div>
-          <div style="font-size:12px;color:var(--ink3);">${timeAgo(l.created_at)} · ${expiresIn(l.created_at)}</div>
+          <div style="font-size:12px;color:var(--ink3);">${timeAgo(l.created_at)}${isResolved ? '' : ' · ' + expiresIn(l.created_at)}</div>
         </div>
-        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;" class="${{lost:'badge-lost',found:'badge-found',stolen:'badge-stolen',pet:'badge-pet'}[l.type]||''}">${{lost:'Kadonnut',found:'Löydetty',stolen:'Varastettu',pet:'Eläin'}[l.type]||l.type}</span>
-      </div>
-    `).join('');
+        ${isResolved
+          ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-light);color:var(--green-dark);">${{fi:'Palautettu',sv:'Returnerad',en:'Returned'}[currentLang]}</span>`
+          : `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;" class="${{lost:'badge-lost',found:'badge-found',stolen:'badge-stolen',pet:'badge-pet'}[l.type]||''}">${{lost:'Kadonnut',found:'Löydetty',stolen:'Varastettu',pet:'Eläin'}[l.type]||l.type}</span>`
+        }
+      </div>`;
+    }
+
+    let listHtml = '';
+    if (active.length > 0) {
+      listHtml += active.map(renderListingRow).join('');
+    } else {
+      listHtml += `<p style="color:var(--ink3);font-size:13px;padding:12px 0;">${{fi:'Ei aktiivisia ilmoituksia',sv:'Inga aktiva anmälningar',en:'No active listings'}[currentLang]}</p>`;
+    }
+    if (resolved.length > 0) {
+      listHtml += `<div style="margin-top:16px;padding-top:12px;border-top:2px solid var(--border);">
+        <div onclick="document.getElementById('archived-listings').style.display=document.getElementById('archived-listings').style.display==='none'?'block':'none';this.querySelector('.archive-arrow').textContent=document.getElementById('archived-listings').style.display==='none'?'▸':'▾'" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;user-select:none;">
+          <span class="archive-arrow" style="font-size:12px;color:var(--ink3);">▸</span>
+          <span style="font-size:13px;font-weight:600;color:var(--ink2);">${{fi:'Arkisto — ratkaistut tapaukset',sv:'Arkiv — lösta ärenden',en:'Archive — resolved cases'}[currentLang]}</span>
+          <span style="font-size:11px;color:var(--ink3);background:var(--paper);padding:2px 8px;border-radius:10px;">${resolved.length}</span>
+        </div>
+        <div id="archived-listings" style="display:none;">
+          ${resolved.map(renderListingRow).join('')}
+        </div>
+      </div>`;
+    }
+    myListings.innerHTML = listHtml;
   }
 }
 
