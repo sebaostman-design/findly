@@ -2771,6 +2771,15 @@ async function deleteListing(id) {
 }
 
 async function updateListingStatus(id, status) {
+  // Prevent double-closing
+  if (status === 'returned') {
+    const { data: check } = await sb.from('listings').select('status').eq('id', id).single();
+    if (check?.status === 'returned') {
+      toast({fi:'Tapaus on jo suljettu.',sv:'Ärendet är redan avslutat.',en:'Case is already closed.'}[currentLang], 'green');
+      openListing(id);
+      return;
+    }
+  }
   const updates = { status };
   if (status === 'returned') {
     updates.expires_at = new Date(Date.now() - 1000).toISOString();
