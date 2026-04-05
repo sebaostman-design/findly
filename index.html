@@ -3864,10 +3864,12 @@ async function loadMatches() {
   const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
     sb.from('listings').select('*').eq('user_id', currentUser.id).neq('status','returned').gt('expires_at', now),
     sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']).neq('status','returned').gt('expires_at', now),
-    sb.from('conversations').select('listing_id').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    sb.from('conversations').select('listing_id, listings(status)').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
   ]);
   // Set of listing IDs where user already has a conversation
   const pendingListingIds = new Set((myConvs || []).map(c => c.listing_id));
+  // Set of listing IDs where conversation's listing is already resolved
+  const resolvedConvListingIds = new Set((myConvs || []).filter(c => c.listings?.status === 'returned').map(c => c.listing_id));
 
   if (!myListings || myListings.length === 0) {
     el.innerHTML = `
@@ -3883,9 +3885,23 @@ async function loadMatches() {
   let html = '';
   let totalMatches = 0;
 
-  for (const mine of myListings) {
+  // Filter out own listings linked to resolved conversations
+  const activeMyListings = myListings.filter(l => !resolvedConvListingIds.has(l.id));
+
+  if (activeMyListings.length === 0 && myListings.length > 0) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:48px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;">✅</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">${{fi:'Kaikki tapaukset käsitelty!',sv:'Alla ärenden avslutade!',en:'All cases handled!'}[currentLang]}</h3>
+        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">${{fi:'Suljetut tapaukset löydät profiilisi arkistosta.',sv:'Avslutade ärenden hittar du i profilens arkiv.',en:'Closed cases can be found in your profile archive.'}[currentLang]}</p>
+      </div>`;
+    return;
+  }
+
+  for (const mine of activeMyListings) {
     const candidates = (allOther || []).map(other => {
       if (isDismissed(mine.id, other.id)) return null;
+      if (resolvedConvListingIds.has(other.id)) return null;
       const result = scoreMatch(mine, other);
       if (!result || result.score < 20) return null;
       return { listing: other, score: result.score, reasons: result.reasons };
