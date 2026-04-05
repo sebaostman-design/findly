@@ -1385,9 +1385,29 @@ footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 56px 0 3
             <option>Muu</option>
           </select>
         </div>
-        <div class="form-group">
-          <label id="f-when-label" data-i18n="form_when">Milloin katosi *</label>
+        <div class="form-group" id="f-when-exact-group">
+          <label id="f-when-label" data-i18n="form_when">Milloin löysit *</label>
           <input type="datetime-local" id="f-when" required />
+        </div>
+        <div class="form-group" id="f-when-range-group" style="display:none;">
+          <label id="f-when-range-label">Milloin katosi (arvio) *</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="flex:1;">
+              <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Aikaisintaan</div>
+              <input type="date" id="f-when-from" required />
+            </div>
+            <span style="color:var(--ink3);margin-top:14px;">—</span>
+            <div style="flex:1;">
+              <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Viimeistään</div>
+              <input type="date" id="f-when-to" required />
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--ink3);margin-top:6px;">Ei tarvitse tietää tarkkaa aikaa — arvio riittää.</p>
+        </div>
+        <div class="form-group full" id="f-last-seen-group" style="display:none;">
+          <label>Missä näit viimeksi? <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
+          <input type="text" id="f-last-seen" placeholder="Esim: taskussa bussissa 550, kahvilan pöydällä..." maxlength="120" />
+          <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Auttaa löytäjää tunnistamaan tavaran ja parantaa osumien tarkkuutta.</p>
         </div>
         <div class="form-group full">
           <label data-i18n="form_title_lbl">Otsikko *</label>
@@ -2648,8 +2668,14 @@ async function openListing(id) {
     <div class="listing-info-grid">
       <div class="listing-info-card">
         <div class="listing-info-label">${{fi:'Aika',sv:'Tid',en:'Time'}[currentLang]}</div>
-        <div class="listing-info-value">${l.incident_time ? new Date(l.incident_time).toLocaleString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB') : '—'}</div>
+        <div class="listing-info-value">${l.incident_time_from && l.incident_time_to
+          ? new Date(l.incident_time_from).toLocaleDateString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB') + ' — ' + new Date(l.incident_time_to).toLocaleDateString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB')
+          : l.incident_time ? new Date(l.incident_time).toLocaleString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB') : '—'}</div>
       </div>
+      ${l.last_seen_context ? `<div class="listing-info-card" style="grid-column:1/-1;">
+        <div class="listing-info-label">${{fi:'Nähty viimeksi',sv:'Senast sedd',en:'Last seen'}[currentLang]}</div>
+        <div class="listing-info-value">${esc(l.last_seen_context)}</div>
+      </div>` : ''}
       <div class="listing-info-card">
         <div class="listing-info-label">${{fi:'Ilmoitus jätetty',sv:'Anmälan skapad',en:'Posted'}[currentLang]}</div>
         <div class="listing-info-value">${new Date(l.created_at).toLocaleDateString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB')}</div>
@@ -3418,8 +3444,26 @@ function setFormType(type) {
   if (type === 'found') takenToVal.required = true;
   else takenToVal.required = false;
 
-  const whenLabels = { found: 'Milloin löysit *', stolen: 'Milloin tapahtui *', pet: 'Milloin katosi / löytyi *', lost: 'Milloin katosi *' };
-  document.getElementById('f-when-label').textContent = whenLabels[type] || 'Milloin katosi *';
+  // Show date range for lost/stolen/pet, exact datetime for found
+  const useRange = type !== 'found';
+  document.getElementById('f-when-exact-group').style.display = useRange ? 'none' : 'block';
+  document.getElementById('f-when-range-group').style.display = useRange ? 'block' : 'none';
+  document.getElementById('f-last-seen-group').style.display = (type === 'lost' || type === 'stolen') ? 'block' : 'none';
+  if (useRange) {
+    document.getElementById('f-when').required = false;
+    document.getElementById('f-when-from').required = true;
+    document.getElementById('f-when-to').required = true;
+    const rangeLabels = { lost: 'Milloin katosi (arvio) *', stolen: 'Milloin tapahtui (arvio) *', pet: 'Milloin katosi / löytyi (arvio) *' };
+    document.getElementById('f-when-range-label').textContent = rangeLabels[type] || 'Milloin (arvio) *';
+    // Default "to" to today
+    const today = new Date().toISOString().split('T')[0];
+    if (!document.getElementById('f-when-to').value) document.getElementById('f-when-to').value = today;
+  } else {
+    document.getElementById('f-when').required = true;
+    document.getElementById('f-when-from').required = false;
+    document.getElementById('f-when-to').required = false;
+    document.getElementById('f-when-label').textContent = 'Milloin löysit *';
+  }
   const locLabels = { found: 'Löytöpaikka *', stolen: 'Tapahtumapaikka *', pet: 'Missä eläin katosi / löytyi *', lost: 'Katoamispaikka *' };
   document.getElementById('f-location-label').textContent = locLabels[type] || 'Katoamispaikka *';
 
@@ -3497,13 +3541,21 @@ async function submitListing(e) {
   const category = document.getElementById('f-category').value;
   const title = document.getElementById('f-title').value.trim();
   const desc = document.getElementById('f-desc').value.trim();
-  const when = document.getElementById('f-when').value;
+  const useRange = currentFormType !== 'found';
+  const when = useRange ? null : document.getElementById('f-when').value;
+  const whenFrom = useRange ? document.getElementById('f-when-from').value : null;
+  const whenTo = useRange ? document.getElementById('f-when-to').value : null;
   const phone = document.getElementById('f-phone').value.trim();
 
   if (!category) { toast(t('toast_select_cat'), 'red'); document.getElementById('f-category').focus(); return; }
   if (!title) { toast(t('toast_write_title'), 'red'); document.getElementById('f-title').focus(); return; }
   if (!desc) { toast(t('toast_write_desc'), 'red'); document.getElementById('f-desc').focus(); return; }
-  if (!when) { toast(t('toast_select_date'), 'red'); document.getElementById('f-when').focus(); return; }
+  if (useRange) {
+    if (!whenFrom || !whenTo) { toast(t('toast_select_date'), 'red'); return; }
+    if (whenFrom > whenTo) { toast({fi:'Alkupäivä ei voi olla loppupäivän jälkeen.',sv:'Startdatum kan inte vara efter slutdatum.',en:'Start date cannot be after end date.'}[currentLang], 'red'); return; }
+  } else {
+    if (!when) { toast(t('toast_select_date'), 'red'); document.getElementById('f-when').focus(); return; }
+  }
   if (!phone) { toast(t('toast_write_phone'), 'red'); document.getElementById('f-phone').focus(); return; }
   const hasAddress = document.getElementById('f-address').value.trim();
   const hasLat = document.getElementById('f-lat').value;
@@ -3546,7 +3598,10 @@ async function submitListing(e) {
     address: document.getElementById('f-address').value.trim(),
     lat: parseFloat(document.getElementById('f-lat').value) || null,
     lng: parseFloat(document.getElementById('f-lng').value) || null,
-    incident_time: document.getElementById('f-when').value || null,
+    incident_time: useRange ? (whenFrom + 'T12:00') : (document.getElementById('f-when').value || null),
+    ...(whenFrom ? { incident_time_from: whenFrom } : {}),
+    ...(whenTo ? { incident_time_to: whenTo } : {}),
+    ...(document.getElementById('f-last-seen')?.value?.trim() ? { last_seen_context: document.getElementById('f-last-seen').value.trim() } : {}),
     reward: document.getElementById('f-reward')?.value ? parseFloat(document.getElementById('f-reward').value) : null,
     contact: document.getElementById('f-phone').value.trim() || null,
     taken_to: document.getElementById('f-taken-to-val')?.value || null,
@@ -3679,14 +3734,23 @@ function scoreMatch(mine, other) {
     return 0;
   }
 
-  // Time proximity
-  if (mine.incident_time && other.incident_time) {
-    const diff = Math.abs(new Date(mine.incident_time) - new Date(other.incident_time));
-    const hours = diff / 3600000;
-    if (hours <= 6)       { score += 30; reasons.push({ label: {fi:'Sama aika',sv:'Samma tid',en:'Same time'}[currentLang], hit: true }); }
-    else if (hours <= 24) { score += 20; reasons.push({ label: '±24h', hit: true }); }
-    else if (hours <= 72) { score += 10; reasons.push({ label: '±72h', hit: false }); }
-  }
+  // Time proximity — supports date ranges (incident_time_from/to) and exact times
+  const timeScore = (() => {
+    const aFrom = mine.incident_time_from ? new Date(mine.incident_time_from) : mine.incident_time ? new Date(mine.incident_time) : null;
+    const aTo = mine.incident_time_to ? new Date(mine.incident_time_to + 'T23:59:59') : mine.incident_time ? new Date(mine.incident_time) : null;
+    const bFrom = other.incident_time_from ? new Date(other.incident_time_from) : other.incident_time ? new Date(other.incident_time) : null;
+    const bTo = other.incident_time_to ? new Date(other.incident_time_to + 'T23:59:59') : other.incident_time ? new Date(other.incident_time) : null;
+    if (!aFrom || !bFrom) return null;
+    // Check if ranges overlap or are close
+    const rangesOverlap = aFrom <= bTo && bFrom <= aTo;
+    if (rangesOverlap) return { pts: 30, label: {fi:'Sama aika',sv:'Samma tid',en:'Same time'}[currentLang], hit: true };
+    // Gap between closest edges
+    const gap = Math.min(Math.abs(aFrom - bTo), Math.abs(bFrom - aTo)) / 3600000;
+    if (gap <= 24) return { pts: 20, label: '±24h', hit: true };
+    if (gap <= 72) return { pts: 10, label: '±72h', hit: false };
+    return null;
+  })();
+  if (timeScore) { score += timeScore.pts; reasons.push({ label: timeScore.label, hit: timeScore.hit }); }
 
   // Location proximity (softer — items travel via buses, people etc.)
   if (mine.lat && mine.lng && other.lat && other.lng) {
@@ -3700,8 +3764,8 @@ function scoreMatch(mine, other) {
 
   // Keyword overlap — Finnish-aware (stem matching for inflected words)
   const stopWords = ['löydetty','kadonnut','tavara','paikka','lähellä','sitten','tämä','joka','olen','minun','kanssa','ollut','myös','tässä','siinä','mutta','koska','kuin','hyvin','paljon','vähän','ihan','aika','noin'];
-  const myText = ((mine.title || '') + ' ' + (mine.description || '')).toLowerCase();
-  const otherText = ((other.title || '') + ' ' + (other.description || '')).toLowerCase();
+  const myText = ((mine.title || '') + ' ' + (mine.description || '') + ' ' + (mine.last_seen_context || '')).toLowerCase();
+  const otherText = ((other.title || '') + ' ' + (other.description || '') + ' ' + (other.last_seen_context || '')).toLowerCase();
   const myWords = myText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
   const otherWords = otherText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
 
@@ -3819,7 +3883,7 @@ async function loadMatches() {
             <div class="match-card-meta">
               <span>📍 ${esc(displayAddr)}</span>
               <span>🕐 ${timeAgo(l.created_at)}</span>
-              ${l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
+              ${l.incident_time_from && l.incident_time_to ? `<span>📅 ${new Date(l.incident_time_from).toLocaleDateString('fi-FI')} — ${new Date(l.incident_time_to).toLocaleDateString('fi-FI')}</span>` : l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
             </div>
             <div class="match-card-desc">${esc(l.description || '')}</div>
             <div class="match-tags">
