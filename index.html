@@ -2729,9 +2729,39 @@ async function openListing(id) {
         <a href="https://hesy.fi/lahjoita/" target="_blank" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink2);text-decoration:none;">🐾 Lahjoita HESY:lle</a>
       </div>
     </div>` : ''}
-    ${isOwn ? `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <span style="font-size:13px;color:var(--ink3);">Tämä on sinun ilmoituksesi</span>
-      <button onclick="deleteListing('${l.id}')" style="font-size:12px;color:var(--red);background:none;border:1px solid var(--red);padding:6px 14px;border-radius:20px;cursor:pointer;">Poista</button>
+    ${isOwn ? `<div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-size:13px;color:var(--ink3);">Tämä on sinun ilmoituksesi</span>
+        <div style="display:flex;gap:8px;">
+          ${status !== 'returned' ? `<button onclick="toggleEditListing('${l.id}')" id="edit-listing-btn" style="font-size:12px;color:var(--blue);background:none;border:1px solid var(--blue);padding:6px 14px;border-radius:20px;cursor:pointer;">✏️ Muokkaa</button>` : ''}
+          <button onclick="deleteListing('${l.id}')" style="font-size:12px;color:var(--red);background:none;border:1px solid var(--red);padding:6px 14px;border-radius:20px;cursor:pointer;">Poista</button>
+        </div>
+      </div>
+      <div id="edit-listing-form" style="display:none;background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+        <div style="font-size:15px;font-weight:700;margin-bottom:16px;">Muokkaa ilmoitusta</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;">Otsikko</label>
+            <input type="text" id="edit-title" value="${esc(l.title)}" maxlength="80" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;">Kuvaus</label>
+            <textarea id="edit-desc" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;min-height:100px;resize:vertical;">${esc(l.description||'')}</textarea>
+          </div>
+          ${l.type !== 'found' ? `<div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;">Missä näit viimeksi? (valinnainen)</label>
+            <input type="text" id="edit-last-seen" value="${esc(l.last_seen_context||'')}" maxlength="120" placeholder="Esim: taskussa bussissa 550, kahvilan pöydällä..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;" />
+          </div>` : ''}
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;">Palkkio € (valinnainen)</label>
+            <input type="number" id="edit-reward" value="${l.reward||''}" min="0" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;" />
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+            <button onclick="document.getElementById('edit-listing-form').style.display='none'" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink2);">Peruuta</button>
+            <button onclick="saveEditListing('${l.id}')" id="save-edit-btn" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">Tallenna muutokset</button>
+          </div>
+        </div>
+      </div>
     </div>` : ''}
 
     ${!currentUser ? `
@@ -2786,6 +2816,33 @@ async function openListing(id) {
       });
     }, 100);
   }
+}
+
+function toggleEditListing(id) {
+  const form = document.getElementById('edit-listing-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveEditListing(id) {
+  const title = document.getElementById('edit-title').value.trim();
+  const description = document.getElementById('edit-desc').value.trim();
+  if (!title) { toast({fi:'Otsikko ei voi olla tyhjä.',sv:'Titeln kan inte vara tom.',en:'Title cannot be empty.'}[currentLang], 'red'); return; }
+  if (!description) { toast({fi:'Kuvaus ei voi olla tyhjä.',sv:'Beskrivningen kan inte vara tom.',en:'Description cannot be empty.'}[currentLang], 'red'); return; }
+
+  const btn = document.getElementById('save-edit-btn');
+  btn.disabled = true; btn.textContent = {fi:'Tallennetaan...',sv:'Sparar...',en:'Saving...'}[currentLang];
+
+  const updates = { title, description };
+  const rewardEl = document.getElementById('edit-reward');
+  if (rewardEl) updates.reward = rewardEl.value ? parseFloat(rewardEl.value) : null;
+  const lastSeenEl = document.getElementById('edit-last-seen');
+  if (lastSeenEl) updates.last_seen_context = lastSeenEl.value.trim() || null;
+
+  const { error } = await sb.from('listings').update(updates).eq('id', id).eq('user_id', currentUser.id);
+  btn.disabled = false; btn.textContent = {fi:'Tallenna muutokset',sv:'Spara ändringar',en:'Save changes'}[currentLang];
+  if (error) { toast(t('toast_error') + error.message, 'red'); return; }
+  toast({fi:'Ilmoitus päivitetty!',sv:'Anmälan uppdaterad!',en:'Listing updated!'}[currentLang], 'green');
+  openListing(id);
 }
 
 async function deleteListing(id) {
