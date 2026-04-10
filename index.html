@@ -790,6 +790,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   .footer-inner { grid-template-columns: 1fr; }
   .footer-links { align-items: flex-start; }
   .loc-options { grid-template-columns: 1fr; }
+  #how-steps-animated { grid-template-columns: 1fr !important; gap: 20px !important; }
+  #how-steps-animated > div[style*="font-size:20px"] { display: none; }
   .profile-stats { grid-template-columns: 1fr 1fr; }
   .vis-grid { grid-template-columns: 1fr; }
   .task-cards { grid-template-columns: 1fr 1fr; }
@@ -1176,20 +1178,21 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <div class="hero-inner">
       <div class="hero-content">
         <div class="hero-badge"><div class="badge-dot"></div><span data-i18n="hero_badge">Suomen löytötavaralain mukainen palvelu</span></div>
-        <h1 data-i18n="hero_title" data-i18n-html="1">Kadotin.<br>Löysin.<br><span class="accent">Findly.</span></h1>
-        <p class="hero-lead" data-i18n="hero_lead">Suomen löytötavara-palvelu. Yhdistää kadonneet tavarat löytäjiin — turvallisesti, anonyymisti ja lain mukaisesti. Sijainti pysyy piilossa ennen matchausta.</p>
-        <div class="task-cards">
-          <div class="task-card tc-lost" onclick="openFormTab('lost')">
-            <div class="task-card-icon">🔍</div>
-            <div class="task-card-label" data-i18n="hero_lost">Kadotin tavaran</div>
-            <div class="task-card-sub" data-i18n="hero_lost_sub">Tee ilmoitus, odota osumia</div>
-          </div>
-          <div class="task-card tc-found" onclick="openFormTab('found')">
-            <div class="task-card-icon">📦</div>
-            <div class="task-card-label" data-i18n="hero_found">Löysin tavaran</div>
-            <div class="task-card-sub" data-i18n="hero_found_sub">Ilmoita löydöstäsi</div>
-          </div>
+        <h1 data-i18n="hero_title" data-i18n-html="1">Löysitkö tavaran?<br><span class="accent">Findly hoitaa loput.</span></h1>
+        <p class="hero-lead" data-i18n="hero_lead">Ilmoita löydöstäsi 30 sekunnissa. Findly yhdistää sen oikeaan omistajaan — turvallisesti ja anonyymisti.</p>
+
+        <!-- Primary CTA -->
+        <button onclick="openFormTab('found')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:420px;padding:18px 32px;border:none;border-radius:20px;background:var(--gradient-brand);color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(0,184,101,0.3);transition:all 0.3s cubic-bezier(0.16,1,0.3,1);animation:glowPulse 3s ease-in-out infinite;margin-bottom:14px;font-family:'Syne',sans-serif;letter-spacing:-0.3px;" onmouseover="this.style.transform='translateY(-3px) scale(1.02)'" onmouseout="this.style.transform=''">
+          📦 Ilmoita löydöstä →
+        </button>
+
+        <!-- Secondary links -->
+        <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;">
+          <button onclick="openFormTab('lost')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#6EEDB0'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🔍 Kadotin tavaran</button>
+          <span style="color:rgba(255,255,255,0.15);">|</span>
+          <button onclick="openFormTab('pet')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#FBBF24'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🐾 Kadonnut eläin</button>
         </div>
+
         <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
           <span id="hero-match-text" data-i18n="hero_matches">🔔 Tarkista osumat</span>
           <span id="hero-match-badge" style="display:none;background:var(--green);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:4px;"></span>
@@ -1214,33 +1217,36 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 
   <!-- ── STATS BAR ── -->
   <div class="stats-bar">
-    <div class="stats-bar-inner">
-      <div class="stat-item">
-        <span class="stat-num" id="stat-total">—</span>
-        <span class="stat-lbl" data-i18n="stat_active">aktiivista ilmoitusta</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num" id="stat-resolved">—</span>
-        <span class="stat-lbl" data-i18n="stat_returned">palautettua 💛</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num">7 pv</span>
-        <span class="stat-lbl" data-i18n="stat_valid">ilmoitus voimassa</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num">100%</span>
-        <span class="stat-lbl" data-i18n="stat_free">ilmainen palvelu</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num">🔐</span>
-        <span class="stat-lbl" data-i18n="stat_location">sijainti suojattu</span>
-      </div>
+    <div class="stats-bar-inner" id="stats-bar-content">
+      <!-- Populated by JS: shows real stats or beta message -->
     </div>
   </div>
+
+  <!-- ── HOW IT WORKS — ANIMATED 3-STEP ── -->
+  <section style="background:#0A1410;padding:56px 0;">
+    <div class="wrap" style="max-width:800px;margin:0 auto;text-align:center;">
+      <div class="section-label">Ei rekisteröitymistä — näin se toimii</div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-top:32px;" id="how-steps-animated">
+        <div style="text-align:center;padding:0 8px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,184,101,0.1);border:2px solid rgba(0,184,101,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite;">📦</div>
+          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">1. Ilmoita</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Löysit tai kadotit? Täytä lyhyt lomake.</div>
+        </div>
+        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite;">→</div>
+        <div style="text-align:center;padding:0 8px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);border:2px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 1s;">🎯</div>
+          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">2. Matchaa</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Findly yhdistää löydöt ja katoamiset automaattisesti.</div>
+        </div>
+        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite 1s;">→</div>
+        <div style="text-align:center;padding:0 8px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 2s;">🤝</div>
+          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">3. Palauta</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Sovitaan palautus turvallisesti chatin kautta.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ── HOME MAP PREVIEW ── -->
   <section class="home-map-section">
@@ -3634,8 +3640,37 @@ async function initHomeMap() {
   });
   if (userPos) { center = [userPos.lng, userPos.lat]; zoom = 12; }
 
+  // Seed examples when real data is sparse
+  const seedListings = [
+    { title: 'Musta lompakko', category: '💳 Lompakko / kortit', type: 'found', lat: 60.1699, lng: 24.9384 },
+    { title: 'iPhone kuoret', category: '📱 Puhelin', type: 'lost', lat: 60.1975, lng: 24.9345 },
+    { title: 'Avaimet löydetty', category: '🔑 Avaimet', type: 'found', lat: 60.1695, lng: 24.9354 },
+    { title: 'Harmaa kissa', category: '🐈 Kissa', type: 'pet', lat: 60.1870, lng: 24.9600 },
+    { title: 'Ruskea reppu', category: '👜 Laukku / reppu', type: 'found', lat: 60.2050, lng: 24.6600 },
+    { title: 'AirPods-kotelo', category: '🎧 Elektroniikka', type: 'lost', lat: 60.1580, lng: 24.8800 },
+    { title: 'Lasten polkupyörä', category: '🚲 Polkupyörä', type: 'found', lat: 61.4978, lng: 23.7610 },
+    { title: 'Kultasormus', category: '💎 Koru / kello', type: 'lost', lat: 60.4518, lng: 22.2666 },
+  ];
+
   try {
-    const listings = await loadAllListings();
+    let listings = await loadAllListings();
+    // If few real listings, add seed examples near user or Helsinki
+    if (listings.length < 5) {
+      const baseLat = userPos ? userPos.lat : 60.17;
+      const baseLng = userPos ? userPos.lng : 24.94;
+      seedListings.forEach((s, i) => {
+        if (!listings.some(l => l.title === s.title)) {
+          listings.push({
+            ...s,
+            id: 'seed-' + i,
+            lat: baseLat + (s.lat - 60.17) * 0.3 + (Math.random() - 0.5) * 0.02,
+            lng: baseLng + (s.lng - 24.94) * 0.3 + (Math.random() - 0.5) * 0.03,
+            created_at: new Date(Date.now() - Math.random() * 3 * 86400000).toISOString(),
+            _seed: true
+          });
+        }
+      });
+    }
     homeMap = new mapboxgl.Map({
       container: 'home-map',
       style: 'mapbox://styles/mapbox/dark-v11',
@@ -3653,15 +3688,15 @@ async function initHomeMap() {
         new mapboxgl.Marker(userEl).setLngLat([userPos.lng, userPos.lat]).addTo(homeMap);
       }
       listings.filter(l => l.lat && l.lng).forEach(l => {
-        const blurred = blurLocation(l.lat, l.lng);
+        const blurred = l._seed ? { lat: l.lat, lng: l.lng } : blurLocation(l.lat, l.lng);
         const el = document.createElement('div');
         const color = markerColor(l.type);
         const icon = categoryIcon(l.category);
-        el.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid ' + color + ';background:rgba(0,0,0,0.6);box-shadow:0 0 12px ' + color + '44;';
+        el.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid ' + color + ';background:rgba(0,0,0,0.6);box-shadow:0 0 12px ' + color + '44;' + (l._seed ? 'opacity:0.6;' : '');
         el.textContent = icon;
         const popup = new mapboxgl.Popup({ offset: 20, maxWidth: '200px' }).setHTML(
           '<div style="font-size:13px;font-weight:700;">' + esc(l.title || '') + '</div>' +
-          '<div style="font-size:11px;color:#888;">' + icon + ' ' + esc(l.category || '') + ' · ' + timeAgo(l.created_at) + '</div>'
+          '<div style="font-size:11px;color:#888;">' + icon + ' ' + esc(l.category || '') + (l._seed ? '' : ' · ' + timeAgo(l.created_at)) + '</div>'
         );
         new mapboxgl.Marker(el).setLngLat([blurred.lng, blurred.lat]).setPopup(popup).addTo(homeMap);
       });
@@ -5232,13 +5267,34 @@ function esc(str) {
 
   // Load home stats + stories
   loadStories();
-  sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','active').then(({ count }) => {
-    const el = document.getElementById('stat-total');
-    if (el && count !== null) el.textContent = count;
-  });
-  sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','returned').then(({ count }) => {
-    const el = document.getElementById('stat-resolved');
-    if (el && count !== null) el.textContent = count;
+  Promise.all([
+    sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','active'),
+    sb.from('listings').select('id', { count: 'exact', head: true }).eq('status','returned')
+  ]).then(([activeRes, returnedRes]) => {
+    const active = activeRes.count || 0;
+    const returned = returnedRes.count || 0;
+    const el = document.getElementById('stats-bar-content');
+    if (!el) return;
+    if (active + returned < 3) {
+      // Beta mode — not enough data for meaningful stats
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 20px;width:100%;">
+          <div style="font-size:18px;">🚀</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:white;">Beta — palvelu on juuri käynnistynyt</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.35);">Ilmainen · Turvallinen · Koko Suomi</div>
+          </div>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div class="stat-item"><span class="stat-num">${active}</span><span class="stat-lbl">aktiivista</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">${returned}</span><span class="stat-lbl">palautettua 💛</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">100%</span><span class="stat-lbl">ilmainen</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">🔐</span><span class="stat-lbl">suojattu</span></div>`;
+    }
   });
 
   const { data: { session } } = await sb.auth.getSession();
