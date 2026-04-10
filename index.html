@@ -456,20 +456,36 @@ section { padding: 90px 0; }
 .popup-btn { background: var(--green); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; width: 100%; }
 
 /* ── FORM PAGE ── */
-.form-page-wrap { max-width: 720px; margin: 0 auto; padding: 48px clamp(20px, 5vw, 48px); }
+/* ── FORM PAGE — DARK THEME ── */
+#page-new-listing { background: #050F0A; min-height: 100vh; position: relative; overflow: hidden; }
+#page-new-listing::before { content: ''; position: absolute; top: -20%; right: -10%; width: 500px; height: 500px; pointer-events: none; background: radial-gradient(circle, rgba(0,184,101,0.08) 0%, transparent 60%); border-radius: 50%; animation: breathe 10s ease-in-out infinite; }
+#page-new-listing::after { content: ''; position: absolute; bottom: -10%; left: -10%; width: 400px; height: 400px; pointer-events: none; background: radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 60%); border-radius: 50%; animation: orbFloat2 14s ease-in-out infinite; }
+.form-page-wrap { max-width: 720px; margin: 0 auto; padding: 48px clamp(20px, 5vw, 48px); position: relative; z-index: 1; }
 .form-page-header { margin-bottom: 32px; }
-.form-page-back { display: inline-flex; align-items: center; gap: 6px; color: var(--ink3); font-size: 13px; cursor: pointer; margin-bottom: 16px; transition: color 0.2s; }
-.form-page-back:hover { color: var(--green); }
-.form-type-tabs { display: flex; background: var(--paper); border-radius: 12px; padding: 3px; border: 1px solid var(--border); margin-bottom: 28px; }
-.ftype-btn { flex: 1; padding: 9px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--ink2); }
-.ftype-btn.active-lost { background: var(--red-light); color: var(--red); }
-.ftype-btn.active-found { background: var(--green-light); color: var(--green-dark); }
-.ftype-btn.active-stolen { background: #FFF0F0; color: #A32D2D; }
-.ftype-btn.active-pet { background: var(--amber-light); color: var(--amber); }
+.form-page-header h2 { color: white !important; }
+.form-page-header p { color: rgba(255,255,255,0.5) !important; }
+.form-page-back { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); font-size: 13px; cursor: pointer; margin-bottom: 16px; transition: color 0.2s; }
+.form-page-back:hover { color: #6EEDB0; }
+.form-type-tabs { display: flex; background: rgba(255,255,255,0.05); border-radius: 14px; padding: 4px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 28px; }
+.ftype-btn { flex: 1; padding: 10px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.25s; color: rgba(255,255,255,0.4); }
+.ftype-btn:hover { color: rgba(255,255,255,0.7); }
+.ftype-btn.active-lost { background: rgba(239,68,68,0.15); color: #F87171; border: 1px solid rgba(239,68,68,0.3); box-shadow: 0 0 16px rgba(239,68,68,0.1); }
+.ftype-btn.active-found { background: rgba(0,184,101,0.15); color: #6EEDB0; border: 1px solid rgba(0,184,101,0.3); box-shadow: 0 0 16px rgba(0,184,101,0.1); }
+.ftype-btn.active-stolen { background: rgba(239,68,68,0.1); color: #F87171; border: 1px solid rgba(239,68,68,0.2); }
+.ftype-btn.active-pet { background: rgba(245,158,11,0.15); color: #FBBF24; border: 1px solid rgba(245,158,11,0.3); box-shadow: 0 0 16px rgba(245,158,11,0.1); }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-group.full { grid-column: 1/-1; }
+#page-new-listing label { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5); }
 label { font-size: 12px; font-weight: 500; color: var(--ink2); }
+#page-new-listing input, #page-new-listing select, #page-new-listing textarea {
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.1);
+  color: white; border-radius: 12px;
+}
+#page-new-listing input::placeholder, #page-new-listing textarea::placeholder { color: rgba(255,255,255,0.25); }
+#page-new-listing input:focus, #page-new-listing select:focus, #page-new-listing textarea:focus {
+  border-color: rgba(0,184,101,0.5); box-shadow: 0 0 0 4px rgba(0,184,101,0.1), 0 0 24px rgba(0,184,101,0.06);
+}
 input, select, textarea {
   width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
   border-radius: 12px; font-size: 14px; color: var(--ink); background: white;
@@ -477,23 +493,26 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 4px rgba(0,184,101,0.12), 0 0 24px rgba(0,184,101,0.08), 0 0 48px rgba(0,184,101,0.03); }
 textarea { resize: vertical; min-height: 88px; }
-.form-map-pick { background: var(--green-light); border: 1.5px solid #A8D8BC; border-radius: var(--radius); height: 220px; position: relative; overflow: hidden; margin-bottom: 8px; }
+.form-map-pick { background: rgba(0,184,101,0.06); border: 1.5px solid rgba(0,184,101,0.15); border-radius: var(--radius); height: 220px; position: relative; overflow: hidden; margin-bottom: 8px; }
 #form-map { width: 100%; height: 100%; }
-.form-map-hint { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); color: white; font-size: 12px; padding: 5px 12px; border-radius: 20px; pointer-events: none; white-space: nowrap; }
+.form-map-hint { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; font-size: 12px; padding: 5px 12px; border-radius: 20px; pointer-events: none; white-space: nowrap; backdrop-filter: blur(8px); }
 .loc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-.loc-opt { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; display: flex; align-items: center; gap: 7px; color: var(--ink2); background: white; }
-.loc-opt:hover, .loc-opt.selected { border-color: var(--green); background: var(--green-light); color: var(--green-dark); }
+.loc-opt { padding: 10px 12px; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.04); }
+.loc-opt:hover, .loc-opt.selected { border-color: rgba(0,184,101,0.4); background: rgba(0,184,101,0.1); color: #6EEDB0; }
 .notice-info { background: var(--blue-light); border: 1px solid #B8D4F5; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #1A3A6A; line-height: 1.6; display: flex; gap: 10px; }
+#page-new-listing .notice-info { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.2); color: rgba(147,197,253,0.9); }
 .notice-warn { background: #FFFBEB; border: 1px solid #F0D080; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #7A4F00; line-height: 1.6; display: flex; gap: 10px; }
+#page-new-listing .notice-warn { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); color: rgba(251,191,36,0.9); }
 .notice-red { background: var(--red-light); border: 1px solid #F5B8B8; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #7A1A1A; line-height: 1.6; display: flex; gap: 10px; }
-.submit-btn { width: 100%; padding: 15px; border: none; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); color: white; position: relative; overflow: hidden; }
+#page-new-listing .notice-red { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); color: rgba(252,165,165,0.9); }
+.submit-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); color: white; position: relative; overflow: hidden; letter-spacing: 0.3px; }
 .submit-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(255,255,255,0.15), transparent); pointer-events: none; }
-.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.18), 0 0 40px rgba(0,184,101,0.15); }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.3), 0 0 40px rgba(0,184,101,0.15); }
 .submit-btn:active { transform: translateY(0); }
-.submit-btn.lost { background: linear-gradient(135deg, var(--red), #F87171); }
-.submit-btn.found { background: var(--gradient-brand); }
-.submit-btn.stolen { background: linear-gradient(135deg, #A32D2D, #DC2626); }
-.submit-btn.pet { background: linear-gradient(135deg, var(--amber), #FBBF24); }
+.submit-btn.lost { background: linear-gradient(135deg, #DC2626, #F87171); box-shadow: 0 4px 20px rgba(239,68,68,0.25); }
+.submit-btn.found { background: var(--gradient-brand); box-shadow: 0 4px 20px rgba(0,184,101,0.25); }
+.submit-btn.stolen { background: linear-gradient(135deg, #A32D2D, #DC2626); box-shadow: 0 4px 20px rgba(163,45,45,0.25); }
+.submit-btn.pet { background: linear-gradient(135deg, var(--amber), #FBBF24); box-shadow: 0 4px 20px rgba(245,158,11,0.25); }
 
 /* ── LISTING DETAIL ── */
 .listing-detail-wrap { max-width: 760px; margin: 0 auto; padding: 40px clamp(20px, 5vw, 48px); }
@@ -883,8 +902,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   justify-content: center;
   gap: 0;
   padding: 14px 16px;
-  background: var(--green-light);
-  border: 1.5px solid var(--border);
+  background: rgba(0,184,101,0.06);
+  border: 1px solid rgba(0,184,101,0.12);
   border-radius: 14px;
   margin-bottom: 24px;
   flex-wrap: wrap;
@@ -895,25 +914,26 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink2);
+  color: rgba(255,255,255,0.4);
   white-space: nowrap;
 }
 .form-step-num {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--green);
-  color: white;
+  background: rgba(0,184,101,0.2);
+  color: #6EEDB0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
+  border: 1px solid rgba(0,184,101,0.3);
 }
 .form-step-arrow {
   margin: 0 8px;
-  color: var(--ink4);
+  color: rgba(255,255,255,0.15);
   font-size: 12px;
 }
 @media (max-width: 480px) {
@@ -1605,8 +1625,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <!-- Login gate — shown when not logged in -->
     <div id="new-listing-gate" style="display:none;text-align:center;padding:64px 20px;">
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;" data-i18n="form_gate_title">Kirjaudu sisään</h3>
-      <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;" data-i18n="form_gate_desc">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;color:white;" data-i18n="form_gate_title">Kirjaudu sisään</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:24px;" data-i18n="form_gate_desc">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
       <button class="btn-primary" style="border:none;" onclick="showPage('auth')" data-i18n="form_gate_btn">Kirjaudu tai luo tili →</button>
     </div>
 
@@ -1732,11 +1752,11 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <label id="f-location-label" data-i18n="form_location">Katoamispaikka *</label>
           <p style="font-size:12px;color:var(--ink3);margin-bottom:8px;" id="f-location-hint">Missä viimeksi muistat nähneesi tavaran? Voit hakea paikan nimellä.</p>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="location-quick-picks">
-            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('rautatieasema');document.getElementById('f-address').value='rautatieasema';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;">🚂 Juna-asema</button>
-            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('kauppakeskus');document.getElementById('f-address').value='kauppakeskus';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;">🏬 Kauppakeskus</button>
-            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('bussi');document.getElementById('f-address').value='bussi';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;">🚌 Bussi / metro</button>
-            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('ravintola');document.getElementById('f-address').value='ravintola';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;">🍽️ Ravintola / baari</button>
-            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('puisto');document.getElementById('f-address').value='puisto';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;">🌳 Puisto / ulkona</button>
+            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('rautatieasema');document.getElementById('f-address').value='rautatieasema';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🚂 Juna-asema</button>
+            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('kauppakeskus');document.getElementById('f-address').value='kauppakeskus';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🏬 Kauppakeskus</button>
+            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('bussi');document.getElementById('f-address').value='bussi';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🚌 Bussi / metro</button>
+            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('ravintola');document.getElementById('f-address').value='ravintola';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🍽️ Ravintola / baari</button>
+            <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('puisto');document.getElementById('f-address').value='puisto';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🌳 Puisto / ulkona</button>
           </div>
           <div style="position:relative;">
             <input type="text" id="f-address" placeholder="Hae: Tripla, Rautatieasema, Stockmann, Keskuspuisto..." style="margin-bottom:0;" autocomplete="off" oninput="geocodeSearch(this.value)" onfocus="if(this.value.length>2)geocodeSearch(this.value)" />
@@ -3797,7 +3817,7 @@ function initFormMap() {
   setTimeout(() => {
     formMap = new mapboxgl.Map({
       container: 'form-map',
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: [24.94, 60.17],
       zoom: 12
     });
