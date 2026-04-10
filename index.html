@@ -3511,18 +3511,40 @@ async function initHomeMap() {
   if (homeMap) return;
   const container = document.getElementById('home-map');
   if (!container || container.offsetParent === null) return;
+
+  // Default center (Helsinki), will be overridden by geolocation
+  let center = [24.94, 60.17];
+  let zoom = 11;
+
+  // Ask for user location
+  const userPos = await new Promise(resolve => {
+    if (!navigator.geolocation) return resolve(null);
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ lng: pos.coords.longitude, lat: pos.coords.latitude }),
+      () => resolve(null),
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
+    );
+  });
+  if (userPos) { center = [userPos.lng, userPos.lat]; zoom = 12; }
+
   try {
     const listings = await loadAllListings();
     homeMap = new mapboxgl.Map({
       container: 'home-map',
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [24.94, 60.17],
-      zoom: 11,
+      center: center,
+      zoom: zoom,
       interactive: true,
       attributionControl: false
     });
     homeMap.scrollZoom.disable();
     homeMap.on('load', () => {
+      // User location marker
+      if (userPos) {
+        const userEl = document.createElement('div');
+        userEl.style.cssText = 'width:16px;height:16px;border-radius:50%;background:#00FF88;border:3px solid white;box-shadow:0 0 16px rgba(0,255,136,0.6), 0 0 40px rgba(0,255,136,0.2);';
+        new mapboxgl.Marker(userEl).setLngLat([userPos.lng, userPos.lat]).addTo(homeMap);
+      }
       listings.filter(l => l.lat && l.lng).forEach(l => {
         const blurred = blurLocation(l.lat, l.lng);
         const el = document.createElement('div');
