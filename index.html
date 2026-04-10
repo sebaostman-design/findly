@@ -3715,8 +3715,8 @@ function updateMapMarkers(listings) {
       transition: all 0.2s;
     `;
     el.textContent = categoryIcon(l.category);
-    el.onmouseover = () => { el.style.transform = 'scale(1.2)'; el.style.boxShadow = `0 0 24px ${mColor}66, 0 4px 16px rgba(0,0,0,0.4)`; };
-    el.onmouseout = () => { el.style.transform = 'scale(1)'; el.style.boxShadow = `0 0 16px ${mColor}44, 0 4px 12px rgba(0,0,0,0.3)`; };
+    el.onmouseover = () => { el.style.boxShadow = `0 0 24px ${mColor}88, 0 4px 16px rgba(0,0,0,0.4)`; el.style.borderWidth = '3px'; };
+    el.onmouseout = () => { el.style.boxShadow = `0 0 16px ${mColor}44, 0 4px 12px rgba(0,0,0,0.3)`; el.style.borderWidth = '2px'; };
     const typeLbl = {lost:{fi:'Kadonnut',sv:'Förlorad',en:'Lost'},found:{fi:'Löydetty',sv:'Hittad',en:'Found'},stolen:{fi:'Varastettu',sv:'Stulen',en:'Stolen'},pet:{fi:'Eläin',sv:'Djur',en:'Pet'}}[l.type]?.[currentLang] || l.type;
     const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, className: 'dark-popup' }).setHTML(`
       <div style="background:#0E1810;border:1px solid rgba(0,255,136,0.15);border-radius:14px;padding:14px 16px;color:white;min-width:180px;">
@@ -3731,7 +3731,8 @@ function updateMapMarkers(listings) {
 }
 
 function filterMap(type, btn) {
-  document.querySelectorAll('.map-controls-bar .feed-filter').forEach(b => { b.className = 'feed-filter'; if (b.id === 'map-stories-btn') { b.style.borderColor = 'var(--amber)'; b.style.color = 'var(--amber)'; } });
+  const mapPage = document.getElementById('page-map');
+  mapPage.querySelectorAll('.feed-filter:not(#map-stories-btn)').forEach(b => { b.className = 'feed-filter'; });
   btn.className = 'feed-filter active-' + (type === 'all' ? 'all' : type === 'items' ? 'lost' : type);
   let filtered;
   if (type === 'all') filtered = allListings;
