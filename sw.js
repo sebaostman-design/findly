@@ -1,4 +1,4 @@
-const CACHE = 'findly-v1';
+const CACHE = 'findly-v2';
 
 self.addEventListener('install', e => self.skipWaiting());
 self.addEventListener('activate', e => clients.claim());
