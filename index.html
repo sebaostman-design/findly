@@ -317,9 +317,9 @@ nav.scrolled { background: rgba(5,15,10,0.95); box-shadow: 0 4px 30px rgba(0,184
 .fc-title { font-size: 13px; font-weight: 600; color: white; }
 .fc-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
 .fc-badge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 4px; }
-.badge-green { background: var(--green-light); color: var(--green-dark); }
-.badge-blue { background: var(--blue-light); color: var(--blue); }
-.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-green { background: rgba(0,184,101,0.12); color: #6EEDB0; }
+.badge-blue { background: rgba(59,130,246,0.12); color: #93C5FD; }
+.badge-amber { background: rgba(245,158,11,0.12); color: #FBBF24; }
 
 /* ── SECTIONS ── */
 section { padding: 72px 0; }
@@ -965,8 +965,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 #finder-action-bar .fab-buttons button { padding: 10px 20px; font-size: 13px; font-weight: 600; border-radius: 24px; cursor: pointer; border: none; transition: all 0.15s; }
 #finder-action-bar .fab-btn-accept { background: var(--green); color: white; }
 #finder-action-bar .fab-btn-accept:hover { background: #009E55; }
-#finder-action-bar .fab-btn-ask { background: var(--amber-light); color: var(--amber); border: 1.5px solid var(--amber); }
-#finder-action-bar .fab-btn-reject { background: var(--red-light); color: var(--red); border: 1.5px solid var(--red); }
+#finder-action-bar .fab-btn-ask { background: rgba(245,158,11,0.12); color: #FBBF24; border: 1px solid rgba(245,158,11,0.25); }
+#finder-action-bar .fab-btn-reject { background: rgba(239,68,68,0.12); color: #F87171; border: 1px solid rgba(239,68,68,0.25); }
 
 /* ── VERIFY SINGLE-STEP ── */
 .verify-single { max-width: 480px; margin: 0 auto; }
@@ -2865,7 +2865,7 @@ function setMatchBadge(count) {
   const heroText = document.getElementById('hero-match-text');
   if (count > 0) {
     [b1, b2, b3].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
-    if (heroBtn) { heroBtn.style.borderColor = 'var(--green)'; heroBtn.style.borderStyle = 'solid'; heroBtn.style.background = 'var(--green-light)'; heroBtn.style.color = 'var(--green-dark)'; }
+    if (heroBtn) { heroBtn.style.borderColor = 'var(--green)'; heroBtn.style.borderStyle = 'solid'; heroBtn.style.background = 'rgba(0,184,101,0.12)'; heroBtn.style.color = '#6EEDB0'; }
     if (heroText) heroText.textContent = '🎯 ' + count + ' ' + {fi:'osumaa!',sv:'träffar!',en:'matches!'}[currentLang];
   } else {
     [b1, b2, b3].forEach(b => { if (b) b.style.display = 'none'; });
@@ -3086,7 +3086,7 @@ function renderPetCard(l) {
   const isLost = l.subtype !== 'found';
   const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : '';
   return `<div class="feed-card" onclick="openListing('${l.id}')">
-    <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : 'background:' + (isLost?'#FFF5E0':'#E8F5EF')}">
+    <div class="feed-card-img" style="${l.image_url ? 'padding:0;overflow:hidden;' : 'background:' + (isLost?'rgba(245,158,11,0.08)':'rgba(0,184,101,0.08)')}">
       ${l.image_url ? `<img src="${l.image_url}" alt="" style="object-fit:contain;" />` : icon}
     </div>
     <div class="feed-card-body">
@@ -3161,20 +3161,20 @@ async function openListing(id) {
     <div class="listing-meta">
       <span class="meta-badge ${badgeMap[l.type]||''}" style="padding:5px 14px;">${labelMap[l.type]||l.type}</span>
       <span class="meta-badge" style="background:var(--paper);border:1px solid var(--border);color:var(--ink2);padding:5px 14px;">${esc(l.category||'')}</span>
-      ${l.reward ? `<span class="meta-badge" style="background:var(--green-light);color:var(--green-dark);padding:5px 14px;">💰 ${l.reward}€ palkkio</span>` : ''}
+      ${l.reward ? `<span class="meta-badge" style="background:rgba(0,184,101,0.12);color:#6EEDB0;padding:5px 14px;">💰 ${l.reward}€ palkkio</span>` : ''}
     </div>
     <div class="listing-title">${esc(l.title)}</div>
     <div class="listing-loc">📍 ${esc(displayAddr)} · ${timeAgo(l.created_at)}</div>
     <div class="listing-desc">${esc(l.description||'').replace(/\n/g,'<br>')}</div>
 
     ${l.type === 'found' && l.taken_to ? `
-    <div style="background:var(--green-light);border:1px solid #A8D8BC;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--green-dark);">
+    <div style="background:rgba(0,184,101,0.08);border:1px solid rgba(0,184,101,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#6EEDB0;">
       📦 <strong>${{fi:'Tavara on:',sv:'Föremålet är:',en:'Item is:'}[currentLang]}</strong> ${takenToLabels[l.taken_to]||l.taken_to}
-      ${l.taken_to_detail ? `<br><span style="color:var(--ink2);">${esc(l.taken_to_detail)}</span>` : ''}
+      ${l.taken_to_detail ? `<br><span style="color:rgba(255,255,255,0.6);">${esc(l.taken_to_detail)}</span>` : ''}
     </div>` : ''}
 
     ${l.type === 'stolen' ? `
-    <div style="background:#FFF0F0;border:1px solid #E8A0A0;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#7A1A1A;">
+    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:rgba(252,165,165,0.9);">
       🚨 ${{fi:'Varastettu-ilmoitus — tee myös rikosilmoitus poliisille jos et ole jo tehnyt.',sv:'Stöldanmälan — gör också en polisanmälan om du inte redan gjort det.',en:'Theft report — also file a police report if you haven\'t already.'}[currentLang]}
     </div>` : ''}
 
@@ -3220,23 +3220,23 @@ async function openListing(id) {
     </div>` : ''}
 
     ${canContact && l.type === 'pet' ? `
-    <div class="contact-card" style="border-color:var(--amber);background:linear-gradient(135deg,#FFF8E7,#FEF3E2);">
+    <div class="contact-card" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.06);">
       <h3>🐾 Ota yhteyttä</h3>
       <p>Eläinhavainnossa ei tarvita vahvistusprosessia — chat aukeaa suoraan. Kerro omistajalle missä ja milloin näit eläimen.</p>
       <button class="btn-primary" style="border:none;background:var(--amber);" onclick="startDirectChat('${l.id}','${l.user_id}')">💬 Avaa chat omistajan kanssa →</button>
     </div>` : ''}
 
     ${isOwn && status !== 'returned' ? `
-    <div style="background:linear-gradient(135deg,#E8F5EF,#F0FDF4);border:1.5px solid #A8D8BC;border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:12px;">Tavara löytyi ja palautettu omistajalle?</div>
+    <div style="background:rgba(0,184,101,0.06);border:1.5px solid rgba(0,184,101,0.15);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;">Tavara löytyi ja palautettu omistajalle?</div>
       <button onclick="updateListingStatus('${l.id}','returned')" style="padding:12px 28px;font-size:14px;font-weight:700;border:none;border-radius:20px;cursor:pointer;background:var(--green);color:white;width:100%;">✅ Merkitse tapaus ratkaistuksi</button>
-      <div style="font-size:11px;color:var(--ink3);margin-top:8px;">Ilmoitus poistetaan listalta ja saat merkinnän profiiliin.</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:8px;">Ilmoitus poistetaan listalta ja saat merkinnän profiiliin.</div>
     </div>` : ''}
     ${status === 'returned' ? `
-    <div style="background:linear-gradient(135deg,#E8F5EF 0%,#FFF8E7 100%);border:1px solid #A8D8BC;border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+    <div style="background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.12);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
       <div style="font-size:28px;margin-bottom:8px;">💛</div>
-      <div style="font-size:17px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:6px;">Tavara on palautettu!</div>
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:20px;">Löytäjä teki hyvän teon. Haluatko osoittaa kiitoksesi?</div>
+      <div style="font-size:17px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:6px;color:white;">Tavara on palautettu!</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:20px;">Löytäjä teki hyvän teon. Haluatko osoittaa kiitoksesi?</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="openTipModal('${l.id}')" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">💸 Anna tippiä löytäjälle</button>
         <a href="https://hesy.fi/lahjoita/" target="_blank" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);text-decoration:none;">🐾 Lahjoita HESY:lle</a>
@@ -3427,10 +3427,10 @@ async function updateListingStatus(id, status) {
 function getBadge(count) {
   const L = currentLang;
   const karma = {fi:'karmaa',sv:'karma',en:'karma'}[L];
-  if (count >= 10) return { icon: '💎', title: {fi:'Findlyn sankari',sv:'Findly-hjälte',en:'Findly Hero'}[L], color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} ${karma}` };
-  if (count >= 5)  return { icon: '🏆', title: {fi:'Luotettu löytäjä',sv:'Betrodd upphittare',en:'Trusted Finder'}[L],  color: '#C47A15', bg: '#FEF3E2', desc: `${count} ${karma}` };
-  if (count >= 3)  return { icon: '⭐', title: {fi:'Kokenut löytäjä',sv:'Erfaren upphittare',en:'Experienced Finder'}[L], color: '#2463A8', bg: '#EBF2FB', desc: `${count} ${karma}` };
-  if (count >= 1)  return { icon: '🌱', title: {fi:'Löytäjä',sv:'Upphittare',en:'Finder'}[L],        color: '#1A7A52', bg: '#E6F5EE', desc: `${count} ${karma}` };
+  if (count >= 10) return { icon: '💎', title: {fi:'Findlyn sankari',sv:'Findly-hjälte',en:'Findly Hero'}[L], color: '#C4B5FD', bg: 'rgba(107,78,204,0.12)', desc: `${count} ${karma}` };
+  if (count >= 5)  return { icon: '🏆', title: {fi:'Luotettu löytäjä',sv:'Betrodd upphittare',en:'Trusted Finder'}[L],  color: '#FBBF24', bg: 'rgba(245,158,11,0.12)', desc: `${count} ${karma}` };
+  if (count >= 3)  return { icon: '⭐', title: {fi:'Kokenut löytäjä',sv:'Erfaren upphittare',en:'Experienced Finder'}[L], color: '#93C5FD', bg: 'rgba(59,130,246,0.12)', desc: `${count} ${karma}` };
+  if (count >= 1)  return { icon: '🌱', title: {fi:'Löytäjä',sv:'Upphittare',en:'Finder'}[L],        color: '#6EEDB0', bg: 'rgba(0,184,101,0.12)', desc: `${count} ${karma}` };
   return null;
 }
 
@@ -3769,9 +3769,9 @@ function selectTip(amount) {
   tipNeedsConfirmation = amount > 150;
   // Highlight preset buttons
   document.querySelectorAll('.tip-amt').forEach(b => {
-    b.style.background = parseFloat(b.textContent) === amount ? 'var(--green-light)' : 'white';
-    b.style.borderColor = parseFloat(b.textContent) === amount ? 'var(--green)' : 'var(--border)';
-    b.style.color = parseFloat(b.textContent) === amount ? 'var(--green-dark)' : '';
+    b.style.background = parseFloat(b.textContent) === amount ? 'rgba(0,184,101,0.12)' : 'rgba(255,255,255,0.05)';
+    b.style.borderColor = parseFloat(b.textContent) === amount ? 'var(--green)' : 'rgba(255,255,255,0.1)';
+    b.style.color = parseFloat(b.textContent) === amount ? '#6EEDB0' : 'white';
   });
   const minWarn = document.getElementById('tip-min-warning');
   if (amount > 0 && amount < 2) {
@@ -3954,7 +3954,7 @@ function toggleMapStories(btn) {
   showStories = !showStories;
   btn.className = showStories ? 'feed-filter active-all' : 'feed-filter';
   btn.style.borderColor = showStories ? 'var(--amber)' : '';
-  btn.style.background = showStories ? 'var(--amber-light)' : '';
+  btn.style.background = showStories ? 'rgba(245,158,11,0.12)' : '';
   btn.style.color = showStories ? 'var(--amber)' : 'var(--amber)';
   if (showStories) {
     addStoryMarkers(mapReturnedListings);
@@ -4284,11 +4284,11 @@ function setFormType(type) {
 function setPetSubtype(subtype, btn) {
   document.getElementById('f-pet-subtype').value = subtype;
   document.querySelectorAll('.pet-sub-btn').forEach(b => {
-    b.style.background = 'white';
-    b.style.borderColor = 'var(--border)';
+    b.style.background = 'rgba(255,255,255,0.05)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
   });
-  btn.style.background = subtype === 'lost' ? '#FFF5E0' : '#E8F5EF';
-  btn.style.borderColor = subtype === 'lost' ? '#D4A04A' : '#6DC29B';
+  btn.style.background = subtype === 'lost' ? 'rgba(245,158,11,0.12)' : 'rgba(0,184,101,0.12)';
+  btn.style.borderColor = subtype === 'lost' ? '#FBBF24' : '#6EEDB0';
 }
 
 function selectLoc(el, val) {
@@ -4587,7 +4587,7 @@ function showMatchAlert(count, bestMatch, score) {
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
       <div style="font-size:32px;">🎯</div>
       <div>
-        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;color:var(--green-dark);">${count} ${count === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[L] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[L]}</div>
+        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;color:#6EEDB0;">${count} ${count === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[L] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[L]}</div>
         <div style="font-size:12px;color:var(--ink3);">${{fi:'Findly löysi automaattisesti',sv:'Findly hittade automatiskt',en:'Findly found automatically'}[L]}</div>
       </div>
     </div>
@@ -4597,7 +4597,7 @@ function showMatchAlert(count, bestMatch, score) {
         <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(bestMatch.title)}</div>
         <div style="font-size:11px;color:var(--ink3);">${bestMatch.address ? ({fi:'lähellä ',sv:'nära ',en:'near '}[L] + bestMatch.address.split(',')[0]) : ''}</div>
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--green);background:var(--green-light);padding:4px 10px;border-radius:20px;">${score}%</div>
+      <div style="font-size:12px;font-weight:700;color:#6EEDB0;background:rgba(0,184,101,0.12);padding:4px 10px;border-radius:20px;">${score}%</div>
     </div>` : ''}
     <div style="display:flex;gap:8px;">
       <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:white;cursor:pointer;">${{fi:'Katso osumat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
@@ -4809,7 +4809,7 @@ async function loadMatches() {
                 <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}-ilmoitus</div>
               </div>
             </div>
-            <div class="match-relevance" style="color:${score >= 70 ? 'var(--green-dark)' : 'var(--amber)'};">${relevanceText}</div>
+            <div class="match-relevance" style="color:${score >= 70 ? '#6EEDB0' : '#FBBF24'};">${relevanceText}</div>
             <div class="match-card-meta">
               <span>📍 ${esc(displayAddr)}</span>
               <span>🕐 ${timeAgo(l.created_at)}</span>
@@ -4818,7 +4818,7 @@ async function loadMatches() {
             <div class="match-card-desc">${esc(l.description || '')}</div>
             <div class="match-card-actions">
               ${isPending
-                ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
+                ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1px solid rgba(245,158,11,0.2);background:rgba(245,158,11,0.12);color:#FBBF24;width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
                 : l.type === 'pet' || mine.type === 'found'
                   ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? '💬 Ilmoita löydöstä omistajalle' : '💬 Avaa chat'}</button>`
                   : `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Tämä on minun — todista omistajuus</button>`}
@@ -4833,11 +4833,11 @@ async function loadMatches() {
 
   if (totalMatches > 0) {
     el.innerHTML = `
-    <div style="background:linear-gradient(135deg,#E6F5EE 0%,#D4EDDA 50%,#FFF8E7 100%);border:2px solid var(--green);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
+    <div style="background:rgba(0,184,101,0.06);border:1.5px solid rgba(0,184,101,0.15);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
       <div style="font-size:48px;margin-bottom:8px;">🎯</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green-dark);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">${{fi:'Findly löysi mahdollisia matcheja ilmoituksillesi.',sv:'Findly hittade möjliga matchningar för dina anmälningar.',en:'Findly found potential matches for your listings.'}[currentLang]}</div>
-      <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#6EEDB0;margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px;">${{fi:'Findly löysi mahdollisia matcheja ilmoituksillesi.',sv:'Findly hittade möjliga matchningar för dina anmälningar.',en:'Findly found potential matches for your listings.'}[currentLang]}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
     </div>
     ${html}`;
   } else {
@@ -5106,7 +5106,7 @@ async function loadConversations() {
     // Determine contextual status badge
     let statusBadge = '';
     if (isArchived) {
-      statusBadge = `<span class="conv-status-badge" style="background:var(--green-light);color:var(--green-dark);border:none;">Palautettu</span>`;
+      statusBadge = `<span class="conv-status-badge" style="background:rgba(0,184,101,0.12);color:#6EEDB0;border:none;">Palautettu</span>`;
     } else if (lastMsg) {
       // Check for case closed
       const hasClosed = msgs.some(m => m.content.startsWith('🎉 TAPAUS SULJETTU'));
@@ -5146,12 +5146,12 @@ async function loadConversations() {
       if (lastMsg.content.length > 60) preview += '...';
     }
 
-    const bg = isArchived ? 'var(--paper)' : (isUnread ? 'var(--green-light)' : 'white');
-    const border = isArchived ? 'var(--border)' : (isUnread ? 'var(--green)' : 'var(--border)');
+    const bg = isArchived ? 'rgba(255,255,255,0.03)' : (isUnread ? 'rgba(0,184,101,0.08)' : 'rgba(255,255,255,0.05)');
+    const border = isArchived ? 'rgba(255,255,255,0.08)' : (isUnread ? 'rgba(0,184,101,0.25)' : 'rgba(255,255,255,0.08)');
     const opacity = isArchived ? '0.75' : '1';
 
     return `<div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:${bg};border:1.5px solid ${border};border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;opacity:${opacity};" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='${border}'" >
-      <div style="width:48px;height:48px;border-radius:50%;background:${isUnread ? 'white' : 'var(--paper)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border);">${icon}</div>
+      <div style="width:48px;height:48px;border-radius:50%;background:${isUnread ? 'rgba(0,184,101,0.12)' : 'rgba(255,255,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.08);">${icon}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
           <div style="font-size:14px;font-weight:${isUnread ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.listings?.title || 'Ilmoitus')}</div>
@@ -5241,9 +5241,29 @@ async function loadMessages() {
   lastMessageId = latest?.id;
   lastChatMsgCount = data.length;
   const wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 40;
-  el.innerHTML = data.map(m => {
+  // Chat status header
+  let chatStatusHtml = '';
+  const hasClosed = data.some(m => m.content.startsWith('🎉 TAPAUS SULJETTU') || m.content.startsWith('🎉 ÄRENDE AVSLUTAT') || m.content.startsWith('🎉 CASE CLOSED'));
+  const hasAccepted = data.some(m => m.content.startsWith('✅ OMISTAJUUS VAHVISTETTU'));
+  const hasVerify = data.some(m => m.content.startsWith('🔐 OSUMAILMOITUS'));
+  const hasVerifyResponse = hasVerify && data.some(m => m.content.startsWith('✅') || m.content.startsWith('❌') || m.content.startsWith('❓'));
+  if (hasClosed) {
+    chatStatusHtml = '<div style="text-align:center;padding:8px 0 12px;"><span style="display:inline-block;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(218,165,32,0.1);color:#FBBF24;border:1px solid rgba(218,165,32,0.2);">🎉 Tapaus suljettu</span></div>';
+  } else if (hasAccepted) {
+    chatStatusHtml = '<div style="text-align:center;padding:8px 0 12px;"><span style="display:inline-block;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(0,184,101,0.1);color:#6EEDB0;border:1px solid rgba(0,184,101,0.2);">✅ Omistajuus vahvistettu — sovikaa palautus</span></div>';
+  } else if (hasVerify && !hasVerifyResponse) {
+    chatStatusHtml = '<div style="text-align:center;padding:8px 0 12px;"><span style="display:inline-block;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(245,158,11,0.1);color:#FBBF24;border:1px solid rgba(245,158,11,0.2);">⏳ Odottaa löytäjän päätöstä</span></div>';
+  }
+  el.innerHTML = chatStatusHtml + data.map(m => {
     const own = m.sender_id === currentUser?.id;
     const isVerifyMsg = m.content.startsWith('🔐 OSUMAILMOITUS');
+    if (isVerifyMsg && own) {
+      return `<div style="background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.15);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:white;margin:8px 0;">
+        <div style="font-weight:600;margin-bottom:8px;color:#6EEDB0;">🔐 Omistajuustodistus lähetetty</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;color:rgba(255,255,255,0.6);">${esc(m.content.replace('🔐 OSUMAILMOITUS\n\n',''))}</pre>
+        <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
     if (isVerifyMsg && !own) {
       // Check if already responded (any message after this one from current user contains ✅ or ❌ or ❓)
       const alreadyResponded = data.some(other => other.sender_id === currentUser?.id && other.created_at > m.created_at && (other.content.startsWith('✅') || other.content.startsWith('❌') || other.content.startsWith('❓')));
@@ -5502,7 +5522,7 @@ async function loadProfile() {
             <div class="plc-meta">${timeInfo}</div>
           </div>
           ${isResolved
-            ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-light);color:var(--green-dark);">Palautettu</span>`
+            ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(0,184,101,0.12);color:#6EEDB0;">Palautettu</span>`
             : `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;" class="${{lost:'badge-lost',found:'badge-found',stolen:'badge-stolen',pet:'badge-pet'}[l.type]||''}">${{lost:'Kadonnut',found:'Löydetty',stolen:'Varastettu',pet:'Eläin'}[l.type]||l.type}</span>`
           }
         </div>
@@ -5562,11 +5582,11 @@ function selectSightType(btn, type) {
   sightingType = type;
   document.getElementById('sight-type').value = type;
   document.querySelectorAll('.sight-type-btn').forEach(b => {
-    b.style.background = 'white';
-    b.style.borderColor = 'var(--border)';
+    b.style.background = 'rgba(255,255,255,0.05)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
     b.style.fontWeight = '400';
   });
-  btn.style.background = 'var(--green-light)';
+  btn.style.background = 'rgba(0,184,101,0.12)';
   btn.style.borderColor = 'var(--green)';
   btn.style.fontWeight = '600';
 }
@@ -5607,7 +5627,7 @@ async function loadSightings() {
   el.innerHTML = data.map(s => {
     const icons = { kissa: '🐈', koira: '🐕', muu: '🐾' };
     return `<div style="display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);">
-      <div style="width:40px;height:40px;border-radius:50%;background:var(--amber-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[s.animal_type] || '🐾'}</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[s.animal_type] || '🐾'}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
           <span style="font-size:13px;font-weight:600;">${s.animal_type === 'kissa' ? 'Kissa' : s.animal_type === 'koira' ? 'Koira' : 'Eläin'} havaittu</span>
