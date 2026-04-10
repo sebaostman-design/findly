@@ -1762,16 +1762,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <p style="font-size:11px;color:var(--ink3);margin-top:4px;">🔒 Nämä tiedot näytetään omistajalle vasta omistajuuden vahvistuksen jälkeen.</p>
         </div>
 
-        <!-- VISIBILITY -->
-        <div class="form-group full">
-          <label data-i18n="form_visibility">Näkyvyys</label>
-          <div class="vis-grid">
-            <div class="vis-opt selected" onclick="selectVis(this,'public')">🌍 Julkinen<small>Kaikille näkyvä</small></div>
-            <div class="vis-opt" onclick="selectVis(this,'limited')">👥 Rajattu<small>Vain kirjautuneille</small></div>
-            <div class="vis-opt" onclick="selectVis(this,'match')">🔒 Vain matchissa<small>Vain vahvistuksen jälkeen</small></div>
-          </div>
-          <input type="hidden" id="f-visibility" value="public" />
-        </div>
+        <input type="hidden" id="f-visibility" value="public" />
 
         <div class="form-group" id="reward-field">
           <label data-i18n="form_reward">Palkkio (valinnainen)</label>
