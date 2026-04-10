@@ -919,6 +919,54 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   .form-step-item { font-size: 11px; }
   .form-step-arrow { margin: 0 4px; }
 }
+
+/* ── CONVERSATION STATUS BADGES ── */
+.conv-status-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-left: 8px; white-space: nowrap; }
+.conv-badge-action { background: var(--amber-light); color: var(--amber); border: 1.5px solid var(--amber); animation: actionPulse 2s ease-in-out infinite; }
+.conv-badge-waiting { background: var(--paper); color: var(--ink3); border: 1px solid var(--border); }
+.conv-badge-arrange { background: var(--green-light); color: var(--green-dark); border: 1px solid rgba(0,184,101,0.3); }
+.conv-badge-message { background: var(--blue-light); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+@keyframes actionPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.3); }
+  50% { box-shadow: 0 0 12px 4px rgba(245,158,11,0.25); }
+}
+
+/* ── FINDER ACTION BAR ── */
+#finder-action-bar { background: linear-gradient(135deg, #E6F5EE 0%, #FFF8E7 100%); border: 2px solid var(--green); border-radius: 0 0 var(--radius) var(--radius); padding: 16px 20px; margin: 0; font-size: 13px; }
+#finder-action-bar .fab-claim { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; font-family: inherit; max-height: 120px; overflow-y: auto; }
+#finder-action-bar .fab-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+#finder-action-bar .fab-buttons button { padding: 10px 20px; font-size: 13px; font-weight: 600; border-radius: 24px; cursor: pointer; border: none; transition: all 0.15s; }
+#finder-action-bar .fab-btn-accept { background: var(--green); color: white; }
+#finder-action-bar .fab-btn-accept:hover { background: #009E55; }
+#finder-action-bar .fab-btn-ask { background: var(--amber-light); color: var(--amber); border: 1.5px solid var(--amber); }
+#finder-action-bar .fab-btn-reject { background: var(--red-light); color: var(--red); border: 1.5px solid var(--red); }
+
+/* ── VERIFY SINGLE-STEP ── */
+.verify-single { max-width: 480px; margin: 0 auto; }
+.verify-single .verify-listing-preview { margin-bottom: 20px; }
+.verify-single .verify-info { font-size: 12px; color: var(--ink3); line-height: 1.6; margin-top: 16px; padding: 12px; background: var(--paper); border-radius: var(--radius); border: 1px solid var(--border); }
+
+/* ── MATCH CARD: dismiss button ── */
+.match-dismiss-btn { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: white; color: var(--ink3); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; z-index: 2; padding: 0; line-height: 1; }
+.match-dismiss-btn:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.match-card { position: relative; }
+.match-relevance { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+
+/* ── PROFILE STATUS CARDS ── */
+.profile-listing-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; background: white; cursor: pointer; transition: all 0.15s; }
+.profile-listing-card:hover { border-color: var(--green); box-shadow: 0 4px 16px rgba(0,184,101,0.08); }
+.profile-listing-card .plc-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.profile-listing-card .plc-icon { font-size: 28px; width: 44px; height: 44px; border-radius: var(--radius); background: var(--paper); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border); }
+.profile-listing-card .plc-title { font-size: 14px; font-weight: 600; }
+.profile-listing-card .plc-meta { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+.profile-progress { display: flex; align-items: center; gap: 0; margin-bottom: 10px; font-size: 11px; }
+.profile-progress .pp-step { padding: 3px 8px; border-radius: 10px; white-space: nowrap; }
+.profile-progress .pp-step.active { background: var(--green-light); color: var(--green-dark); font-weight: 600; }
+.profile-progress .pp-step.done { background: var(--green-light); color: var(--green-dark); opacity: 0.6; }
+.profile-progress .pp-step.pending { background: var(--paper); color: var(--ink3); }
+.profile-progress .pp-arrow { color: var(--ink3); margin: 0 2px; font-size: 10px; }
+.plc-action { font-size: 12px; font-weight: 600; color: var(--green); cursor: pointer; }
+.plc-action:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -1738,57 +1786,33 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 <!-- PAGE: VERIFY -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="page" id="page-verify">
-  <div class="verify-wrap">
+  <div class="verify-wrap verify-single">
     <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
 
-    <div class="verify-progress">
-      <div class="vstep active" id="vstep-1">1</div>
-      <div class="vstep-line" id="vstep-line-1"></div>
-      <div class="vstep" id="vstep-2">2</div>
-      <div class="vstep-line" id="vstep-line-2"></div>
-      <div class="vstep" id="vstep-3">3</div>
-    </div>
-
-    <!-- STEP 1: Match overview -->
+    <!-- Single-step verify form -->
     <div id="vstep-1-content">
-      <div class="hero-badge" style="margin-bottom:20px;"><div class="badge-dot"></div><span data-i18n="verify_badge">Mahdollinen osuma löytyi</span></div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;" data-i18n="verify_title">Löysimme mahdollisen matchin</h2>
-      <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;" data-i18n="verify_sub">Tarkista ilmoitus ja jatka omistajuuden todistamiseen. Löytäjä ei näe yhteystietojasi ennen hyväksyntää.</p>
       <div class="verify-listing-preview" id="verify-listing-preview">
         <div class="loading"><div class="spinner"></div></div>
       </div>
-      <div class="notice-info" style="margin-bottom:24px;">
-        <span>🔐</span>
-        <span data-i18n="verify_warn">Seuraavaksi sinua pyydetään kertomaan jotain, mitä vain oikea omistaja tietää. Tämä estää väärät omistusväitteet.</span>
-      </div>
-      <button class="btn-primary" style="border:none;width:100%;" onclick="goVerifyStep(2)" data-i18n="verify_continue">Jatka omistajuuden todistamiseen →</button>
-    </div>
 
-    <!-- STEP 2: Verify questions -->
-    <div id="vstep-2-content" style="display:none;">
-      <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;" data-i18n="verify_step2">Todista omistajuus</h2>
-      <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;" data-i18n="verify_step2_sub">Vastauksesi lähetetään löytäjälle tarkistettavaksi.</p>
-      <div class="notice-warn" style="margin-bottom:20px;">
-        <span>🛡️</span>
-        <span>Kerro jotain, mitä <strong>ei näy julkisessa ilmoituksessa</strong>. Esim. tavaran sisältö, erityinen tunniste, mistä ostit sen.</span>
-      </div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;">🔐 Todista omistajuus</h2>
+      <p style="font-size:13px;color:var(--ink2);margin-bottom:20px;">Löytäjä tarkistaa vastauksesi ja päättää.</p>
+
       <div class="form-group" style="margin-bottom:16px;">
-        <label data-i18n="verify_secret">Kerro yksityiskohta, jonka vain oikea omistaja tietää *</label>
+        <label data-i18n="verify_secret">Kerro jotain, mitä vain oikea omistaja tietää *</label>
         <textarea id="verify-secret" rows="4" placeholder="Esim: Laukussa on punainen avainnauhani ja siinä lukee 'Anna'. Ostoin sen Stockmannilta 2023." required></textarea>
       </div>
-      <div class="form-group" style="margin-bottom:16px;">
-        <label data-i18n="verify_phone">Puhelinnumero yhteydenottoa varten *</label>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label>Puhelinnumero (näytetään vasta hyväksynnän jälkeen) *</label>
         <input type="tel" id="verify-phone" placeholder="+358 40 123 4567" required />
-        <p style="font-size:11px;color:var(--ink3);margin-top:4px;" data-i18n="verify_phone_note">Näytetään löytäjälle vasta hyväksynnän jälkeen.</p>
       </div>
-      <div class="form-group" style="margin-bottom:24px;">
-        <label data-i18n="verify_q">Lisäkysymys löytäjälle (valinnainen)</label>
-        <input type="text" id="verify-question" placeholder="Esim: Onko laukussa jotain erityistä sisällä?" />
-      </div>
-      <button class="btn-primary" style="border:none;width:100%;" onclick="submitVerifyRequest()" data-i18n="verify_send">Lähetä →</button>
+      <input type="hidden" id="verify-question" value="" />
+      <button class="btn-primary" style="border:none;width:100%;font-size:15px;padding:14px;" onclick="submitVerifyRequest()">🔐 Lähetä todistus</button>
+      <div class="verify-info">Löytäjä tarkistaa vastauksesi ja päättää. Yhteystietosi jaetaan vasta hyväksynnän jälkeen.</div>
     </div>
 
-    <!-- STEP 3: Sent -->
+    <!-- Sent confirmation (kept for submitVerifyRequest flow) -->
+    <div id="vstep-2-content" style="display:none;"></div>
     <div id="vstep-3-content" style="display:none;">
       <div style="text-align:center;padding:20px 0;">
         <div style="font-size:64px;margin-bottom:20px;">✅</div>
@@ -1915,6 +1939,16 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <div class="chat-verify" id="chat-verify-box" style="display:none;">
       <span>🔐</span>
       <span><strong>Turvamuistutus:</strong> Varmista omistajuus ennen luovutusta — pyydä jotain, mitä vain oikea omistaja tietää. Älä luovuta tavaraa ennen vahvistusta.</span>
+    </div>
+    <div id="finder-action-bar" style="display:none;">
+      <div style="font-weight:700;color:var(--green-dark);margin-bottom:6px;">🔐 Osumailmoitus odottaa päätöstäsi</div>
+      <div class="fab-claim" id="fab-claim-text"></div>
+      <div style="font-size:12px;color:var(--ink2);margin-top:6px;">Sinä päätät. Varmista omistajuus ennen hyväksyntää.</div>
+      <div class="fab-buttons">
+        <button class="fab-btn-accept" onclick="replyVerify('accepted')">✓ Hyväksy</button>
+        <button class="fab-btn-ask" onclick="replyVerify('more')">❓ Kysy lisää</button>
+        <button class="fab-btn-reject" onclick="replyVerify('rejected')">✗ Hylkää</button>
+      </div>
     </div>
     <div class="chat-messages" id="chat-messages">
       <div class="loading"><div class="spinner"></div>Ladataan viestejä...</div>
@@ -4226,44 +4260,34 @@ async function loadMatches() {
     } else {
       totalMatches += candidates.length;
       html += candidates.map(({ listing: l, score, reasons }) => {
-        const _sl = currentLang;
-        const scoreLabel = score >= 70 ? {fi:'Korkea vastaavuus',sv:'Hög matchning',en:'High match'}[_sl] : score >= 45 ? {fi:'Kohtalainen vastaavuus',sv:'Måttlig matchning',en:'Moderate match'}[_sl] : {fi:'Heikko vastaavuus',sv:'Svag matchning',en:'Weak match'}[_sl];
-        const scoreCls = score >= 70 ? 'score-high' : score >= 45 ? 'score-mid' : 'score-low';
-        const displayAddr = l.address ? {fi:'lähellä ',sv:'nära ',en:'near '}[currentLang] + l.address.split(',')[0] : {fi:'Sijainti merkitty',sv:'Plats markerad',en:'Location marked'}[currentLang];
+        const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
         const isPending = pendingListingIds.has(l.id);
         const highMatch = score >= 70;
         const otherTypeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[l.type] || l.type;
+        const relevanceText = score >= 70 ? '🟢 Vahva osuma' : '🟡 Mahdollinen osuma';
         return `<div class="match-card${highMatch && !isPending ? ' high-match' : ''}" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.65;' : ''}">
+          <button class="match-dismiss-btn" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')" title="Hylkää">✕</button>
           <div class="match-card-icon" style="${l.image_url ? 'padding:0;overflow:hidden;border:none;' : ''}">${l.image_url ? `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);" />` : categoryIcon(l.category)}</div>
           <div class="match-card-body">
             <div class="match-card-top">
               <div>
                 <div class="match-card-title">${esc(l.title)}</div>
-                <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}${{fi:'-ilmoitus',sv:'-anmälan',en:' listing'}[currentLang]}</div>
+                <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}-ilmoitus</div>
               </div>
-              <span class="match-score ${scoreCls}">${score}%</span>
             </div>
+            <div class="match-relevance" style="color:${score >= 70 ? 'var(--green-dark)' : 'var(--amber)'};">${relevanceText}</div>
             <div class="match-card-meta">
               <span>📍 ${esc(displayAddr)}</span>
               <span>🕐 ${timeAgo(l.created_at)}</span>
               ${l.incident_time_from && l.incident_time_to ? `<span>📅 ${new Date(l.incident_time_from).toLocaleDateString('fi-FI')} — ${new Date(l.incident_time_to).toLocaleDateString('fi-FI')}</span>` : l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
             </div>
             <div class="match-card-desc">${esc(l.description || '')}</div>
-            <div class="match-tags">
-              ${reasons.map(r => `<span class="match-tag ${r.hit ? 'hit' : ''}">${esc(r.label)}</span>`).join('')}
-            </div>
             <div class="match-card-actions">
               ${isPending
-                ? `<button style="padding:9px 18px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);" onclick="event.stopPropagation();showPage('messages')">${{fi:'⏳ Odottaa vastausta — Avaa viestit',sv:'⏳ Väntar på svar — Öppna meddelanden',en:'⏳ Awaiting response — Open messages'}[currentLang]}</button>`
+                ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1.5px solid var(--amber);background:var(--amber-light);color:var(--amber);width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
                 : l.type === 'pet' || mine.type === 'found'
-                  ? `<button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? {fi:'💬 Ilmoita löydöstä omistajalle',sv:'💬 Meddela ägaren om fyndet',en:'💬 Notify owner about your find'}[currentLang] : {fi:'💬 Avaa chat',sv:'💬 Öppna chatt',en:'💬 Open chat'}[currentLang]}</button>
-              <button class="btn-secondary" style="padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();openListing('${l.id}')">${{fi:'Katso ilmoitus',sv:'Se anmälan',en:'View listing'}[currentLang]}</button>
-              <button style="padding:9px 14px;font-size:12px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink3);" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')">${{fi:'✕ Ei minun',sv:'✕ Inte min',en:'✕ Not mine'}[currentLang]}</button>`
-                  : `<div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="btn-primary" style="border:none;padding:9px 18px;font-size:13px;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">${{fi:'🔐 Tämä on minun',sv:'🔐 Den är min',en:'🔐 This is mine'}[currentLang]}</button>
-              <button style="padding:9px 18px;font-size:13px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--blue);background:var(--blue-light);color:var(--blue);" onclick="event.stopPropagation();askMatchQuestion('${l.id}','${l.user_id}')">${{fi:'❓ Kysy lisätietoja',sv:'❓ Fråga mer',en:'❓ Ask for details'}[currentLang]}</button>
-              <button style="padding:9px 14px;font-size:12px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink3);" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')">${{fi:'✕ Ei minun',sv:'✕ Inte min',en:'✕ Not mine'}[currentLang]}</button>
-              </div>`}
+                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? '💬 Ilmoita löydöstä omistajalle' : '💬 Avaa chat'}</button>`
+                  : `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Tämä on minun — todista omistajuus</button>`}
             </div>
           </div>
         </div>`;
@@ -4421,7 +4445,11 @@ function startVerifyFlow(listingId, ownerId) {
   }
   verifyListingId = listingId;
   verifyOwnerId = ownerId;
-  goVerifyStep(1);
+  // Show single-step form, hide sent confirmation
+  document.getElementById('vstep-1-content').style.display = 'block';
+  document.getElementById('vstep-3-content').style.display = 'none';
+  document.getElementById('verify-secret').value = '';
+  document.getElementById('verify-question').value = '';
   showPage('verify');
   loadVerifyListingPreview(listingId);
   const savedPhone = currentUser.user_metadata?.phone;
@@ -4481,7 +4509,9 @@ async function submitVerifyRequest() {
   const todayKey = 'claims_' + new Date().toDateString();
   localStorage.setItem(todayKey, String(parseInt(localStorage.getItem(todayKey) || '0') + 1));
 
-  goVerifyStep(3);
+  // Show sent confirmation
+  document.getElementById('vstep-1-content').style.display = 'none';
+  document.getElementById('vstep-3-content').style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -4495,7 +4525,7 @@ async function loadConversations() {
   const el = document.getElementById('conversations-list');
   el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const { data } = await sb.from('conversations')
-    .select('*, listings(title,type,category,status)')
+    .select('*, listings(title,type,category,status,user_id)')
     .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
     .order('updated_at', { ascending: false });
   if (!data || data.length === 0) {
@@ -4507,7 +4537,7 @@ async function loadConversations() {
     return;
   }
 
-  // Get last message for each conversation
+  // Get recent messages for each conversation (for status detection)
   const convIds = data.map(c => c.id);
   const { data: lastMsgs } = await sb.from('messages')
     .select('conversation_id, content, sender_id, created_at')
@@ -4515,9 +4545,12 @@ async function loadConversations() {
     .order('created_at', { ascending: false });
 
   const lastMsgMap = {};
+  const convMsgsMap = {};
   if (lastMsgs) {
     for (const m of lastMsgs) {
       if (!lastMsgMap[m.conversation_id]) lastMsgMap[m.conversation_id] = m;
+      if (!convMsgsMap[m.conversation_id]) convMsgsMap[m.conversation_id] = [];
+      convMsgsMap[m.conversation_id].push(m);
     }
   }
 
@@ -4527,20 +4560,49 @@ async function loadConversations() {
   function renderConvCard(c, isArchived) {
     const isUnread = !isArchived && new Date(c.updated_at) > new Date(lastSeenMsgTime);
     const lastMsg = lastMsgMap[c.id];
+    const msgs = convMsgsMap[c.id] || [];
     const icon = c.listings ? categoryIcon(c.listings.category) : '💬';
-    const statusBadge = isArchived
-      ? `<span style="font-size:10px;background:var(--green-light);color:var(--green-dark);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Palautettu',sv:'Returnerad',en:'Returned'}[currentLang]}</span>`
-      : c.listings?.status === 'match'
-        ? `<span style="font-size:10px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:10px;margin-left:8px;">${{fi:'Aktiivinen',sv:'Aktiv',en:'Active'}[currentLang]}</span>`
-        : '';
+
+    // Determine contextual status badge
+    let statusBadge = '';
+    if (isArchived) {
+      statusBadge = `<span class="conv-status-badge" style="background:var(--green-light);color:var(--green-dark);border:none;">Palautettu</span>`;
+    } else if (lastMsg) {
+      // Check for case closed
+      const hasClosed = msgs.some(m => m.content.startsWith('🎉 TAPAUS SULJETTU'));
+      // Check for acceptance
+      const hasAccepted = msgs.some(m => m.content.startsWith('✅ OMISTAJUUS VAHVISTETTU'));
+      // Check for unresponded verify request
+      const verifyMsg = msgs.find(m => m.content.startsWith('🔐 OSUMAILMOITUS'));
+      const hasVerifyResponse = verifyMsg ? msgs.some(m => m.created_at > verifyMsg.created_at && (m.content.startsWith('✅') || m.content.startsWith('❌') || m.content.startsWith('❓'))) : false;
+      const hasUnrespondedVerify = verifyMsg && !hasVerifyResponse && !hasAccepted;
+
+      // Determine if current user is the finder (listing owner for found, other party for lost)
+      const listingOwnerId = c.listings?.user_id;
+      const isFinder = c.listings?.type === 'found' ? listingOwnerId === currentUser.id
+                     : c.listings?.type === 'lost' ? listingOwnerId !== currentUser.id
+                     : false;
+
+      if (hasClosed) {
+        // Keep existing "Palautettu" style
+      } else if (hasAccepted && !hasClosed) {
+        statusBadge = `<span class="conv-status-badge conv-badge-arrange">🤝 Sovi palautus</span>`;
+      } else if (hasUnrespondedVerify && isFinder) {
+        statusBadge = `<span class="conv-status-badge conv-badge-action">⚡ Odottaa päätöstäsi</span>`;
+      } else if (hasUnrespondedVerify && !isFinder) {
+        statusBadge = `<span class="conv-status-badge conv-badge-waiting">⏳ Odottaa löytäjän vastausta</span>`;
+      } else if (isUnread) {
+        statusBadge = `<span class="conv-status-badge conv-badge-message">💬 Uusi viesti</span>`;
+      }
+    }
 
     let preview = '';
     if (lastMsg) {
       const isOwn = lastMsg.sender_id === currentUser.id;
       let text = lastMsg.content.substring(0, 60);
-      if (text.startsWith('🔐 OSUMAILMOITUS')) text = {fi:'🔐 Osumailmoitus lähetetty',sv:'🔐 Träffanmälan skickad',en:'🔐 Match claim sent'}[currentLang];
-      else if (text.startsWith('✅ OMISTAJUUS')) text = {fi:'✅ Omistajuus vahvistettu',sv:'✅ Ägande bekräftat',en:'✅ Ownership verified'}[currentLang];
-      preview = (isOwn ? {fi:'Sinä: ',sv:'Du: ',en:'You: '}[currentLang] : '') + text;
+      if (text.startsWith('🔐 OSUMAILMOITUS')) text = '🔐 Osumailmoitus lähetetty';
+      else if (text.startsWith('✅ OMISTAJUUS')) text = '✅ Omistajuus vahvistettu';
+      preview = (isOwn ? 'Sinä: ' : '') + text;
       if (lastMsg.content.length > 60) preview += '...';
     }
 
@@ -4551,14 +4613,14 @@ async function loadConversations() {
     return `<div onclick="openChat('${c.id}',${JSON.stringify(c).replace(/"/g,'&quot;')})" style="background:${bg};border:1.5px solid ${border};border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:14px;opacity:${opacity};" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='${border}'" >
       <div style="width:48px;height:48px;border-radius:50%;background:${isUnread ? 'white' : 'var(--paper)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border);">${icon}</div>
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;">
-          <div style="font-size:14px;font-weight:${isUnread ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.listings?.title || {fi:'Ilmoitus',sv:'Anmälan',en:'Listing'}[currentLang])}</div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+          <div style="font-size:14px;font-weight:${isUnread ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.listings?.title || 'Ilmoitus')}</div>
           ${statusBadge}
         </div>
         ${preview ? `<div style="font-size:12px;color:var(--ink3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(preview)}</div>` : ''}
         <div style="font-size:11px;color:var(--ink3);margin-top:3px;">${timeAgo(c.updated_at||c.created_at)}</div>
       </div>
-      ${isUnread ? '<div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>' : ''}
+      ${isUnread && !statusBadge.includes('conv-badge-message') ? '<div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>' : ''}
     </div>`;
   }
 
@@ -4596,6 +4658,8 @@ async function openChat(convId, conv) {
   document.getElementById('close-case-bar').style.display = 'none';
 
   const listingId = typeof conv === 'object' ? conv.listing_id : conv;
+  document.getElementById('finder-action-bar').style.display = 'none';
+
   if (listingId) {
     const { data: l } = await sb.from('listings').select('title,type,status,user_id').eq('id', listingId).single();
     if (l) {
@@ -4611,6 +4675,9 @@ async function openChat(convId, conv) {
       if (l.status !== 'returned' && isOwnerInChat) {
         document.getElementById('close-case-bar').style.display = 'block';
       }
+      // Determine if current user is the finder for action bar
+      window._chatIsFinder = (l.type === 'found' && l.user_id === currentUser.id) ||
+                              (l.type === 'lost' && l.user_id !== currentUser.id);
     }
   }
 
@@ -4682,6 +4749,23 @@ async function loadMessages() {
     </div>`;
   }).join('');
   if (wasAtBottom || data.length <= 3) el.scrollTop = el.scrollHeight;
+
+  // Update finder action bar
+  const fab = document.getElementById('finder-action-bar');
+  if (window._chatIsFinder) {
+    // Find the latest unresponded verify request
+    const verifyMsg = data.find(m => m.content.startsWith('🔐 OSUMAILMOITUS') && m.sender_id !== currentUser?.id);
+    const hasResponse = verifyMsg ? data.some(m => m.sender_id === currentUser?.id && m.created_at > verifyMsg.created_at && (m.content.startsWith('✅') || m.content.startsWith('❌') || m.content.startsWith('❓'))) : false;
+    if (verifyMsg && !hasResponse) {
+      const claimText = verifyMsg.content.replace('🔐 OSUMAILMOITUS\n\n', '');
+      document.getElementById('fab-claim-text').textContent = claimText;
+      fab.style.display = 'block';
+    } else {
+      fab.style.display = 'none';
+    }
+  } else {
+    fab.style.display = 'none';
+  }
 }
 
 async function replyVerify(decision) {
@@ -4828,36 +4912,70 @@ async function loadProfile() {
   if (!listings || listings.length === 0) {
     myListings.innerHTML = '<p style="color:var(--ink3);font-size:13px;">Ei vielä ilmoituksia.</p>';
   } else {
-    function renderListingRow(l) {
+    function renderListingCard(l) {
       const isResolved = l.status === 'returned';
-      return `<div onclick="openListing('${l.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;${isResolved ? 'opacity:0.6;' : ''}">
-        <div style="font-size:24px;">${categoryIcon(l.category)}</div>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:500;">${esc(l.title)}</div>
-          <div style="font-size:12px;color:var(--ink3);">${timeAgo(l.created_at)}${isResolved ? '' : ' · ' + expiresIn(l.created_at)}</div>
+      const isMatch = l.status === 'match';
+      // Progress steps
+      const steps = [
+        { label: 'Aktiivinen', state: 'done' },
+        { label: 'Osuma', state: isMatch || isResolved ? 'done' : 'pending' },
+        { label: 'Vahvistus', state: isResolved ? 'done' : isMatch ? 'active' : 'pending' },
+        { label: 'Palautettu', state: isResolved ? 'active' : 'pending' }
+      ];
+      // If still active (no match yet), mark first as active
+      if (!isMatch && !isResolved) { steps[0].state = 'active'; }
+
+      const progressHtml = steps.map((s, i) =>
+        `<span class="pp-step ${s.state}">${s.label}</span>${i < steps.length - 1 ? '<span class="pp-arrow">→</span>' : ''}`
+      ).join('');
+
+      // Action link
+      let actionHtml = '';
+      if (isResolved) {
+        // No action for resolved
+      } else if (isMatch) {
+        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('messages')">Avaa keskustelu →</span>`;
+      } else {
+        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('matches')">Katso osumia →</span>`;
+      }
+
+      // Time info
+      const timeInfo = isResolved
+        ? `Palautettu · ${timeAgo(l.created_at)}`
+        : `${timeAgo(l.created_at)} · ${expiresIn(l.created_at)}`;
+
+      return `<div class="profile-listing-card" onclick="openListing('${l.id}')" style="${isResolved ? 'opacity:0.7;' : ''}">
+        <div class="plc-top">
+          <div class="plc-icon">${categoryIcon(l.category)}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="plc-title">${esc(l.title)}</div>
+            <div class="plc-meta">${timeInfo}</div>
+          </div>
+          ${isResolved
+            ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-light);color:var(--green-dark);">Palautettu</span>`
+            : `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;" class="${{lost:'badge-lost',found:'badge-found',stolen:'badge-stolen',pet:'badge-pet'}[l.type]||''}">${{lost:'Kadonnut',found:'Löydetty',stolen:'Varastettu',pet:'Eläin'}[l.type]||l.type}</span>`
+          }
         </div>
-        ${isResolved
-          ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-light);color:var(--green-dark);">${{fi:'Palautettu',sv:'Returnerad',en:'Returned'}[currentLang]}</span>`
-          : `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;" class="${{lost:'badge-lost',found:'badge-found',stolen:'badge-stolen',pet:'badge-pet'}[l.type]||''}">${{lost:'Kadonnut',found:'Löydetty',stolen:'Varastettu',pet:'Eläin'}[l.type]||l.type}</span>`
-        }
+        <div class="profile-progress">${progressHtml}</div>
+        ${actionHtml ? `<div style="margin-top:4px;">${actionHtml}</div>` : ''}
       </div>`;
     }
 
     let listHtml = '';
     if (active.length > 0) {
-      listHtml += active.map(renderListingRow).join('');
+      listHtml += active.map(renderListingCard).join('');
     } else {
-      listHtml += `<p style="color:var(--ink3);font-size:13px;padding:12px 0;">${{fi:'Ei aktiivisia ilmoituksia',sv:'Inga aktiva anmälningar',en:'No active listings'}[currentLang]}</p>`;
+      listHtml += `<p style="color:var(--ink3);font-size:13px;padding:12px 0;">Ei aktiivisia ilmoituksia</p>`;
     }
     if (resolved.length > 0) {
       listHtml += `<div style="margin-top:16px;padding-top:12px;border-top:2px solid var(--border);">
         <div onclick="document.getElementById('archived-listings').style.display=document.getElementById('archived-listings').style.display==='none'?'block':'none';this.querySelector('.archive-arrow').textContent=document.getElementById('archived-listings').style.display==='none'?'▸':'▾'" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;user-select:none;">
           <span class="archive-arrow" style="font-size:12px;color:var(--ink3);">▸</span>
-          <span style="font-size:13px;font-weight:600;color:var(--ink2);">${{fi:'Arkisto — ratkaistut tapaukset',sv:'Arkiv — lösta ärenden',en:'Archive — resolved cases'}[currentLang]}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--ink2);">Arkisto — ratkaistut tapaukset</span>
           <span style="font-size:11px;color:var(--ink3);background:var(--paper);padding:2px 8px;border-radius:10px;">${resolved.length}</span>
         </div>
         <div id="archived-listings" style="display:none;">
-          ${resolved.map(renderListingRow).join('')}
+          ${resolved.map(renderListingCard).join('')}
         </div>
       </div>`;
     }
