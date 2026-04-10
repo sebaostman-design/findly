@@ -1533,6 +1533,24 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
   </div>
 
+  <!-- ── CITIES SEO ── -->
+  <section style="background:#050F0A;padding:56px 0;">
+    <div class="wrap">
+      <div class="section-label">Kaupungit</div>
+      <div class="section-title">Findly toimii koko Suomessa</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <button onclick="openCity('Helsinki')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Helsinki</button>
+        <button onclick="openCity('Tampere')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Tampere</button>
+        <button onclick="openCity('Turku')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Turku</button>
+        <button onclick="openCity('Oulu')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Oulu</button>
+        <button onclick="openCity('Jyväskylä')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Jyväskylä</button>
+        <button onclick="openCity('Espoo')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Espoo</button>
+        <button onclick="openCity('Vantaa')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Vantaa</button>
+        <button onclick="openCity('Lahti')" style="padding:10px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:24px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='#6EEDB0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Lahti</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ── FOOTER ── -->
   <footer>
     <div class="footer-inner">
@@ -1599,11 +1617,13 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <button class="feed-filter" onclick="filterMap('items',this)" style="font-size:12px;padding:6px 14px;">🔍 Tavarat</button>
             <button class="feed-filter" onclick="filterMap('pet',this)" style="font-size:12px;padding:6px 14px;">🐾 Eläimet</button>
             <button class="feed-filter" onclick="toggleMapStories(this)" id="map-stories-btn" style="font-size:12px;padding:6px 14px;border-color:var(--amber);color:var(--amber);">💛 Palautetut</button>
+            <button id="map-list-toggle" onclick="toggleMapListView()" style="font-size:12px;padding:6px 14px;border:1px solid rgba(110,237,176,0.3);border-radius:20px;background:rgba(110,237,176,0.08);color:#6EEDB0;cursor:pointer;font-weight:600;">📋 Lista</button>
           </div>
         </div>
       </div>
     </div>
     <div id="mapbox-container" style="height:calc(100vh - 72px - 80px);"></div>
+    <div id="map-list-view" style="display:none;overflow-y:auto;padding:16px;max-height:calc(100vh - 160px);"></div>
     <div id="map-stats" style="position:absolute;bottom:24px;left:24px;background:rgba(5,15,10,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(0,255,136,0.15);border-radius:16px;padding:14px 18px;box-shadow:0 8px 32px rgba(0,0,0,0.3);font-size:12px;z-index:10;pointer-events:none;">
       <div style="font-weight:700;font-size:14px;color:white;" id="map-stat-count">— ilmoitusta</div>
       <div style="color:rgba(255,255,255,0.5);margin-top:2px;" id="map-stat-returned">— palautettua 💛</div>
@@ -2092,6 +2112,29 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <div id="profile-badge-card" style="display:none;" class="profile-card">
       <div id="profile-badge-content"></div>
     </div>
+    <div class="profile-card" id="qr-tags-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:16px;font-weight:700;color:white;">🏷️ Findly-tarrat</div>
+        <span style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(139,92,246,0.15);color:#A78BFA;font-weight:600;">TULOSSA</span>
+      </div>
+      <p style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:16px;">
+        Liitä QR-tarra esineisiisi (pyörä, avaimet, laukku). Jos joku löytää sen, hän skannaa tarran ja saat ilmoituksen heti.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div style="padding:10px 16px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:rgba(255,255,255,0.03);font-size:12px;color:rgba(255,255,255,0.35);text-align:center;">
+          <div style="font-size:24px;margin-bottom:4px;">🚲</div>Polkupyörä
+        </div>
+        <div style="padding:10px 16px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:rgba(255,255,255,0.03);font-size:12px;color:rgba(255,255,255,0.35);text-align:center;">
+          <div style="font-size:24px;margin-bottom:4px;">🔑</div>Avaimet
+        </div>
+        <div style="padding:10px 16px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:rgba(255,255,255,0.03);font-size:12px;color:rgba(255,255,255,0.35);text-align:center;">
+          <div style="font-size:24px;margin-bottom:4px;">👜</div>Laukku
+        </div>
+      </div>
+      <button disabled style="width:100%;margin-top:16px;padding:12px;border:1px solid rgba(139,92,246,0.2);border-radius:12px;background:rgba(139,92,246,0.08);color:rgba(167,139,250,0.6);font-size:13px;font-weight:600;cursor:not-allowed;">
+        Ilmoitamme kun tarrat ovat saatavilla →
+      </button>
+    </div>
     <div class="profile-card">
       <div class="my-listings-title" data-i18n="prof_my">Omat ilmoitukset</div>
       <div id="my-listings-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -2165,6 +2208,23 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 
         <h3 style="font-size:16px;font-weight:700;margin:28px 0 8px;color:white;">6. Muutokset</h3>
         <p>Pidätämme oikeuden muuttaa käyttöehtoja. Muutoksista ilmoitetaan sivustolla.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE: CITY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page" id="page-city">
+  <section style="background:#050F0A;padding:48px 0;">
+    <div class="wrap" style="max-width:800px;">
+      <div class="form-page-back" onclick="goBack()">← Takaisin</div>
+      <h1 id="city-title" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:white;margin-bottom:8px;">Löytötavara Helsinki</h1>
+      <p id="city-desc" style="font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:32px;line-height:1.6;"></p>
+      <div id="city-listings" class="feed-grid"></div>
+      <div id="city-empty" style="display:none;text-align:center;padding:40px;color:rgba(255,255,255,0.4);">
+        Ei ilmoituksia tällä alueella juuri nyt. <a style="color:#6EEDB0;cursor:pointer;" onclick="openFormTab('found')">Tee ensimmäinen →</a>
       </div>
     </div>
   </section>
@@ -2636,6 +2696,7 @@ function showPage(name) {
       initFormMap();
       const savedPhone = currentUser.user_metadata?.phone;
       if (savedPhone) document.getElementById('f-phone').value = savedPhone;
+      restoreDraft();
     } else {
       gate.style.display = 'block';
       wrap.style.display = 'none';
@@ -3308,9 +3369,9 @@ async function updateListingStatus(id, status) {
 function getBadge(count) {
   const L = currentLang;
   const karma = {fi:'karmaa',sv:'karma',en:'karma'}[L];
-  if (count >= 10) return { icon: '💎', title: {fi:'Findly-legenda',sv:'Findly-legend',en:'Findly Legend'}[L], color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} ${karma}` };
-  if (count >= 5)  return { icon: '🏆', title: {fi:'Mestarietsijä',sv:'Mästarletare',en:'Master Finder'}[L],  color: '#C47A15', bg: '#FEF3E2', desc: `${count} ${karma}` };
-  if (count >= 3)  return { icon: '⭐', title: {fi:'Luotettava löytäjä',sv:'Pålitlig upphittare',en:'Trusted Finder'}[L], color: '#2463A8', bg: '#EBF2FB', desc: `${count} ${karma}` };
+  if (count >= 10) return { icon: '💎', title: {fi:'Findlyn sankari',sv:'Findly-hjälte',en:'Findly Hero'}[L], color: '#6B4ECC', bg: '#F0ECFF', desc: `${count} ${karma}` };
+  if (count >= 5)  return { icon: '🏆', title: {fi:'Luotettu löytäjä',sv:'Betrodd upphittare',en:'Trusted Finder'}[L],  color: '#C47A15', bg: '#FEF3E2', desc: `${count} ${karma}` };
+  if (count >= 3)  return { icon: '⭐', title: {fi:'Kokenut löytäjä',sv:'Erfaren upphittare',en:'Experienced Finder'}[L], color: '#2463A8', bg: '#EBF2FB', desc: `${count} ${karma}` };
   if (count >= 1)  return { icon: '🌱', title: {fi:'Löytäjä',sv:'Upphittare',en:'Finder'}[L],        color: '#1A7A52', bg: '#E6F5EE', desc: `${count} ${karma}` };
   return null;
 }
@@ -4266,6 +4327,7 @@ async function submitListing(e) {
   }
 
   toast(t('toast_published'), 'green');
+  localStorage.removeItem('findly-draft');
   // Save phone to profile for future autofill
   const submittedPhone = document.getElementById('f-phone').value.trim();
   if (submittedPhone && submittedPhone !== currentUser.user_metadata?.phone) {
@@ -5391,6 +5453,152 @@ function shareIG(id) {
 }
 
 // ═══════════════════════════════════════════════════════
+// OFFLINE DRAFT SUPPORT
+// ═══════════════════════════════════════════════════════
+let draftTimeout = null;
+function saveDraft() {
+  clearTimeout(draftTimeout);
+  draftTimeout = setTimeout(() => {
+    const draft = {
+      type: currentFormType || '',
+      category: document.getElementById('f-category')?.value || '',
+      title: document.getElementById('f-title')?.value || '',
+      description: document.getElementById('f-desc')?.value || '',
+      address: document.getElementById('f-address')?.value || '',
+      lat: document.getElementById('f-lat')?.value || '',
+      lng: document.getElementById('f-lng')?.value || '',
+      phone: document.getElementById('f-phone')?.value || '',
+      reward: document.getElementById('f-reward')?.value || '',
+      when: document.getElementById('f-when')?.value || ''
+    };
+    localStorage.setItem('findly-draft', JSON.stringify(draft));
+  }, 1000);
+}
+function restoreDraft() {
+  const raw = localStorage.getItem('findly-draft');
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (d.type) setFormType(d.type);
+    if (d.category) document.getElementById('f-category').value = d.category;
+    if (d.title) document.getElementById('f-title').value = d.title;
+    if (d.description) document.getElementById('f-desc').value = d.description;
+    if (d.address) document.getElementById('f-address').value = d.address;
+    if (d.lat) document.getElementById('f-lat').value = d.lat;
+    if (d.lng) document.getElementById('f-lng').value = d.lng;
+    if (d.phone) document.getElementById('f-phone').value = d.phone;
+    if (d.reward && document.getElementById('f-reward')) document.getElementById('f-reward').value = d.reward;
+    if (d.when && document.getElementById('f-when')) document.getElementById('f-when').value = d.when;
+    toast('Luonnos palautettu', 'green');
+  } catch(e) {}
+}
+// Attach draft listener once DOM ready
+setTimeout(() => {
+  const form = document.getElementById('listing-form');
+  if (form) form.addEventListener('input', saveDraft);
+}, 500);
+
+// ═══════════════════════════════════════════════════════
+// MAP LIST VIEW TOGGLE
+// ═══════════════════════════════════════════════════════
+let mapListViewActive = false;
+function toggleMapListView() {
+  mapListViewActive = !mapListViewActive;
+  const mapContainer = document.getElementById('mapbox-container');
+  const listView = document.getElementById('map-list-view');
+  const btn = document.getElementById('map-list-toggle');
+  if (mapListViewActive) {
+    mapContainer.style.display = 'none';
+    listView.style.display = 'block';
+    btn.innerHTML = '🗺️ Kartta';
+    renderMapListView();
+  } else {
+    mapContainer.style.display = '';
+    listView.style.display = 'none';
+    btn.innerHTML = '📋 Lista';
+  }
+}
+function renderMapListView() {
+  const container = document.getElementById('map-list-view');
+  let items = [...allListings];
+  // Sort by date (newest first)
+  items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  if (!items.length) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.4);">Ei ilmoituksia kartalla.</div>';
+    return;
+  }
+  container.innerHTML = items.map(l => {
+    const icon = categoryIcon(l.category);
+    const typeBadge = l.type === 'lost' ? '🔍 Kadonnut' : l.type === 'found' ? '📦 Löydetty' : l.type === 'stolen' ? '🚨 Varastettu' : '🐾 Eläin';
+    const typeColor = l.type === 'lost' ? '#D94040' : l.type === 'found' ? '#1A7A52' : l.type === 'stolen' ? '#A32D2D' : '#C47A15';
+    return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;" onclick="openListing('${l.id}')">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:28px;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:14px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(l.title)}</span>
+            <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${typeColor}20;color:${typeColor};font-weight:600;white-space:nowrap;">${typeBadge}</span>
+          </div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.4);">📍 ${esc(l.address || '')} · ${timeAgo(l.created_at)}</div>
+        </div>
+        <div style="font-size:12px;color:#6EEDB0;font-weight:600;white-space:nowrap;">Avaa →</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CITY SEO PAGES
+// ═══════════════════════════════════════════════════════
+async function openCity(name) {
+  showPage('city');
+  document.getElementById('city-title').textContent = 'Löytötavara ' + name;
+  document.getElementById('city-desc').textContent = 'Selaa kadonneita ja löydettyjä tavaroita alueella ' + name + '. Findly on ilmainen löytötavara-palvelu, joka toimii koko Suomessa. Ilmoita kadonneesta tai löydetystä tavarasta ' + name + ' — turvallisesti ja anonyymisti.';
+  const listingsEl = document.getElementById('city-listings');
+  const emptyEl = document.getElementById('city-empty');
+  listingsEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  emptyEl.style.display = 'none';
+
+  const { data } = await sb.from('listings').select('*').eq('status', 'active').ilike('address', '%' + name + '%').order('created_at', { ascending: false }).limit(50);
+  const items = data || [];
+  if (!items.length) {
+    listingsEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  listingsEl.innerHTML = items.map(l => {
+    const icon = categoryIcon(l.category);
+    const typeColor = l.type === 'lost' ? '#D94040' : l.type === 'found' ? '#1A7A52' : l.type === 'stolen' ? '#A32D2D' : '#C47A15';
+    const typeText = l.type === 'lost' ? 'Kadonnut' : l.type === 'found' ? 'Löydetty' : l.type === 'stolen' ? 'Varastettu' : 'Eläin';
+    return `<div class="feed-card" onclick="openListing('${l.id}')">
+      <div class="feed-card-top">
+        <span class="feed-icon">${icon}</span>
+        <span class="feed-type" style="background:${typeColor}20;color:${typeColor};">${typeText}</span>
+      </div>
+      <div class="feed-title">${esc(l.title)}</div>
+      <div class="feed-meta">📍 ${esc(l.address || '')} · ${timeAgo(l.created_at)}</div>
+    </div>`;
+  }).join('');
+
+  // Add structured data for SEO
+  let ldScript = document.getElementById('city-ld-json');
+  if (!ldScript) {
+    ldScript = document.createElement('script');
+    ldScript.type = 'application/ld+json';
+    ldScript.id = 'city-ld-json';
+    document.head.appendChild(ldScript);
+  }
+  ldScript.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Löytötavara " + name,
+    "description": "Kadonneet ja löydetyt tavarat " + name + ". Findly löytötavara-palvelu.",
+    "url": "https://sebaostman-design.github.io/findly/?city=" + encodeURIComponent(name),
+    "isPartOf": { "@type": "WebSite", "name": "Findly", "url": "https://sebaostman-design.github.io/findly/" }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════
 function categoryIcon(cat) {
@@ -5487,6 +5695,8 @@ function esc(str) {
   const params = new URLSearchParams(window.location.search);
   if (params.get('listing')) {
     openListing(params.get('listing'));
+  } else if (params.get('city')) {
+    openCity(params.get('city'));
   } else if (isEmailCallback && currentUser) {
     toast(t('toast_email_verified'), 'green');
     showPage('home');
