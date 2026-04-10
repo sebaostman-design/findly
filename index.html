@@ -802,6 +802,123 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 @media (min-width: 1200px) {
   .feed-grid { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ── HOME MAP PREVIEW ── */
+.home-map-section {
+  background: #050F0A;
+  padding: 0 0 80px;
+  position: relative;
+}
+.home-map-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+.home-map-container {
+  width: 100%;
+  height: 400px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1.5px solid rgba(0,255,136,0.2);
+  box-shadow: 0 0 40px rgba(0,255,136,0.08), 0 8px 32px rgba(0,0,0,0.3);
+  position: relative;
+}
+.home-map-container #home-map {
+  width: 100%;
+  height: 100%;
+}
+.home-map-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 24px 20px;
+  background: linear-gradient(to top, rgba(5,15,10,0.95) 0%, rgba(5,15,10,0.6) 60%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 0 0 18px 18px;
+}
+.home-map-overlay h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(16px, 3vw, 20px);
+  font-weight: 800;
+  color: white;
+  margin: 0 0 4px;
+}
+.home-map-overlay p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+.home-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  text-align: center;
+  pointer-events: auto;
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.home-map-btn:hover { background: var(--green-dark); }
+@media (max-width: 600px) {
+  .home-map-container { height: 300px; border-radius: 14px; }
+  .home-map-overlay { border-radius: 0 0 14px 14px; }
+}
+
+/* ── FORM STEPS STRIP ── */
+.form-steps-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 14px 16px;
+  background: var(--green-light);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.form-step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+.form-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.form-step-arrow {
+  margin: 0 8px;
+  color: var(--ink4);
+  font-size: 12px;
+}
+@media (max-width: 480px) {
+  .form-steps-strip { gap: 4px; padding: 12px 10px; }
+  .form-step-item { font-size: 11px; }
+  .form-step-arrow { margin: 0 4px; }
+}
 </style>
 </head>
 <body>
@@ -1041,90 +1158,16 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
   </div>
 
-  <!-- ── HOW IT WORKS ── -->
-  <section style="background:white;padding:96px 0;">
-    <div class="wrap">
-      <div class="section-label" data-i18n="how_label">Näin se toimii</div>
-      <div class="section-title" data-i18n="how_title">Turvallinen prosessi alusta loppuun</div>
-      <div class="section-sub" data-i18n="how_sub">Findly ei ole pelkkä ilmoitustaulu — se ohjaa sinut turvallisesti läpi koko prosessin.</div>
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-icon">📋</div>
-          <div class="step-num" style="background:var(--green);">1</div>
-          <h3 data-i18n="how_step1">Tee ilmoitus</h3>
-          <p data-i18n="how_step1_desc">Kerro mitä kadotit tai löysit. Sijainti tallennetaan, mutta näytetään muille vain epätarkkana alueena yksityisyyden suojaamiseksi.</p>
+  <!-- ── HOME MAP PREVIEW ── -->
+  <section class="home-map-section">
+    <div class="home-map-wrap">
+      <div class="home-map-container">
+        <div id="home-map"></div>
+        <div class="home-map-overlay">
+          <h3>Löydöt ja katoamiset lähialueellasi</h3>
+          <p>Sijainnit näytetään 300-500 m tarkkuudella</p>
+          <button class="home-map-btn" onclick="showPage('map')">Avaa koko kartta →</button>
         </div>
-        <div class="step-card">
-          <div class="step-icon">🎯</div>
-          <div class="step-num" style="background:var(--blue);">2</div>
-          <h3 data-i18n="how_step2">Osuma löytyy</h3>
-          <p data-i18n="how_step2_desc">Findly vertaa ilmoituksia kategorian, ajan ja sijainnin perusteella automaattisesti. Saat ilmoituksen mahdollisesta matchista.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-icon">🔐</div>
-          <div class="step-num" style="background:var(--purple);">3</div>
-          <h3 data-i18n="how_step3">Todista omistajuus</h3>
-          <p data-i18n="how_step3_desc">Kerro jotain, mitä vain oikea omistaja tietää. Löytäjä tarkistaa vastauksesi ja hyväksyy tai hylkää pyynnön.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-icon">💬</div>
-          <div class="step-num" style="background:var(--green-mid);">4</div>
-          <h3 data-i18n="how_step4">Sovitaan palautus</h3>
-          <p>Vasta hyväksynnän jälkeen yhteystiedot ja tarkka sijainti jaetaan. Palautus sovitaan turvallisesti chatin kautta.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── SAFE RETURN PROCESS ── -->
-  <section style="background:#111410;padding:72px 0;">
-    <div class="wrap" style="max-width:800px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:40px;">
-        <div class="section-label" style="color:var(--green-mid);">Turvallisuus</div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;color:white;margin-bottom:12px;">Näin palautus tapahtuu turvallisesti</h2>
-        <p style="font-size:15px;color:rgba(255,255,255,0.6);line-height:1.7;">Findlyssä kukaan ei saa yhteystietojasi ennen kuin omistajuus on vahvistettu. Näin se toimii:</p>
-      </div>
-      <div style="display:grid;gap:16px;">
-        <div style="display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;">
-          <div style="width:36px;height:36px;background:var(--green);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">1</div>
-          <div><div style="font-size:14px;font-weight:600;color:white;margin-bottom:4px;">Omistaja todistaa oikeutensa</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Kerrot jotain, mitä vain oikea omistaja tietää — esim. tavaran sisältö tai tunniste. Löytäjä ei näe yhteystietojasi.</div></div>
-        </div>
-        <div style="display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;">
-          <div style="width:36px;height:36px;background:var(--blue);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">2</div>
-          <div><div style="font-size:14px;font-weight:600;color:white;margin-bottom:4px;">Löytäjä tarkistaa ja päättää</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Löytäjä näkee vastauksesi ja hyväksyy, hylkää tai pyytää lisätietoja. Valta on löytäjällä — ei automaattista pääsyä.</div></div>
-        </div>
-        <div style="display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;">
-          <div style="width:36px;height:36px;background:var(--purple);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">3</div>
-          <div><div style="font-size:14px;font-weight:600;color:white;margin-bottom:4px;">Yhteys avataan turvallisesti</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Vasta hyväksynnän jälkeen yhteystiedot ja sijainti jaetaan. Palautus sovitaan suojatun chatin kautta — ei suoraa kontaktia ennen tätä.</div></div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <p style="font-size:13px;color:rgba(255,255,255,0.4);line-height:1.6;">Findly ei koskaan jaa tietojasi ilman lupaasi. Ilmoitusnappi löytyy jokaisesta chatista väärinkäytösten varalta.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── WHY FINDLY vs FACEBOOK ── -->
-  <section style="background:white;padding:80px 0;">
-    <div class="wrap" style="max-width:880px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:40px;">
-        <div class="section-label">Vertailu</div>
-        <h2 class="section-title">Miksi Findly eikä Facebook?</h2>
-        <p class="section-sub">Perinteinen tapa on selata ryhmiä ja toivoa parasta. Findly tekee saman automaattisesti ja turvallisesti.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--radius-lg);overflow:hidden;border:1.5px solid var(--border);word-break:break-word;">
-        <div style="background:var(--paper);padding:12px 14px;font-size:12px;font-weight:600;color:var(--ink3);">Facebook-ryhmät</div>
-        <div style="background:var(--green-light);padding:12px 14px;font-size:12px;font-weight:600;color:var(--green-dark);">Findly</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Selaat satoja postauksia manuaalisesti</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Automaattinen matchaus — osumat tulevat sinulle</div>
-        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Kaikki tiedot julkisia kaikille</div>
-        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei tapaa todistaa omistajuutta</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
-        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Tarkka sijainti näkyy kaikille</div>
-        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Sijainti blurrattu 300–500 m tarkkuuteen</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei huijaussuojaa</div>
-        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Ilmoitusnappi + rate limit + moderointi</div>
       </div>
     </div>
   </section>
@@ -1172,6 +1215,31 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <span class="cat-icon">📦</span>
           <div class="cat-label" data-i18n="cat_other">Muu tavara</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHY FINDLY vs FACEBOOK ── -->
+  <section style="background:white;padding:80px 0;">
+    <div class="wrap" style="max-width:880px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <div class="section-label">Vertailu</div>
+        <h2 class="section-title">Miksi Findly eikä Facebook?</h2>
+        <p class="section-sub">Perinteinen tapa on selata ryhmiä ja toivoa parasta. Findly tekee saman automaattisesti ja turvallisesti.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--radius-lg);overflow:hidden;border:1.5px solid var(--border);word-break:break-word;">
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;font-weight:600;color:var(--ink3);">Facebook-ryhmät</div>
+        <div style="background:var(--green-light);padding:12px 14px;font-size:12px;font-weight:600;color:var(--green-dark);">Findly</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Selaat satoja postauksia manuaalisesti</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Automaattinen matchaus — osumat tulevat sinulle</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Kaikki tiedot julkisia kaikille</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei tapaa todistaa omistajuutta</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Tarkka sijainti näkyy kaikille</div>
+        <div style="background:var(--paper);padding:12px 14px;font-size:12px;color:var(--ink);">✅ Sijainti blurrattu 300–500 m tarkkuuteen</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink2);">❌ Ei huijaussuojaa</div>
+        <div style="background:white;padding:12px 14px;font-size:12px;color:var(--ink);">✅ Ilmoitusnappi + rate limit + moderointi</div>
       </div>
     </div>
   </section>
@@ -1483,6 +1551,18 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
 
     <div id="new-listing-form-wrap">
+
+    <!-- Compact how-it-works strip -->
+    <div class="form-steps-strip">
+      <div class="form-step-item"><span class="form-step-num">1</span> Tee ilmoitus</div>
+      <span class="form-step-arrow">→</span>
+      <div class="form-step-item"><span class="form-step-num">2</span> Osuma löytyy</div>
+      <span class="form-step-arrow">→</span>
+      <div class="form-step-item"><span class="form-step-num">3</span> Todista omistajuus</div>
+      <span class="form-step-arrow">→</span>
+      <div class="form-step-item"><span class="form-step-num">4</span> Palautus</div>
+    </div>
+
     <div class="form-page-header">
       <div class="form-page-back" onclick="goBack()" data-i18n="back">← Takaisin</div>
       <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;" data-i18n="form_title">Uusi ilmoitus</h2>
@@ -2365,6 +2445,7 @@ let allListings = [];
 let feedFilter = 'all';
 let petFilter = 'all';
 let mapInstance = null;
+let homeMap = null;
 let formMap = null;
 let formMarker = null;
 let selectedLat = null;
@@ -2394,6 +2475,7 @@ function showPage(name) {
   if (m) m.style.display = 'none';
   if (pageHistory[pageHistory.length - 1] !== name) pageHistory.push(name);
 
+  if (name === 'home') setTimeout(initHomeMap, 200);
   if (name === 'feed') loadFeed();
   if (name === 'map') initMap();
   if (name === 'pets') { loadPets(); loadSightings(); }
@@ -3420,6 +3502,42 @@ function reportListing(id) {
 
 function reportChat() {
   toast(t('toast_chat_reported'), 'green');
+}
+
+// ═══════════════════════════════════════════════════════
+// HOME MAP PREVIEW
+// ═══════════════════════════════════════════════════════
+async function initHomeMap() {
+  if (homeMap) return;
+  const container = document.getElementById('home-map');
+  if (!container || container.offsetParent === null) return;
+  try {
+    const listings = await loadAllListings();
+    homeMap = new mapboxgl.Map({
+      container: 'home-map',
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: [24.94, 60.17],
+      zoom: 11,
+      interactive: true,
+      attributionControl: false
+    });
+    homeMap.scrollZoom.disable();
+    homeMap.on('load', () => {
+      listings.filter(l => l.lat && l.lng).forEach(l => {
+        const blurred = blurLocation(l.lat, l.lng);
+        const el = document.createElement('div');
+        const color = markerColor(l.type);
+        const icon = categoryIcon(l.category);
+        el.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid ' + color + ';background:rgba(0,0,0,0.6);box-shadow:0 0 12px ' + color + '44;';
+        el.textContent = icon;
+        const popup = new mapboxgl.Popup({ offset: 20, maxWidth: '200px' }).setHTML(
+          '<div style="font-size:13px;font-weight:700;">' + esc(l.title || '') + '</div>' +
+          '<div style="font-size:11px;color:#888;">' + icon + ' ' + esc(l.category || '') + ' · ' + timeAgo(l.created_at) + '</div>'
+        );
+        new mapboxgl.Marker(el).setLngLat([blurred.lng, blurred.lat]).setPopup(popup).addTo(homeMap);
+      });
+    });
+  } catch (e) { console.error('Home map init error:', e); }
 }
 
 // ═══════════════════════════════════════════════════════
