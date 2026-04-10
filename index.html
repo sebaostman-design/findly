@@ -1082,7 +1082,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       <span style="font-size:13px;color:rgba(255,255,255,0.4);">Tai kirjoita:</span>
       <div style="position:relative;flex:1;">
         <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:14px;">€</span>
-        <input type="number" id="tip-custom" min="1" max="500" placeholder="Oma summa" oninput="selectTip(parseFloat(this.value)||0)"
+        <input type="number" id="tip-custom" min="2" max="500" placeholder="Oma summa (min 2€)" oninput="selectTip(parseFloat(this.value)||0)"
           style="width:100%;padding:10px 12px 10px 28px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;font-size:14px;outline:none;background:rgba(255,255,255,0.06);color:white;" />
       </div>
     </div>
@@ -1099,10 +1099,14 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       </div>
     </div>
 
-    <button id="tip-pay-btn" onclick="submitTip()" disabled
-      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;opacity:0.4;transition:opacity 0.2s;margin-bottom:12px;">
-      <span data-i18n="tip_pay">💸 Lähetä tippiä löytäjälle →</span>
+    <div id="tip-min-warning" style="display:none;font-size:12px;color:#F87171;text-align:center;margin-bottom:8px;">Minimi 2 &euro;</div>
+    <button id="tip-pay-btn" onclick="confirmAndSubmitTip()" disabled
+      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;opacity:0.4;transition:opacity 0.2s;margin-bottom:8px;">
+      &#x1F4B3; Maksa turvallisesti &rarr;
     </button>
+    <div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:12px;">
+      Maksu käsitellään Stripen kautta. Findly veloittaa 8&nbsp;% palvelumaksun.
+    </div>
 
     <div style="position:relative;text-align:center;margin-bottom:12px;">
       <div style="height:1px;background:rgba(255,255,255,0.08);"></div>
@@ -1119,6 +1123,34 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       </div>
       <span style="font-size:12px;color:rgba(255,255,255,0.4);">→</span>
     </a>
+  </div>
+</div>
+
+<!-- FOUND EMAIL PROMPT MODAL -->
+<div id="found-email-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(10,20,16,0.98);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px 24px;width:calc(100% - 40px);max-width:420px;color:white;" onclick="event.stopPropagation()">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:8px;">📦</div>
+      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:8px;">Julkaise löytöilmoitus</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;">
+        Sähköpostiosoitteesi tarvitaan vain jos omistaja ottaa yhteyttä.
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px;">Sähköpostiosoite *</label>
+      <input type="email" id="found-email-input" placeholder="nimi@esimerkki.fi"
+        style="width:100%;padding:12px 14px;border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;font-size:14px;outline:none;background:rgba(255,255,255,0.06);color:white;box-sizing:border-box;" />
+      <div id="found-email-error" style="font-size:12px;color:#F87171;margin-top:6px;display:none;"></div>
+    </div>
+    <button id="found-email-submit-btn" onclick="submitFoundWithEmail()"
+      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--gradient-brand);color:white;cursor:pointer;margin-bottom:10px;">
+      Julkaise ilmoitus — ei vaadi rekisteröitymistä
+    </button>
+    <div style="text-align:center;">
+      <a onclick="document.getElementById('found-email-modal').style.display='none';saveDraft();showPage('auth')" style="font-size:12px;color:rgba(255,255,255,0.4);cursor:pointer;text-decoration:underline;">
+        Haluatko hallinnoida ilmoitustasi? Luo tili →
+      </a>
+    </div>
   </div>
 </div>
 
@@ -1701,12 +1733,21 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 <div class="page" id="page-new-listing">
   <div class="form-page-wrap">
 
-    <!-- Login gate — shown when not logged in -->
+    <!-- Login gate — shown when not logged in (lost/stolen/pet only) -->
     <div id="new-listing-gate" style="display:none;text-align:center;padding:64px 20px;">
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;color:white;" data-i18n="form_gate_title">Kirjaudu sisään</h3>
-      <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:24px;" data-i18n="form_gate_desc">Ilmoituksen jättäminen vaatii kirjautumisen.</p>
-      <button class="btn-primary" style="border:none;" onclick="showPage('auth')" data-i18n="form_gate_btn">Kirjaudu tai luo tili →</button>
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;color:white;">Tili vaaditaan</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6;">
+        Katoamisilmoitus vaatii tilin, jotta voit vastaanottaa osumia ja todistaa omistajuutesi. Rekisteröityminen on ilmaista ja kestää 30 sekuntia.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto;">
+        <button class="btn-primary" style="border:none;width:100%;" onclick="saveDraft();showPage('auth')">Luo tili →</button>
+        <button style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);cursor:pointer;" onclick="saveDraft();showPage('auth')">Kirjaudu sisään</button>
+      </div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
+        <p style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:10px;">Löysitkö tavaran? Löytöilmoitus ei vaadi tiliä.</p>
+        <button style="padding:10px 20px;font-size:13px;font-weight:600;border:1.5px solid rgba(0,184,101,0.3);border-radius:12px;background:rgba(0,184,101,0.08);color:var(--green);cursor:pointer;" onclick="setFormType('found')">📦 Tee löytöilmoitus →</button>
+      </div>
     </div>
 
     <div id="new-listing-form-wrap">
@@ -2133,6 +2174,16 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       </div>
       <button disabled style="width:100%;margin-top:16px;padding:12px;border:1px solid rgba(139,92,246,0.2);border-radius:12px;background:rgba(139,92,246,0.08);color:rgba(167,139,250,0.6);font-size:13px;font-weight:600;cursor:not-allowed;">
         Ilmoitamme kun tarrat ovat saatavilla →
+      </button>
+    </div>
+    <div class="profile-card" id="stripe-connect-card" style="display:none;">
+      <div style="font-size:16px;font-weight:700;color:white;margin-bottom:8px;">&#x1F4B8; Vastaanota tippejä</div>
+      <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:16px;line-height:1.5;">
+        Yhdistä pankkitilisi vastaanottaaksesi tippejä löytäjänä.
+      </p>
+      <button onclick="toast('Stripe Connect -yhdistäminen tulossa pian','green')"
+        style="width:100%;padding:12px;font-size:13px;font-weight:600;border:none;border-radius:12px;background:var(--gradient-brand);color:white;cursor:pointer;">
+        Yhdistä pankkitili &rarr;
       </button>
     </div>
     <div class="profile-card">
@@ -2697,7 +2748,14 @@ function showPage(name) {
       const savedPhone = currentUser.user_metadata?.phone;
       if (savedPhone) document.getElementById('f-phone').value = savedPhone;
       restoreDraft();
+    } else if (currentFormType === 'found') {
+      // Found listings: no gate, allow form without login
+      gate.style.display = 'none';
+      wrap.style.display = '';
+      initFormMap();
+      restoreDraft();
     } else {
+      // Lost/stolen/pet: require account
       gate.style.display = 'block';
       wrap.style.display = 'none';
     }
@@ -3705,15 +3763,25 @@ function closeTipModal(e) {
   }
 }
 
+let tipNeedsConfirmation = false;
 function selectTip(amount) {
   tipAmount = amount;
+  tipNeedsConfirmation = amount > 150;
   // Highlight preset buttons
   document.querySelectorAll('.tip-amt').forEach(b => {
     b.style.background = parseFloat(b.textContent) === amount ? 'var(--green-light)' : 'white';
     b.style.borderColor = parseFloat(b.textContent) === amount ? 'var(--green)' : 'var(--border)';
     b.style.color = parseFloat(b.textContent) === amount ? 'var(--green-dark)' : '';
   });
-  if (amount > 0) {
+  const minWarn = document.getElementById('tip-min-warning');
+  if (amount > 0 && amount < 2) {
+    // Below minimum
+    minWarn.style.display = 'block';
+    document.getElementById('tip-breakdown').style.display = 'none';
+    document.getElementById('tip-pay-btn').disabled = true;
+    document.getElementById('tip-pay-btn').style.opacity = '0.4';
+  } else if (amount >= 2) {
+    minWarn.style.display = 'none';
     const fee = +(amount * 0.08).toFixed(2);
     const net = +(amount - fee).toFixed(2);
     document.getElementById('tip-gross').textContent = amount.toFixed(2) + ' €';
@@ -3723,15 +3791,23 @@ function selectTip(amount) {
     document.getElementById('tip-pay-btn').disabled = false;
     document.getElementById('tip-pay-btn').style.opacity = '1';
   } else {
+    minWarn.style.display = 'none';
     document.getElementById('tip-breakdown').style.display = 'none';
     document.getElementById('tip-pay-btn').disabled = true;
     document.getElementById('tip-pay-btn').style.opacity = '0.4';
   }
 }
 
+function confirmAndSubmitTip() {
+  if (tipNeedsConfirmation) {
+    if (!confirm('Olet lähettämässä ' + tipAmount.toFixed(2) + ' € tippiä. Haluatko varmasti jatkaa?')) return;
+  }
+  submitTip();
+}
+
 function submitTip() {
   // Stripe integration point — connect when Stripe account is ready
-  toast(t('toast_pay_soon'), 'green');
+  toast('Stripe-integraatio tulossa pian', 'green');
   document.getElementById('tip-modal').style.display = 'none';
 }
 
@@ -4108,6 +4184,19 @@ function initFormMap() {
 // ═══════════════════════════════════════════════════════
 function setFormType(type) {
   currentFormType = type;
+  // Re-check gate for non-logged-in users when switching types
+  if (!currentUser) {
+    const gate = document.getElementById('new-listing-gate');
+    const wrap = document.getElementById('new-listing-form-wrap');
+    if (type === 'found') {
+      gate.style.display = 'none';
+      wrap.style.display = '';
+      initFormMap();
+    } else {
+      gate.style.display = 'block';
+      wrap.style.display = 'none';
+    }
+  }
   const tabs = document.querySelectorAll('#form-type-tabs .ftype-btn');
   const typeMap = ['lost','stolen','found','pet'];
   tabs.forEach((t, i) => {
@@ -4233,12 +4322,93 @@ function previewImage(input) {
 }
 
 // ═══════════════════════════════════════════════════════
+// FOUND EMAIL PROMPT (no-account publish)
+// ═══════════════════════════════════════════════════════
+function showFoundEmailPrompt() {
+  const modal = document.getElementById('found-email-modal');
+  document.getElementById('found-email-input').value = '';
+  document.getElementById('found-email-error').style.display = 'none';
+  document.getElementById('found-email-submit-btn').disabled = false;
+  document.getElementById('found-email-submit-btn').textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
+  modal.style.display = 'flex';
+}
+
+async function submitFoundWithEmail() {
+  const emailInput = document.getElementById('found-email-input');
+  const errorEl = document.getElementById('found-email-error');
+  const btn = document.getElementById('found-email-submit-btn');
+  const email = emailInput.value.trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Anna kelvollinen sähköpostiosoite.';
+    errorEl.style.display = 'block';
+    emailInput.focus();
+    return;
+  }
+
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Luodaan tiliä...';
+
+  try {
+    // Try creating an anonymous-ish account with random password
+    const randomPw = crypto.randomUUID();
+    const { data: signUpData, error: signUpError } = await sb.auth.signUp({
+      email: email,
+      password: randomPw
+    });
+
+    if (signUpError) {
+      // Email likely already exists — try magic link
+      const { error: otpError } = await sb.auth.signInWithOtp({ email: email });
+      if (otpError) {
+        errorEl.textContent = 'Virhe: ' + otpError.message;
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
+        return;
+      }
+      errorEl.textContent = '';
+      errorEl.style.display = 'none';
+      btn.textContent = 'Tarkista sähköpostisi';
+      // Show info message
+      toast('Tarkista sähköpostisi vahvistuslinkki', 'green');
+      return;
+    }
+
+    // Account created — set currentUser and submit
+    if (signUpData?.user) {
+      currentUser = signUpData.user;
+      document.getElementById('found-email-modal').style.display = 'none';
+      // Now submit the listing normally
+      document.getElementById('listing-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    } else {
+      // Email confirmation required
+      toast('Tarkista sähköpostisi vahvistuslinkki', 'green');
+      btn.textContent = 'Tarkista sähköpostisi';
+    }
+  } catch (err) {
+    errorEl.textContent = 'Odottamaton virhe: ' + err.message;
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 // SUBMIT LISTING
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
   e.preventDefault();
+  if (!currentUser && currentFormType === 'found') {
+    // Show email-only publish UI for found listings
+    showFoundEmailPrompt();
+    return;
+  }
   if (!currentUser) {
-    showPage('new-listing');
+    // Lost/stolen/pet still require full auth
+    saveDraft();
+    showPage('auth');
     return;
   }
 
@@ -4883,7 +5053,13 @@ async function submitVerifyRequest() {
 // ═══════════════════════════════════════════════════════
 async function loadConversations() {
   if (!currentUser) {
-    document.getElementById('conversations-list').innerHTML = `<p style="color:var(--ink3);">${{fi:'Kirjaudu sisään nähdäksesi viestisi.',sv:'Logga in för att se dina meddelanden.',en:'Log in to see your messages.'}[currentLang]}</p>`;
+    document.getElementById('conversations-list').innerHTML = `<div style="text-align:center;padding:40px 20px;">
+      <div style="font-size:36px;margin-bottom:12px;">🔐</div>
+      <p style="color:rgba(255,255,255,0.5);font-size:14px;line-height:1.6;margin-bottom:20px;">
+        ${{fi:'Luo tili vahvistaaksesi löydön ja saadaksesi omistajan yhteystiedot.',sv:'Skapa ett konto för att bekräfta fynd och få ägarens kontaktuppgifter.',en:'Create an account to verify finds and get owner contact details.'}[currentLang]}
+      </p>
+      <button class="btn-primary" style="border:none;" onclick="showPage('auth')">${{fi:'Luo tili tai kirjaudu',sv:'Skapa konto eller logga in',en:'Create account or log in'}[currentLang]} &rarr;</button>
+    </div>`;
     return;
   }
   const el = document.getElementById('conversations-list');
@@ -5277,6 +5453,10 @@ async function loadProfile() {
       </div>`;
     badgeCard.style.display = 'block';
   }
+
+  // Show Stripe Connect card if user has any found listings
+  const hasFoundListings = (listings || []).some(l => l.type === 'found');
+  document.getElementById('stripe-connect-card').style.display = hasFoundListings ? 'block' : 'none';
 
   const myListings = document.getElementById('my-listings-list');
   if (!listings || listings.length === 0) {
