@@ -1226,27 +1226,54 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   <section style="background:#0A1410;padding:56px 0;">
     <div class="wrap" style="max-width:800px;margin:0 auto;text-align:center;">
       <div class="section-label">Ei rekisteröitymistä — näin se toimii</div>
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-top:32px;" id="how-steps-animated">
-        <div style="text-align:center;padding:0 8px;">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,184,101,0.1);border:2px solid rgba(0,184,101,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite;">📦</div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:start;margin-top:32px;" id="how-steps-animated">
+        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(1)">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,184,101,0.1);border:2px solid rgba(0,184,101,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-1">📦</div>
           <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">1. Ilmoita</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Löysit tai kadotit? Täytä lyhyt lomake.</div>
+          <div id="how-detail-1" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
+            <div style="margin-top:12px;padding:12px;background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.15);border-radius:12px;text-align:left;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Täytä lyhyt lomake — kuvaus, sijainti ja yhteystiedot. Kestää alle minuutin.</div>
+              <button type="button" onclick="event.stopPropagation();showPage('new-listing')" style="margin-top:10px;padding:8px 16px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:white;cursor:pointer;width:100%;">Kokeile →</button>
+            </div>
+          </div>
         </div>
-        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite;">→</div>
-        <div style="text-align:center;padding:0 8px;">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);border:2px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 1s;">🎯</div>
+        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite;margin-top:20px;">→</div>
+        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(2)">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);border:2px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 1s;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-2">🎯</div>
           <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">2. Matchaa</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Findly yhdistää löydöt ja katoamiset automaattisesti.</div>
+          <div id="how-detail-2" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
+            <div style="margin-top:12px;padding:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:12px;text-align:left;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Findly vertaa ilmoituksia automaattisesti. Saat ilmoituksen kun mahdollinen osuma löytyy.</div>
+            </div>
+          </div>
         </div>
-        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite 1s;">→</div>
-        <div style="text-align:center;padding:0 8px;">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 2s;">🤝</div>
+        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite 1s;margin-top:20px;">→</div>
+        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(3)">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 2s;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-3">🤝</div>
           <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">3. Palauta</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Sovitaan palautus turvallisesti chatin kautta.</div>
+          <div id="how-detail-3" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
+            <div style="margin-top:12px;padding:12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:12px;text-align:left;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Löytäjä tarkistaa omistajuutesi. Palautus sovitaan turvallisesti chatin kautta.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ── TRUST BAR ── -->
+  <div style="background:#0A1410;padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);">
+    <div class="wrap" style="max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,0.4);">
+      <span>🔒 Sijaintisi pysyy piilossa ennen matchausta</span>
+      <span style="color:rgba(255,255,255,0.15);">·</span>
+      <span>🛡️ Ilmoitukset tarkistetaan</span>
+      <span style="color:rgba(255,255,255,0.15);">·</span>
+      <span>📋 Tietosuojalain mukainen</span>
+    </div>
+  </div>
 
   <!-- ── HOME MAP PREVIEW ── -->
   <section class="home-map-section">
@@ -1712,7 +1739,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       <div class="form-grid">
         <div class="form-group">
           <label data-i18n="form_category">Kategoria *</label>
-          <select id="f-category" required>
+          <select id="f-category" required onchange="updateDescPlaceholder(this.value)">
             <option value="">Valitse...</option>
             <option>📱 Puhelin</option>
             <option>💳 Lompakko / kortit</option>
@@ -1790,6 +1817,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('ravintola');document.getElementById('f-address').value='ravintola';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🍽️ Ravintola / baari</button>
             <button type="button" onclick="document.getElementById('f-address').value='';geocodeSearch('puisto');document.getElementById('f-address').value='puisto';document.getElementById('f-address').focus()" style="padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.15s;">🌳 Puisto / ulkona</button>
           </div>
+          <button type="button" id="gps-locate-btn" onclick="useCurrentLocation()" style="width:100%;padding:12px 16px;margin-bottom:10px;font-size:13px;font-weight:600;border:1px solid rgba(0,184,101,0.25);border-radius:12px;background:rgba(0,184,101,0.08);backdrop-filter:blur(8px);color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;">📍 Käytä nykyistä sijaintiasi</button>
           <div style="position:relative;">
             <input type="text" id="f-address" placeholder="Hae: Tripla, Rautatieasema, Stockmann, Keskuspuisto..." style="margin-bottom:0;" autocomplete="off" oninput="geocodeSearch(this.value)" onfocus="if(this.value.length>2)geocodeSearch(this.value)" />
             <div id="geocode-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0A1410;border:1.5px solid rgba(255,255,255,0.1);border-top:none;border-radius:0 0 12px 12px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,0.3);color:white;"></div>
@@ -1842,6 +1870,25 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       <button type="submit" class="submit-btn lost" id="submit-btn" style="margin-top:20px;" data-i18n="form_submit">Julkaise ilmoitus →</button>
     </form>
     </div><!-- /new-listing-form-wrap -->
+
+    <!-- CONFIRMATION AFTER SUBMISSION -->
+    <div id="listing-confirmation" style="display:none;text-align:center;padding:40px 20px;">
+      <div style="font-size:56px;margin-bottom:16px;">✅</div>
+      <h2 style="font-size:22px;font-weight:700;color:white;margin-bottom:8px;font-family:'Syne',sans-serif;">Ilmoituksesi on julkaistu!</h2>
+      <div id="confirm-listing-info" style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:20px;"></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-bottom:24px;">
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;">Saat sähköpostiviestin kun mahdollinen osuma löytyy.</div>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:16px;">Mitä seuraavaksi?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">
+        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:white;cursor:pointer;">Katso osumia →</button>
+        <button onclick="resetListingForm()" style="padding:13px 20px;font-size:14px;font-weight:600;border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);cursor:pointer;">Tee uusi ilmoitus</button>
+      </div>
+      <div id="install-prompt-area" style="display:none;margin-top:24px;">
+        <button onclick="promptInstall()" style="padding:10px 20px;font-size:12px;font-weight:600;border:1px solid rgba(0,184,101,0.2);border-radius:20px;background:rgba(0,184,101,0.08);color:var(--green);cursor:pointer;">📲 Lisää kotinäytölle</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2582,6 +2629,7 @@ function showPage(name) {
   if (name === 'new-listing') {
     const gate = document.getElementById('new-listing-gate');
     const wrap = document.getElementById('new-listing-form-wrap');
+    document.getElementById('listing-confirmation').style.display = 'none';
     if (currentUser) {
       gate.style.display = 'none';
       wrap.style.display = '';
@@ -2611,7 +2659,23 @@ function openFormCat(category) {
   setTimeout(() => {
     const sel = document.getElementById('f-category');
     if (sel) sel.value = category;
+    updateDescPlaceholder(category);
   }, 100);
+}
+
+function updateDescPlaceholder(category) {
+  const descEl = document.getElementById('f-desc');
+  if (!descEl) return;
+  const placeholders = {
+    '📱 Puhelin': 'Esim: Musta iPhone 15, suojakuori sininen, näytössä pieni naarmu vasemmassa yläkulmassa...',
+    '💳 Lompakko / kortit': 'Esim: Ruskea nahkalompakko, Visa-kortti ja henkilökortti sisällä...',
+    '🔑 Avaimet': 'Esim: 3 avainta metallirenkaassa, pieni nalle-avaimenperä...',
+    '👜 Laukku / reppu': 'Esim: Musta Fjällräven Kånken -reppu, sisällä vesipullo ja muistivihko...',
+    '💎 Koru / kello': 'Esim: Hopeinen ketju, sydänriipus, kaiverrus takapuolella...',
+    '🎧 Elektroniikka': 'Esim: Valkoinen AirPods Pro -kotelo, nimi kaiverrettu...',
+    '🚲 Polkupyörä': 'Esim: Punainen Jopo, 3-vaihteinen, tarakalla kori...'
+  };
+  descEl.placeholder = placeholders[category] || 'Kuvaile tavara: väri, merkki, koko, erityispiirteet. Älä paljasta kaikkia tunnistetietoja.';
 }
 
 function toggleMobileMenu() {
@@ -2642,7 +2706,8 @@ sb.auth.onAuthStateChange((event, session) => {
   if (currentUser) {
     setTimeout(updateMatchBadge, 1500);
     setTimeout(updateMsgBadge, 2000);
-    setTimeout(askNotificationPermission, 3000);
+    // Notification banner now shown after first listing submission instead of on load
+    if (Notification.permission === 'granted') startNotificationPolling();
     startInAppPolling();
   } else {
     setMatchBadge(0);
@@ -3823,6 +3888,74 @@ function filterMap(type, btn) {
 }
 
 // ═══════════════════════════════════════════════════════
+// INTERACTIVE 3-STEP DEMO
+// ═══════════════════════════════════════════════════════
+function toggleHowStep(step) {
+  for (let i = 1; i <= 3; i++) {
+    const detail = document.getElementById('how-detail-' + i);
+    const circle = document.getElementById('how-circle-' + i);
+    if (i === step) {
+      const isOpen = detail.style.maxHeight && detail.style.maxHeight !== '0px';
+      if (isOpen) {
+        detail.style.maxHeight = '0px';
+        detail.style.opacity = '0';
+        circle.style.transform = 'scale(1)';
+        circle.style.boxShadow = 'none';
+      } else {
+        detail.style.maxHeight = '200px';
+        detail.style.opacity = '1';
+        circle.style.transform = 'scale(1.1)';
+        circle.style.boxShadow = '0 0 20px rgba(0,184,101,0.2)';
+      }
+    } else {
+      detail.style.maxHeight = '0px';
+      detail.style.opacity = '0';
+      circle.style.transform = 'scale(1)';
+      circle.style.boxShadow = 'none';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GPS LOCATION
+// ═══════════════════════════════════════════════════════
+async function useCurrentLocation() {
+  const btn = document.getElementById('gps-locate-btn');
+  if (!navigator.geolocation) { toast('Selaimesi ei tue paikannusta.', 'red'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span style="animation:spin 1s linear infinite;display:inline-block;">⏳</span> Haetaan sijaintia...';
+  try {
+    const pos = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
+    });
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    document.getElementById('f-lat').value = lat;
+    document.getElementById('f-lng').value = lng;
+    selectedLat = lat;
+    selectedLng = lng;
+    // Reverse geocode
+    const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&language=fi`);
+    const d = await res.json();
+    if (d.features?.length) {
+      document.getElementById('f-address').value = d.features[0].place_name;
+    }
+    // Move form map marker
+    if (formMap) {
+      if (formMarker) formMarker.remove();
+      formMarker = new mapboxgl.Marker({ color: '#1A7A52' }).setLngLat([lng, lat]).addTo(formMap);
+      formMap.flyTo({ center: [lng, lat], zoom: 15 });
+    }
+    document.querySelector('.form-map-hint').textContent = '✓ Sijainti merkitty';
+    toast('Sijainti asetettu', 'green');
+  } catch (err) {
+    toast('Paikannusvirhe: salli sijainti selaimesi asetuksista.', 'red');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '📍 Käytä nykyistä sijaintiasi';
+}
+
+// ═══════════════════════════════════════════════════════
 // FORM MAP
 // ═══════════════════════════════════════════════════════
 let geocodeTimeout = null;
@@ -4138,6 +4271,32 @@ async function submitListing(e) {
   if (submittedPhone && submittedPhone !== currentUser.user_metadata?.phone) {
     sb.auth.updateUser({ data: { phone: submittedPhone } });
   }
+
+  // Show confirmation page
+  const catIcon = category.split(' ')[0] || '📦';
+  document.getElementById('confirm-listing-info').innerHTML = '<span style="font-size:24px;">' + catIcon + '</span> ' + esc(title);
+  document.getElementById('new-listing-form-wrap').style.display = 'none';
+  document.getElementById('listing-confirmation').style.display = 'block';
+
+  // Show "add to home screen" on mobile after 5 seconds
+  if (/Mobi|Android/i.test(navigator.userAgent)) {
+    setTimeout(() => {
+      const installArea = document.getElementById('install-prompt-area');
+      if (installArea) installArea.style.display = 'block';
+    }, 5000);
+  }
+
+  // Show notification banner after first listing (with delay)
+  if (!localStorage.getItem('notif-asked-after-listing')) {
+    localStorage.setItem('notif-asked-after-listing', '1');
+    setTimeout(() => {
+      if ('Notification' in window && Notification.permission === 'default' && !localStorage.getItem('notif-dismissed')) {
+        document.getElementById('notif-banner').style.display = 'flex';
+      }
+    }, 2000);
+  }
+
+  // Reset form state for next use
   document.getElementById('listing-form').reset();
   document.querySelectorAll('.loc-opt').forEach(o => o.classList.remove('selected'));
   document.querySelectorAll('.vis-opt').forEach((o,i) => { o.classList.toggle('selected', i === 0); });
@@ -4148,7 +4307,6 @@ async function submitListing(e) {
   document.getElementById('image-preview').style.display = 'none';
   selectedLat = null; selectedLng = null;
   if (formMarker) { formMarker.remove(); formMarker = null; }
-  openListing(data.id);
 
   // Immediate match check after publishing
   setTimeout(async () => {
@@ -4171,6 +4329,20 @@ async function submitListing(e) {
       showMatchAlert(matchCount, bestMatch, bestScore);
     }
   }, 1500);
+}
+
+function resetListingForm() {
+  document.getElementById('listing-confirmation').style.display = 'none';
+  document.getElementById('new-listing-form-wrap').style.display = '';
+  setFormType(currentFormType);
+}
+
+function promptInstall() {
+  if (window.deferredPrompt) {
+    window.deferredPrompt.prompt();
+  } else {
+    toast('Avaa selaimesi valikko ja valitse "Lisää kotinäytölle"', '');
+  }
 }
 
 function showMatchAlert(count, bestMatch, score) {
@@ -4989,6 +5161,12 @@ async function sendMessage() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text) return;
+  // Check for money/payment keywords
+  const moneyKeywords = ['maksa', 'tilaa', 'siirr', 'euro', 'rahaa', 'mobilepay', 'vipps', 'swish'];
+  const lowerText = text.toLowerCase();
+  if (moneyKeywords.some(kw => lowerText.includes(kw))) {
+    toast('⚠️ Varoitus: Älä lähetä rahaa ennen kuin tavara on palautettu. Findly ei tue ennakkomaksuja.', 'red');
+  }
   input.value = '';
   const { error } = await sb.from('messages').insert({ conversation_id: currentConvId, sender_id: currentUser.id, content: text });
   if (error) { toast(t('toast_error') + error.message, 'red'); input.value = text; return; }
