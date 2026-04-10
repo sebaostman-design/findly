@@ -3761,7 +3761,14 @@ function initFormMap() {
       center: [24.94, 60.17],
       zoom: 12
     });
-    formMap.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true } }));
+    const geoCtrl = new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false });
+    formMap.addControl(geoCtrl);
+    // Auto-trigger geolocation when map loads
+    formMap.on('load', () => { geoCtrl.trigger(); });
+    // Center map on user location
+    geoCtrl.on('geolocate', (e) => {
+      formMap.flyTo({ center: [e.coords.longitude, e.coords.latitude], zoom: 14 });
+    });
     formMap.on('click', (e) => {
       selectedLat = e.lngLat.lat;
       selectedLng = e.lngLat.lng;
