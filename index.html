@@ -4348,44 +4348,46 @@ async function submitFoundWithEmail() {
 
   errorEl.style.display = 'none';
   btn.disabled = true;
-  btn.textContent = 'Luodaan tiliä...';
+  btn.textContent = 'Julkaistaan...';
 
   try {
-    // Try creating an anonymous-ish account with random password
     const randomPw = crypto.randomUUID();
     const { data: signUpData, error: signUpError } = await sb.auth.signUp({
       email: email,
-      password: randomPw
+      password: randomPw,
+      options: { data: { name: email.split('@')[0] } }
     });
 
     if (signUpError) {
-      // Email likely already exists — try magic link
-      const { error: otpError } = await sb.auth.signInWithOtp({ email: email });
-      if (otpError) {
-        errorEl.textContent = 'Virhe: ' + otpError.message;
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
-        return;
-      }
-      errorEl.textContent = '';
-      errorEl.style.display = 'none';
-      btn.textContent = 'Tarkista sähköpostisi';
-      // Show info message
-      toast('Tarkista sähköpostisi vahvistuslinkki', 'green');
+      // Email exists — try to sign in with password reset flow or show login option
+      errorEl.innerHTML = 'Tämä sähköposti on jo käytössä. <a style="color:#6EEDB0;cursor:pointer;text-decoration:underline;" onclick="document.getElementById(\'found-email-modal\').style.display=\'none\';saveDraft();showPage(\'auth\');">Kirjaudu sisään →</a>';
+      errorEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
       return;
     }
 
-    // Account created — set currentUser and submit
-    if (signUpData?.user) {
+    // Account created — session should be active immediately (email confirmation disabled)
+    if (signUpData?.session) {
       currentUser = signUpData.user;
+      updateNavAuth();
       document.getElementById('found-email-modal').style.display = 'none';
-      // Now submit the listing normally
       document.getElementById('listing-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    } else {
-      // Email confirmation required
-      toast('Tarkista sähköpostisi vahvistuslinkki', 'green');
-      btn.textContent = 'Tarkista sähköpostisi';
+    } else if (signUpData?.user) {
+      // Fallback: user created but no session (confirmation might still be on)
+      // Try to sign in directly
+      const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password: randomPw });
+      if (signInData?.session) {
+        currentUser = signInData.user;
+        updateNavAuth();
+        document.getElementById('found-email-modal').style.display = 'none';
+        document.getElementById('listing-form').dispatchEvent(new Event('submit', { cancelable: true }));
+      } else {
+        errorEl.textContent = 'Tilin luonti onnistui mutta kirjautuminen epäonnistui. Kokeile kirjautua sisään.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
+      }
     }
   } catch (err) {
     errorEl.textContent = 'Odottamaton virhe: ' + err.message;
