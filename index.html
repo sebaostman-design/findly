@@ -443,6 +443,8 @@ section { padding: 72px 0; }
 .vis-opt small { display: block; font-size: 11px; font-weight: 400; margin-top: 3px; opacity: 0.85; }
 
 /* ── MAP PAGE ── */
+.map-tab { flex:1; padding:10px 16px; border-radius:11px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:transparent; color:rgba(255,255,255,0.4); transition:all 0.2s; }
+.map-tab.active { background:rgba(0,184,101,0.15); color:#6EEDB0; border:1px solid rgba(0,184,101,0.25); }
 #map-page { min-height: 100vh; display: flex; flex-direction: column; }
 .map-header { padding: 20px clamp(24px, 6vw, 100px) 16px; background: #050F0A; border-bottom: 1px solid rgba(255,255,255,0.06); max-width: 100%; }
 .map-header-inner { max-width: 1280px; margin: 0 auto; }
@@ -1159,10 +1161,9 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   <div class="nav-inner">
     <div class="nav-logo" onclick="showPage('home')">find<span>ly</span></div>
     <div class="nav-links">
-      <a onclick="showPage('matches')" style="font-weight:600;position:relative;" data-i18n="nav_matches">🎯 Osumat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
-      <a onclick="showPage('map')" data-i18n="nav_map">🗺️ Kartta</a>
-      <a onclick="showPage('pets')" data-i18n="nav_pets">🐾 Eläimet</a>
-      <a onclick="showPage('feed')" style="color:var(--ink3);font-size:13px;" data-i18n="nav_feed">Ilmoitukset</a>
+      <a onclick="showPage('map');switchMapTab('lost')">🔍 Kadotetut</a>
+      <a onclick="showPage('map');switchMapTab('found')">📦 Löydetyt</a>
+      <a onclick="showPage('matches')" style="font-weight:600;position:relative;">🎯 Osumat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
     </div>
     <div class="nav-right">
       <div id="lang-switcher" style="display:flex;gap:2px;margin-right:6px;flex-shrink:0;">
@@ -1186,12 +1187,30 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   </div>
 </nav>
 
+<!-- LOST CHECK PROMPT MODAL -->
+<div id="lost-check-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(10,20,16,0.98);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;max-width:420px;width:calc(100% - 40px);color:white;text-align:center;" onclick="event.stopPropagation()">
+    <div style="font-size:40px;margin-bottom:12px;">🔍</div>
+    <h3 style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:12px;">Tarkista ensin löytökartta!</h3>
+    <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:24px;">
+      Joku on ehkä jo löytänyt tavarasi. Tarkista ensin löytöilmoitukset ennen kuin teet katoamisilmoituksen.
+    </p>
+    <button onclick="document.getElementById('lost-check-modal').style.display='none';showPage('map');switchMapTab('found')"
+      style="width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-brand);color:white;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">
+      📦 Tarkista löytökartta →
+    </button>
+    <button onclick="document.getElementById('lost-check-modal').style.display='none';window._skipLostCheck=true;openFormTab('lost')"
+      style="width:100%;padding:12px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:transparent;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;">
+      Olen jo tarkistanut — tee katoamisilmoitus →
+    </button>
+  </div>
+</div>
+
 <!-- MOBILE MENU -->
 <div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:#0A1410;border-bottom:1px solid rgba(255,255,255,0.06);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
+  <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('lost');toggleMobileMenu()">🔍 Kadotetut</a>
+  <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('found');toggleMobileMenu()">📦 Löydetyt</a>
   <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat<span id="match-badge-mobile" style="display:none;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
-  <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;" onclick="showPage('map');toggleMobileMenu()" data-i18n="nav_map">🗺️ Kartta</a>
-  <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;" onclick="showPage('pets');toggleMobileMenu()" data-i18n="nav_pets">🐾 Eläimet</a>
-  <a style="font-size:15px;color:rgba(255,255,255,0.4);text-decoration:none;cursor:pointer;font-size:14px;" onclick="showPage('feed');toggleMobileMenu()" data-i18n="nav_feed">Ilmoitukset</a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:4px;">
     <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:#E53935;color:white;font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;margin-left:6px;"></span></a>
     <a style="font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
@@ -1359,9 +1378,9 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <span class="cat-icon">🚲</span>
           <div class="cat-label" data-i18n="cat_bike">Polkupyörä</div>
         </div>
-        <div class="category-card" onclick="openFormTab('pet')">
-          <span class="cat-icon">🐾</span>
-          <div class="cat-label" data-i18n="cat_animal">Eläin</div>
+        <div class="category-card" onclick="openFormCat('📄 Asiakirjat / ID')">
+          <span class="cat-icon">📄</span>
+          <div class="cat-label">Asiakirjat / ID</div>
         </div>
         <div class="category-card" onclick="openFormCat('Muu')">
           <span class="cat-icon">📦</span>
@@ -1644,10 +1663,11 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             </div>
             <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;margin:0;" data-i18n="map_title">🗺️ Live-kartta</h2>
           </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="feed-filter active-all" onclick="filterMap('all',this)" style="font-size:12px;padding:6px 14px;">Kaikki</button>
-            <button class="feed-filter" onclick="filterMap('items',this)" style="font-size:12px;padding:6px 14px;">🔍 Tavarat</button>
-            <button class="feed-filter" onclick="filterMap('pet',this)" style="font-size:12px;padding:6px 14px;">🐾 Eläimet</button>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,0.05);border-radius:14px;padding:3px;">
+            <button id="map-tab-lost" onclick="switchMapTab('lost')" class="map-tab active" style="flex:1;padding:10px 16px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:rgba(0,184,101,0.15);color:#6EEDB0;border:1px solid rgba(0,184,101,0.25);transition:all 0.2s;">🔍 Kadotetut tavarat</button>
+            <button id="map-tab-found" onclick="switchMapTab('found')" class="map-tab" style="flex:1;padding:10px 16px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.4);transition:all 0.2s;">📦 Löydetyt tavarat</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:8px;">
             <button class="feed-filter" onclick="toggleMapStories(this)" id="map-stories-btn" style="font-size:12px;padding:6px 14px;border-color:var(--amber);color:var(--amber);">💛 Palautetut</button>
             <button id="map-list-toggle" onclick="toggleMapListView()" style="font-size:12px;padding:6px 14px;border:1px solid rgba(110,237,176,0.3);border-radius:20px;background:rgba(110,237,176,0.08);color:#6EEDB0;cursor:pointer;font-weight:600;">📋 Lista</button>
           </div>
@@ -1661,7 +1681,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       <div style="color:rgba(255,255,255,0.5);margin-top:2px;" id="map-stat-returned">— palautettua 💛</div>
     </div>
     <div style="position:absolute;bottom:24px;right:24px;z-index:10;">
-      <button onclick="showPage('new-listing')" style="background:var(--gradient-brand);color:white;border:none;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(0,184,101,0.3);animation:glowPulse 3s ease-in-out infinite;transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">+ Tee ilmoitus</button>
+      <button class="map-floating-cta" onclick="openFormTab('found')" style="background:var(--gradient-brand);color:white;border:none;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(0,184,101,0.3);animation:glowPulse 3s ease-in-out infinite;transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📦 Tee löytöilmoitus</button>
     </div>
     <div id="map-privacy-note" style="position:absolute;top:90px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(5,15,10,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,255,136,0.1);border-radius:30px;padding:8px 16px;font-size:11px;color:rgba(255,255,255,0.5);pointer-events:none;white-space:nowrap;transition:opacity 0.5s;"> 📍 Sijainnit ±300–500 m yksityisyyden suojaamiseksi</div>
   </div>
@@ -1770,10 +1790,9 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
 
     <div class="form-type-tabs" id="form-type-tabs">
-      <div class="ftype-btn active-lost" onclick="setFormType('lost')" data-i18n="form_lost">🔍 Kadonnut</div>
-      <div class="ftype-btn" onclick="setFormType('stolen')" data-i18n="form_stolen">🚨 Varastettu</div>
-      <div class="ftype-btn" onclick="setFormType('found')" data-i18n="form_found">📦 Löydetty</div>
-      <div class="ftype-btn" onclick="setFormType('pet')" data-i18n="form_pet">🐾 Eläin</div>
+      <div class="ftype-btn active-lost" onclick="setFormType('lost')">🔍 Kadonnut</div>
+      <div class="ftype-btn" onclick="setFormType('found')">📦 Löydetty</div>
+      <div class="ftype-btn" style="opacity:0.3;cursor:not-allowed;position:relative;" onclick="toast('Eläinilmoitukset tulossa pian!','green')">🐾 Eläin <span style="position:absolute;top:-6px;right:-4px;font-size:8px;background:rgba(139,92,246,0.3);color:#A78BFA;padding:1px 5px;border-radius:6px;">PIAN</span></div>
     </div>
 
     <!-- Pet subtype selector (lost/found) -->
@@ -1812,6 +1831,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <option>🐕 Koira</option>
             <option>🐈 Kissa</option>
             <option>🐾 Muu eläin</option>
+            <option>📄 Asiakirjat / ID</option>
             <option>Muu</option>
           </select>
         </div>
@@ -2732,7 +2752,7 @@ function showPage(name) {
 
   if (name === 'home') setTimeout(initHomeMap, 200);
   if (name === 'feed') loadFeed();
-  if (name === 'map') initMap();
+  if (name === 'map') { initMap().then(() => { if (!window._mapTabSet) switchMapTab('lost'); window._mapTabSet = false; }); }
   if (name === 'pets') { loadPets(); loadSightings(); }
   if (name === 'matches') { loadMatches(); setMatchBadge(0); }
   if (name === 'messages') { loadConversations(); setMsgBadge(0); lastSeenMsgTime = new Date().toISOString(); localStorage.setItem('findly-last-msg', lastSeenMsgTime); }
@@ -2769,8 +2789,49 @@ function goBack() {
 }
 
 function openFormTab(type) {
+  if (type === 'lost' && !window._skipLostCheck) {
+    showLostCheckPrompt();
+    return;
+  }
+  window._skipLostCheck = false;
   setFormType(type);
   showPage('new-listing');
+}
+
+function showLostCheckPrompt() {
+  const modal = document.getElementById('lost-check-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function switchMapTab(type) {
+  window._mapTabSet = true;
+  const tabLost = document.getElementById('map-tab-lost');
+  const tabFound = document.getElementById('map-tab-found');
+  if (tabLost) tabLost.className = 'map-tab' + (type === 'lost' ? ' active' : '');
+  if (tabFound) tabFound.className = 'map-tab' + (type === 'found' ? ' active' : '');
+  // Also update inline styles for the active state
+  if (tabLost) {
+    tabLost.style.background = type === 'lost' ? 'rgba(0,184,101,0.15)' : 'transparent';
+    tabLost.style.color = type === 'lost' ? '#6EEDB0' : 'rgba(255,255,255,0.4)';
+    tabLost.style.border = type === 'lost' ? '1px solid rgba(0,184,101,0.25)' : 'none';
+  }
+  if (tabFound) {
+    tabFound.style.background = type === 'found' ? 'rgba(0,184,101,0.15)' : 'transparent';
+    tabFound.style.color = type === 'found' ? '#6EEDB0' : 'rgba(255,255,255,0.4)';
+    tabFound.style.border = type === 'found' ? '1px solid rgba(0,184,101,0.25)' : 'none';
+  }
+  // Filter markers
+  if (type === 'lost') {
+    updateMapMarkers(allListings.filter(l => l.type === 'lost'));
+  } else {
+    updateMapMarkers(allListings.filter(l => l.type === 'found'));
+  }
+  // Update CTA button text
+  const ctaBtn = document.querySelector('#map-page .map-floating-cta');
+  if (ctaBtn) {
+    ctaBtn.textContent = type === 'lost' ? '📦 Tee löytöilmoitus' : '🔍 Tee katoamisilmoitus';
+    ctaBtn.onclick = () => openFormTab(type === 'lost' ? 'found' : 'lost');
+  }
 }
 
 function openFormCat(category) {
@@ -2792,9 +2853,24 @@ function updateDescPlaceholder(category) {
     '👜 Laukku / reppu': 'Esim: Musta Fjällräven Kånken -reppu, sisällä vesipullo ja muistivihko...',
     '💎 Koru / kello': 'Esim: Hopeinen ketju, sydänriipus, kaiverrus takapuolella...',
     '🎧 Elektroniikka': 'Esim: Valkoinen AirPods Pro -kotelo, nimi kaiverrettu...',
-    '🚲 Polkupyörä': 'Esim: Punainen Jopo, 3-vaihteinen, tarakalla kori...'
+    '🚲 Polkupyörä': 'Esim: Punainen Jopo, 3-vaihteinen, tarakalla kori...',
+    '📄 Asiakirjat / ID': 'Esim: Suomalainen passi, ajokortti, henkilökortti...'
   };
   descEl.placeholder = placeholders[category] || 'Kuvaile tavara: väri, merkki, koko, erityispiirteet. Älä paljasta kaikkia tunnistetietoja.';
+  // Show special notice for documents/ID
+  let docNotice = document.getElementById('doc-category-notice');
+  if (category && category.includes('Asiakirjat')) {
+    if (!docNotice) {
+      docNotice = document.createElement('div');
+      docNotice.id = 'doc-category-notice';
+      docNotice.style.cssText = 'background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:12px 16px;margin-top:10px;font-size:13px;color:#FBBF24;line-height:1.5;';
+      docNotice.innerHTML = '⚠️ Passit, ajokortit ja viralliset asiakirjat tulee toimittaa suoraan poliisille.';
+      descEl.parentElement.appendChild(docNotice);
+    }
+    docNotice.style.display = 'block';
+  } else if (docNotice) {
+    docNotice.style.display = 'none';
+  }
 }
 
 function toggleMobileMenu() {
@@ -4198,8 +4274,9 @@ function setFormType(type) {
     }
   }
   const tabs = document.querySelectorAll('#form-type-tabs .ftype-btn');
-  const typeMap = ['lost','stolen','found','pet'];
+  const typeMap = ['lost','found','pet'];
   tabs.forEach((t, i) => {
+    if (i === 2) return; // Skip the disabled "PIAN" pet tab
     t.className = 'ftype-btn' + (typeMap[i] === type ? ' active-' + type : '');
   });
 
@@ -4224,7 +4301,7 @@ function setFormType(type) {
     if (type === 'pet') {
       imgGuide.innerHTML = '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Lisää mahdollisimman selkeä kuva lemmikistä. Näytä eläimen väri, koko ja erityispiirteet.</div>';
     } else if (type === 'found') {
-      imgGuide.innerHTML = '<span>📍</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Voit kuvata paikan johon jätit tavaran — esim. penkki, pylväs tai muu tunnistettava kohta. <strong>Älä kuvaa itse tavaraa liian tarkasti</strong> — omistaja todistaa omistajuutensa kuvailemalla sitä.</div>';
+      imgGuide.innerHTML = '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Kuva auttaa matchauksessa. Voit kuvata tavaran yleisellä tasolla — omistaja todistaa omistajuutensa yksityiskohdilla.</div>';
     } else {
       imgGuide.innerHTML = '<span>🛡️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>';
     }
