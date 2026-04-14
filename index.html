@@ -1029,38 +1029,56 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 <div id="success-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
   <div style="background:rgba(10,20,16,0.97);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center;animation:popIn 0.3s ease;margin:auto;color:white;">
     <div style="font-size:64px;margin-bottom:12px;" id="success-icon">🎉</div>
-    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;color:white;" id="success-title" data-i18n="success_title">Tapaus suljettu!</h2>
-    <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:24px;" id="success-body" data-i18n="success_body">Hieno juttu! Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.</p>
-    <div id="success-badge" style="background:rgba(0,184,101,0.1);border:1px solid rgba(0,184,101,0.3);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;color:white;" id="success-title">Tapaus suljettu!</h2>
+    <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:24px;" id="success-body">Hieno juttu!</p>
+
+    <!-- Badge (for finder) -->
+    <div id="success-badge" style="background:rgba(0,184,101,0.1);border:1px solid rgba(0,184,101,0.3);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:none;align-items:center;gap:12px;">
       <span style="font-size:28px;">🏅</span>
       <div style="text-align:left;">
-        <div style="font-size:13px;font-weight:700;color:#6EEDB0;" data-i18n="success_badge_t">Merkintä profiiliin</div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.5);" data-i18n="success_badge_d">+1 palautettu tapaus</div>
+        <div style="font-size:13px;font-weight:700;color:#6EEDB0;">Merkinta profiiliin</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);">+1 palautettu tapaus</div>
+      </div>
+    </div>
+
+    <!-- OWNER: Thank-you section -->
+    <div id="success-thank-section" style="display:none;">
+      <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:12px;">Valitse emoji:</div>
+      <div id="thank-emoji-picker" style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;">
+        <button onclick="selectThankEmoji(this,'😊')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">😊</button>
+        <button onclick="selectThankEmoji(this,'🙏')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">🙏</button>
+        <button onclick="selectThankEmoji(this,'❤️')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">❤️</button>
+        <button onclick="selectThankEmoji(this,'⭐')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">⭐</button>
+        <button onclick="selectThankEmoji(this,'🎉')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">🎉</button>
+        <button onclick="selectThankEmoji(this,'💪')" class="thank-emoji-btn" style="font-size:28px;padding:8px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;">💪</button>
+      </div>
+      <input id="thank-message-input" type="text" maxlength="100" placeholder="Lyhyt kiitosviesti (max 100 merkkia)" style="width:100%;padding:12px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;font-size:13px;font-family:inherit;outline:none;background:rgba(255,255,255,0.06);color:white;margin-bottom:16px;box-sizing:border-box;">
+      <button onclick="sendThankYou()" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:linear-gradient(135deg,#FBBF24,#F59E0B);color:#000;cursor:pointer;margin-bottom:8px;">Laheta kiitos</button>
+      <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:16px;">💸 Tipit tulossa pian</div>
+    </div>
+
+    <!-- FINDER: Share section -->
+    <div id="success-finder-section" style="display:none;">
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:16px;">Haluatko jakaa onnistumisen?</div>
+    </div>
+
+    <!-- Share (both roles) -->
+    <div id="success-share-section" style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:10px;">Jaa onnistuminen:</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button onclick="shareSuccess('whatsapp')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#25D366;color:white;cursor:pointer;">WhatsApp</button>
+        <button onclick="shareSuccess('copy')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);cursor:pointer;border:1px solid rgba(255,255,255,0.1);">📋 Kopioi linkki</button>
       </div>
     </div>
 
     <!-- Story (optional) -->
-    <div style="text-align:left;background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:white;" data-i18n="success_story" data-i18n-html="1">💬 Kerro miten kävi <span style="font-weight:400;color:rgba(255,255,255,0.4);">(vapaaehtoinen)</span></div>
-      <textarea id="success-story" rows="2" placeholder="Esim: Lompakko löytyi rehellisen löytäjän ansiosta! Kaikki tallella." style="width:100%;padding:10px 12px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-size:13px;font-family:inherit;outline:none;resize:vertical;background:rgba(255,255,255,0.06);color:white;"></textarea>
-      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:white;cursor:pointer;" data-i18n="success_save">Tallenna tarina</button>
+    <div style="text-align:left;background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-top:16px;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:white;">💬 Kerro miten kavi <span style="font-weight:400;color:rgba(255,255,255,0.4);">(vapaaehtoinen)</span></div>
+      <textarea id="success-story" rows="2" placeholder="Esim: Lompakko loytyi rehellisen loytajan ansiosta! Kaikki tallella." style="width:100%;padding:10px 12px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-size:13px;font-family:inherit;outline:none;resize:vertical;background:rgba(255,255,255,0.06);color:white;box-sizing:border-box;"></textarea>
+      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:white;cursor:pointer;">Tallenna tarina</button>
     </div>
 
-    <!-- Share -->
-    <div style="margin-bottom:20px;">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.05em;color:rgba(255,255,255,0.4);margin-bottom:10px;" data-i18n="success_share">JAA ONNISTUMINEN</div>
-      <div style="display:flex;gap:8px;justify-content:center;">
-        <button onclick="shareSuccess('wa')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:#25D366;color:white;cursor:pointer;">WhatsApp</button>
-        <button onclick="shareSuccess('x')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:rgba(255,255,255,0.1);color:white;cursor:pointer;">X</button>
-        <button onclick="shareSuccess('copy')" style="padding:9px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);cursor:pointer;border:1px solid rgba(255,255,255,0.1);">📋 Kopioi</button>
-      </div>
-    </div>
-
-    <div id="success-tip-prompt" style="margin-bottom:16px;display:none;">
-      <button onclick="document.getElementById('success-modal').style.display='none';openTipModal(successListingId)" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:none;border-radius:14px;background:var(--green);color:white;cursor:pointer;margin-bottom:8px;" data-i18n="success_tip">💸 Anna tippiä löytäjälle</button>
-      <a href="https://hesy.fi/lahjoita/" target="_blank" style="display:block;font-size:12px;color:var(--ink3);text-decoration:none;">Tai lahjoita HESY:lle →</a>
-    </div>
-    <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);cursor:pointer;" data-i18n="success_home">Etusivulle →</button>
+    <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);cursor:pointer;">Etusivulle</button>
   </div>
 </div>
 
@@ -3519,23 +3537,62 @@ async function getFinderCount(userId) {
 }
 
 let successListingId = null;
+let successConvId = null;
+let selectedThankEmoji = '🙏';
+
+function selectThankEmoji(btn, emoji) {
+  selectedThankEmoji = emoji;
+  document.querySelectorAll('.thank-emoji-btn').forEach(b => {
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+    b.style.background = 'rgba(255,255,255,0.04)';
+  });
+  btn.style.borderColor = '#FBBF24';
+  btn.style.background = 'rgba(251,191,36,0.15)';
+}
+
+async function sendThankYou() {
+  const msg = document.getElementById('thank-message-input').value.trim();
+  const thankContent = `💛 KIITOS LÖYTÄJÄLLE\n\n${selectedThankEmoji} "${msg || 'Kiitos!'}"`;
+  if (successConvId) {
+    await sb.from('messages').insert({ conversation_id: successConvId, sender_id: currentUser.id, content: thankContent });
+    await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', successConvId);
+  }
+  toast('Kiitos lähetetty!', 'green');
+  document.getElementById('success-thank-section').style.display = 'none';
+  // Show a sent confirmation in its place
+  const thankSection = document.getElementById('success-thank-section');
+  thankSection.outerHTML = '<div style="background:rgba(218,165,32,0.1);border:1px solid rgba(218,165,32,0.2);border-radius:12px;padding:16px;margin-bottom:16px;"><div style="font-size:24px;margin-bottom:4px;">💛</div><div style="font-size:13px;color:#FBBF24;font-weight:600;">Kiitos lähetetty löytäjälle!</div></div>';
+  if (typeof loadMessages === 'function') loadMessages();
+}
+
 async function showSuccessModal(listingId, isOwner, finderId) {
   successListingId = listingId;
+  successConvId = typeof currentConvId !== 'undefined' ? currentConvId : null;
+  selectedThankEmoji = '🙏';
   const L = currentLang;
   const isFinder = finderId === currentUser.id;
 
-  // Tip prompt only for OWNER (person who lost the item) — they tip the finder
-  document.getElementById('success-tip-prompt').style.display = isOwner ? 'block' : 'none';
+  // Reset emoji picker state
+  document.querySelectorAll('.thank-emoji-btn').forEach(b => {
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+    b.style.background = 'rgba(255,255,255,0.04)';
+  });
+  const thankInput = document.getElementById('thank-message-input');
+  if (thankInput) thankInput.value = '';
+
+  // Show/hide role-specific sections
+  document.getElementById('success-thank-section').style.display = isOwner ? 'block' : 'none';
+  document.getElementById('success-finder-section').style.display = isFinder ? 'block' : 'none';
 
   // Success message differs by role
   const titleEl = document.getElementById('success-title');
   const bodyEl = document.getElementById('success-body');
   if (isOwner) {
-    titleEl.textContent = {fi:'Tavara palautettu!',sv:'Föremålet returnerat!',en:'Item returned!'}[L];
-    bodyEl.textContent = {fi:'Hienoa — tavarasi on takaisin! Haluatko kiittää löytäjää?',sv:'Fantastiskt — ditt föremål är tillbaka! Vill du tacka upphittaren?',en:'Great — your item is back! Want to thank the finder?'}[L];
+    titleEl.textContent = {fi:'Tavarasi on palautettu!',sv:'Ditt föremål har returnerats!',en:'Your item has been returned!'}[L];
+    bodyEl.textContent = {fi:'Hienoa! Haluatko kiittää löytäjää?',sv:'Fantastiskt! Vill du tacka upphittaren?',en:'Great! Want to thank the finder?'}[L];
   } else if (isFinder) {
-    titleEl.textContent = {fi:'Kiitos rehellisyydestäsi!',sv:'Tack för din ärlighet!',en:'Thanks for your honesty!'}[L];
-    bodyEl.textContent = {fi:'Teit hyvän teon — tavara on palautettu omistajalleen. Ansaitsit merkinnän profiiliisi.',sv:'Du gjorde en god gärning — föremålet har returnerats till ägaren. Du fick en profilanteckning.',en:'You did a good deed — the item has been returned to its owner. You earned a profile badge.'}[L];
+    titleEl.textContent = {fi:'Hieno homma — tavara palautettu!',sv:'Bra jobbat — föremålet returnerat!',en:'Great job — item returned!'}[L];
+    bodyEl.textContent = {fi:'Teit hyvän teon. Ansaitsit merkinnän profiiliisi.',sv:'Du gjorde en god gärning. Du fick en profilanteckning.',en:'You did a good deed. You earned a profile badge.'}[L];
   } else {
     titleEl.textContent = {fi:'Tapaus suljettu!',sv:'Ärende avslutat!',en:'Case closed!'}[L];
     bodyEl.textContent = {fi:'Ilmoitus on poistettu listalta ja merkitty ratkaistuksi.',sv:'Anmälan har tagits bort och markerats som löst.',en:'Listing has been removed and marked as resolved.'}[L];
@@ -3570,8 +3627,8 @@ async function showSuccessModal(listingId, isOwner, finderId) {
   if (storyEl) {
     storyEl.value = '';
     storyEl.placeholder = isFinder
-      ? {fi:'Esim: Löysin lompakon ja sain palautettua omistajalle helposti. Tästä tuli hyvä mieli!',sv:'T.ex: Jag hittade en plånbok och kunde enkelt returnera den. Det kändes bra!',en:'E.g.: I found a wallet and easily returned it to the owner. Felt great!'}[L]
-      : {fi:'Esim: Lompakkoni löytyi rehellisen löytäjän ansiosta! Kaikki oli tallella.',sv:'T.ex: Min plånbok hittades tack vare en ärlig upphittare! Allt var kvar.',en:'E.g.: My wallet was found thanks to an honest finder! Everything was intact.'}[L];
+      ? {fi:'Esim: Löysin lompakon ja sain palautettua omistajalle helposti!',sv:'T.ex: Jag hittade en plånbok och kunde enkelt returnera den!',en:'E.g.: I found a wallet and easily returned it!'}[L]
+      : {fi:'Esim: Lompakkoni löytyi rehellisen löytäjän ansiosta!',sv:'T.ex: Min plånbok hittades tack vare en ärlig upphittare!',en:'E.g.: My wallet was found thanks to an honest finder!'}[L];
   }
 
   document.getElementById('success-modal').style.display = 'flex';
@@ -3660,15 +3717,12 @@ async function saveStory() {
   document.getElementById('success-story').placeholder = '✓ Tallennettu!';
 }
 
-function shareSuccess(platform) {
-  const url = 'https://sebaostman-design.github.io/findly/';
-  const text = 'Kadotin tavaraa ja sain sen takaisin Findlyn kautta! Rehellisyys kannattaa 💛';
-  if (platform === 'wa') {
-    window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
-  } else if (platform === 'x') {
-    window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-  } else if (platform === 'copy') {
-    navigator.clipboard.writeText(text + ' ' + url).then(() => toast(t('toast_copied'), 'green'));
+function shareSuccess(method) {
+  const text = 'Löytötavarani palautui Findlyn avulla! 🎉 Kokeile sinäkin → myfindly.fi';
+  if (method === 'whatsapp' || method === 'wa') {
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  } else if (method === 'copy') {
+    navigator.clipboard.writeText('myfindly.fi').then(() => toast('Linkki kopioitu!', 'green'));
   }
 }
 
@@ -3676,32 +3730,57 @@ async function loadStories() {
   const feed = document.getElementById('stories-feed');
   const empty = document.getElementById('stories-empty');
   if (!feed) return;
+
+  // Fetch latest returned listings for live success feed
   const { data } = await sb.from('listings')
-    .select('title, category, story_text, created_at')
+    .select('category, address, created_at, updated_at, story_text')
     .eq('status', 'returned')
-    .not('story_text', 'is', null)
-    .order('created_at', { ascending: false })
-    .limit(6);
+    .order('updated_at', { ascending: false })
+    .limit(5);
+
   if (!data || data.length === 0) {
     feed.style.display = 'none';
-    empty.style.display = 'block';
+    if (empty) {
+      empty.style.display = 'block';
+      empty.textContent = 'Ensimmäinen onnistumistarina on tulossa! 💛';
+    }
     return;
   }
-  empty.style.display = 'none';
+  if (empty) empty.style.display = 'none';
   feed.style.display = 'grid';
-  feed.innerHTML = data.map(s => `
-    <div style="background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;position:relative;">
-      <div style="position:absolute;top:-10px;right:16px;font-size:24px;">💛</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="font-size:24px;">${categoryIcon(s.category)}</span>
-        <div>
-          <div style="font-size:14px;font-weight:600;">${esc(s.title)}</div>
-          <div style="font-size:11px;color:var(--ink3);">Palautettu · ${timeAgo(s.created_at)}</div>
-        </div>
+
+  function extractArea(address) {
+    if (!address) return '';
+    // Try to get a neighborhood/area name from the address
+    const parts = address.split(',').map(p => p.trim());
+    // Return second part if available (usually neighborhood), otherwise first
+    if (parts.length >= 2) return parts[parts.length - 2];
+    return parts[0];
+  }
+
+  function getCategoryLabel(cat) {
+    if (!cat) return 'Tavara';
+    // Extract the text part after the emoji
+    const match = cat.match(/\s(.+)/);
+    return match ? match[1] : cat;
+  }
+
+  feed.innerHTML = data.map(s => {
+    const icon = categoryIcon(s.category);
+    const area = extractArea(s.address);
+    const label = getCategoryLabel(s.category);
+    const areaText = area ? ` ${area}n alueelta` : '';
+    const returnTime = timeAgo(s.updated_at || s.created_at);
+    const hasStory = s.story_text && s.story_text.trim();
+
+    return `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:24px;flex-shrink:0;">${icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.5;">${label} löytyi${areaText} — palautettu ${returnTime} 💛</div>
+        ${hasStory ? `<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"${esc(s.story_text)}"</div>` : ''}
       </div>
-      <div style="font-size:14px;color:var(--ink2);line-height:1.7;font-style:italic;">"${esc(s.story_text)}"</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function refreshResolvedCount() {
@@ -5109,7 +5188,7 @@ async function submitVerifyRequest() {
   if (!convId) return;
 
   // Send structured verification message
-  const verifyMsg = `🔐 OSUMAILMOITUS\n\n✔️ Tunnistava yksityiskohta:\n"${secret}"\n\n📱 Puhelinnumero: ${phone}${question ? `\n\n❓ Kysymys löytäjälle: ${question}` : ''}`;
+  const verifyMsg = `🔐 OSUMAILMOITUS\n\nHei! Uskon tämän olevan minun tavarani.\n\n📋 Tunnistava yksityiskohta:\n"${secret}"\n\n📱 Puhelinnumeroni: ${phone}\n(näytetään löytäjälle vasta hyväksynnän jälkeen)${question ? `\n\n❓ Kysymys löytäjälle: ${question}` : ''}`;
   const { error: msgErr } = await sb.from('messages').insert({
     conversation_id: convId,
     sender_id: currentUser.id,
@@ -5280,9 +5359,10 @@ async function openChat(convId, conv) {
   document.getElementById('finder-action-bar').style.display = 'none';
 
   if (listingId) {
-    const { data: l } = await sb.from('listings').select('title,type,status,user_id').eq('id', listingId).single();
+    const { data: l } = await sb.from('listings').select('title,type,status,user_id,category').eq('id', listingId).single();
     if (l) {
       currentChatListingId = listingId;
+      window._chatListingCategory = l.category || null;
       document.getElementById('chat-listing-ref').textContent = l.title;
       document.getElementById('chat-verify-box').style.display = ['found','lost'].includes(l.type) ? 'flex' : 'none';
       // Show close button only to the OWNER (person who lost the item)
@@ -5346,9 +5426,24 @@ async function loadMessages() {
     if (isVerifyMsg && !own) {
       // Check if already responded (any message after this one from current user contains ✅ or ❌ or ❓)
       const alreadyResponded = data.some(other => other.sender_id === currentUser?.id && other.created_at > m.created_at && (other.content.startsWith('✅') || other.content.startsWith('❌') || other.content.startsWith('❓')));
-      return `<div style="background:rgba(0,184,101,0.08);border:1px solid rgba(0,184,101,0.2);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:white;">
-        <div style="font-weight:600;margin-bottom:8px;color:#6EEDB0;">🔐 Osumailmoitus saapui</div>
-        <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;color:rgba(255,255,255,0.7);">${esc(m.content.replace('🔐 OSUMAILMOITUS\n\n',''))}</pre>
+      // Category-specific hint for the finder
+      const catHints = {
+        '💳 Lompakko / kortit': '💡 Vinkki: Kysy mitä kortteja tai sisältöä lompakossa oli.',
+        '📱 Puhelin': '💡 Vinkki: Kysy mikä puhelimen taustakuva on tai mikä numero.',
+        '🔑 Avaimet': '💡 Vinkki: Kysy millainen avaimenperä on kiinni.',
+        '👜 Laukku / reppu': '💡 Vinkki: Kysy mitä laukun sisällä oli.',
+        '💎 Koru / kello': '💡 Vinkki: Kysy onko korussa kaiverrusta tai erityismerkkiä.',
+        '🎧 Elektroniikka': '💡 Vinkki: Kysy laitteen sarjanumero tai muu tunniste.',
+        '🚲 Polkupyörä': '💡 Vinkki: Kysy pyörän runkonnumero tai vaihdetyyppi.',
+      };
+      const catHint = window._chatListingCategory ? (catHints[window._chatListingCategory] || '') : '';
+      return `<div style="background:rgba(0,184,101,0.08);border:1.5px solid rgba(0,184,101,0.25);border-radius:var(--radius);padding:16px 18px;font-size:13px;color:white;">
+        <div style="font-size:15px;font-weight:700;margin-bottom:10px;color:#6EEDB0;">🔐 Omistajuustodistus saapui</div>
+        <div style="background:rgba(0,184,101,0.08);border:1px solid rgba(0,184,101,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+          <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;color:rgba(255,255,255,0.8);margin:0;">${esc(m.content.replace('🔐 OSUMAILMOITUS\n\n',''))}</pre>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:12px;">Arvioi onko tämä oikea omistaja. Voit hyväksyä, hylätä tai pyytää lisätietoja.</div>
+        ${catHint ? `<div style="font-size:12px;color:rgba(245,158,11,0.8);background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:8px 12px;margin-bottom:12px;">${catHint}</div>` : ''}
         ${alreadyResponded ? `<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.4);font-style:italic;">${{fi:'✓ Olet jo vastannut tähän pyyntöön',sv:'✓ Du har redan svarat på denna förfrågan',en:'✓ You have already responded to this request'}[currentLang]}</div>` : `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
           <button onclick="replyVerify('accepted')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">✓ Hyväksy</button>
           <button onclick="replyVerify('more')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.12);color:#FBBF24;">Pyydä lisätietoa</button>
@@ -5363,6 +5458,15 @@ async function loadMessages() {
         <div style="font-size:16px;font-weight:700;color:#6EEDB0;margin-bottom:10px;">🎉 ${esc({fi:'Omistajuus vahvistettu!',sv:'Ägande bekräftat!',en:'Ownership verified!'}[currentLang])}</div>
         <pre style="font-family:inherit;white-space:pre-wrap;font-size:13px;line-height:1.7;color:rgba(255,255,255,0.7);">${esc(m.content.replace('✅ OMISTAJUUS VAHVISTETTU\n\n🎉 Vastaus hyväksytty — tämä on oikea omistaja!\n\n',''))}</pre>
         <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
+    const isThankMsg = m.content.startsWith('💛 KIITOS');
+    if (isThankMsg) {
+      return `<div style="background:rgba(218,165,32,0.08);border:2px solid rgba(218,165,32,0.2);border-radius:var(--radius);padding:20px;text-align:center;margin:8px 0;">
+        <div style="font-size:24px;margin-bottom:8px;">💛</div>
+        <div style="font-size:14px;font-weight:600;color:#FBBF24;margin-bottom:8px;">Kiitos löytäjälle!</div>
+        <pre style="font-family:inherit;white-space:pre-wrap;font-size:14px;color:rgba(255,255,255,0.7);">${esc(m.content.replace('💛 KIITOS LÖYTÄJÄLLE\n\n',''))}</pre>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:8px;">${timeAgo(m.created_at)}</div>
       </div>`;
     }
     const isCloseMsg = m.content.startsWith('🎉 TAPAUS SULJETTU') || m.content.startsWith('🎉 ÄRENDE AVSLUTAT') || m.content.startsWith('🎉 CASE CLOSED');
