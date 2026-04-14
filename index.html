@@ -4400,6 +4400,22 @@ function setFormType(type) {
   const hintEl = document.getElementById('f-location-hint');
   if (hintEl) hintEl.textContent = locHints[type] || locHints.lost;
 
+  // Phone: optional for found/pet, required for lost
+  const phoneLabel = document.querySelector('label[data-i18n="form_phone"]');
+  const phoneInput = document.getElementById('f-phone');
+  const phoneNote = document.querySelector('p[data-i18n="form_phone_note"]');
+  if (phoneLabel) {
+    if (type === 'found' || type === 'pet') {
+      phoneLabel.textContent = 'Puhelinnumero (valinnainen)';
+      if (phoneInput) phoneInput.required = false;
+      if (phoneNote) phoneNote.textContent = 'Jos haluat, että sinuun voi ottaa yhteyttä. Ilman numeroa löytöpalkkio ei ole mahdollinen.';
+    } else {
+      phoneLabel.textContent = 'Puhelinnumero *';
+      if (phoneInput) phoneInput.required = true;
+      if (phoneNote) phoneNote.textContent = 'Näytetään vain matchin jälkeen.';
+    }
+  }
+
   const submitBtn = document.getElementById('submit-btn');
   const btnLabels = { lost: 'Julkaise kadonnut-ilmoitus →', found: 'Julkaise löytöilmoitus →', stolen: 'Julkaise varastettu-ilmoitus →', pet: 'Julkaise eläinilmoitus →' };
   submitBtn.textContent = btnLabels[type];
@@ -4603,7 +4619,7 @@ async function submitListing(e) {
   } else {
     if (!when) { toast(t('toast_select_date'), 'red'); document.getElementById('f-when').focus(); return; }
   }
-  if (!phone) { toast(t('toast_write_phone'), 'red'); document.getElementById('f-phone').focus(); return; }
+  if (!phone && currentFormType !== 'found' && currentFormType !== 'pet') { toast(t('toast_write_phone'), 'red'); document.getElementById('f-phone').focus(); return; }
   const hasAddress = document.getElementById('f-address').value.trim();
   const hasLat = document.getElementById('f-lat').value;
   if (!hasAddress && !hasLat) { toast(t('toast_set_location'), 'red'); return; }
