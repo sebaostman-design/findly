@@ -1258,6 +1258,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
         <!-- Secondary links -->
         <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;">
           <button onclick="openFormTab('lost')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#6EEDB0'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🔍 Kadotin tavaran</button>
+          <span style="color:rgba(255,255,255,0.15);">|</span>
+          <button onclick="openFormTab('pet')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#FBBF24'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🐾 Kadonnut eläin</button>
         </div>
 
         <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
@@ -1795,7 +1797,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <div class="form-type-tabs" id="form-type-tabs">
       <div class="ftype-btn active-lost" onclick="setFormType('lost')">🔍 Kadonnut</div>
       <div class="ftype-btn" onclick="setFormType('found')">📦 Löydetty</div>
-      <div class="ftype-btn" style="opacity:0.3;cursor:not-allowed;position:relative;" onclick="toast('Eläinilmoitukset tulossa pian!','green')">🐾 Eläin <span style="position:absolute;top:-6px;right:-4px;font-size:8px;background:rgba(139,92,246,0.3);color:#A78BFA;padding:1px 5px;border-radius:6px;">PIAN</span></div>
+      <div class="ftype-btn" onclick="setFormType('pet')">🐾 Eläin</div>
     </div>
 
     <!-- Pet subtype selector (lost/found) -->
@@ -1877,7 +1879,7 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <div id="image-placeholder">
               <div style="font-size:32px;margin-bottom:8px;">📷</div>
               <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);" data-i18n="form_img_add">Lisää kuva tavarasta</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;" data-i18n="form_img_hint">Klikkaa tai raahaa tiedosto tähän · max 5 MB</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;" data-i18n="form_img_hint">Klikkaa tai raahaa tiedosto tähän · pakataan automaattisesti</div>
             </div>
             <img id="image-preview" src="" alt="" style="display:none;max-width:100%;max-height:200px;border-radius:10px;object-fit:cover;" />
           </div>
@@ -2768,8 +2770,8 @@ function showPage(name) {
       const savedPhone = currentUser.user_metadata?.phone;
       if (savedPhone) document.getElementById('f-phone').value = savedPhone;
       restoreDraft();
-    } else if (currentFormType === 'found') {
-      // Found listings: no gate, allow form without login
+    } else if (currentFormType === 'found' || currentFormType === 'pet') {
+      // Found and pet listings: no gate, allow form without login
       gate.style.display = 'none';
       wrap.style.display = '';
       initFormMap();
@@ -4324,7 +4326,7 @@ function setFormType(type) {
   if (!currentUser) {
     const gate = document.getElementById('new-listing-gate');
     const wrap = document.getElementById('new-listing-form-wrap');
-    if (type === 'found') {
+    if (type === 'found' || type === 'pet') {
       gate.style.display = 'none';
       wrap.style.display = '';
       initFormMap();
@@ -4444,10 +4446,41 @@ function selectVis(el, val) {
 // ═══════════════════════════════════════════════════════
 // IMAGE PREVIEW
 // ═══════════════════════════════════════════════════════
-function previewImage(input) {
-  const file = input.files[0];
+// Compress image to max ~1MB using canvas
+function compressImage(file, maxWidth = 1200, quality = 0.8) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(blob => {
+          resolve(new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' }));
+        }, 'image/jpeg', quality);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function previewImage(input) {
+  let file = input.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { toast(t('toast_image_big'), 'red'); input.value = ''; return; }
+  // Auto-compress if over 1MB
+  if (file.size > 1 * 1024 * 1024) {
+    toast({fi:'Pakataan kuvaa...',sv:'Komprimerar bild...',en:'Compressing image...'}[currentLang], 'green');
+    file = await compressImage(file);
+    // Replace file input with compressed version
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    toast({fi:'Kuva pakattu (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)',sv:'Bild komprimerad',en:'Image compressed'}[currentLang], 'green');
+  }
   const reader = new FileReader();
   reader.onload = e => {
     document.getElementById('image-placeholder').style.display = 'none';
@@ -4539,13 +4572,13 @@ async function submitFoundWithEmail() {
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
   e.preventDefault();
-  if (!currentUser && currentFormType === 'found') {
-    // Show email-only publish UI for found listings
+  if (!currentUser && (currentFormType === 'found' || currentFormType === 'pet')) {
+    // Show email-only publish UI for found and pet listings (low barrier)
     showFoundEmailPrompt();
     return;
   }
   if (!currentUser) {
-    // Lost/stolen/pet still require full auth
+    // Lost/stolen require full auth
     saveDraft();
     showPage('auth');
     return;
