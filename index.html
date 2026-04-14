@@ -1258,8 +1258,6 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
         <!-- Secondary links -->
         <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;">
           <button onclick="openFormTab('lost')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#6EEDB0'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🔍 Kadotin tavaran</button>
-          <span style="color:rgba(255,255,255,0.15);">|</span>
-          <button onclick="openFormTab('pet')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#FBBF24'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🐾 Kadonnut eläin</button>
         </div>
 
         <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
@@ -1428,10 +1426,6 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
         <div style="background:rgba(255,255,255,0.04);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.7);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
         <div style="background:rgba(255,255,255,0.02);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.4);">❌ Ei tapaa todistaa omistajuutta</div>
         <div style="background:rgba(255,255,255,0.02);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.7);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
-        <div style="background:rgba(255,255,255,0.04);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.4);">❌ Tarkka sijainti näkyy kaikille</div>
-        <div style="background:rgba(255,255,255,0.04);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.7);">✅ Sijainti blurrattu 300–500 m tarkkuuteen</div>
-        <div style="background:rgba(255,255,255,0.02);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.4);">❌ Ei huijaussuojaa</div>
-        <div style="background:rgba(255,255,255,0.02);padding:12px 14px;font-size:12px;color:rgba(255,255,255,0.7);">✅ Ilmoitusnappi + rate limit + moderointi</div>
       </div>
     </div>
   </section>
@@ -1468,11 +1462,6 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <h3 data-i18n="why_free_title">Täysin ilmainen</h3>
           <p data-i18n="why_free_desc">Ilmainen kaikille. Löytöpalkkio sovitaan suoraan keskenänne.</p>
         </div>
-        <div class="why-card">
-          <div class="why-icon">🐾</div>
-          <h3 data-i18n="why_pets_title">Eläimet erikseen</h3>
-          <p data-i18n="why_pets_desc">Push-ilmoitus 5 km säteelle. Helppo jakaa WhatsAppiin ja Instagramiin.</p>
-        </div>
       </div>
     </div>
   </section>
@@ -1498,32 +1487,30 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
   </section>
 
   <!-- ── GOOD VIBES ── -->
-  <section style="background:#050F0A;padding:72px 0;">
-    <div class="wrap" style="max-width:960px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:48px;">
-        <div style="font-size:40px;margin-bottom:20px;">💛</div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:800;color:white;margin-bottom:16px;line-height:1.3;" data-i18n="vibes_title">Findly on hyvän mielen palvelu</h2>
-        <p style="font-size:15px;color:rgba(255,255,255,0.45);line-height:1.8;max-width:520px;margin:0 auto;" data-i18n="vibes_desc">Jokainen palautus tuottaa hyvää mieltä. Rehellisyys kannattaa — Findly tekee siitä helppoa.</p>
+<section style="background:#050F0A;padding:56px 0;">
+  <div class="wrap" style="max-width:700px;margin:0 auto;text-align:center;">
+    <div style="font-size:40px;margin-bottom:16px;">💛</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:800;color:white;margin-bottom:12px;">Rehellisyys palkitsee</h2>
+    <p style="font-size:14px;color:rgba(255,255,255,0.4);line-height:1.7;margin-bottom:28px;">Jokainen palautus kasvattaa löytäjän karma-profiilia. Kiitos-viestit ja onnistumistarinat näkyvät julkisesti.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
+        <div style="font-size:28px;margin-bottom:8px;">🏅</div>
+        <div style="font-size:13px;font-weight:600;color:white;">Karma-badge</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;">Profiilimerkintä</div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px;">
-        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:24px;">
-          <div style="font-size:28px;margin-bottom:12px;">💸</div>
-          <div style="font-size:15px;font-weight:700;color:white;margin-bottom:8px;" data-i18n="vibes_tip_title">Vapaaehtoinen tippipalkkio</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;" data-i18n="vibes_tip_desc">Tavaran omistaja voi halutessaan antaa löytäjälle vapaaehtoisen tipin kiitoksena. Findly veloittaa 8 % palvelumaksun.</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:24px;">
-          <div style="font-size:28px;margin-bottom:12px;">🐾</div>
-          <div style="font-size:15px;font-weight:700;color:white;margin-bottom:8px;" data-i18n="vibes_charity_title">Lahjoita hyväntekeväisyyteen</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;" data-i18n="vibes_charity_desc" data-i18n-html="1">Tipin sijaan voit lahjoittaa suoraan <strong style="color:rgba(255,255,255,0.8);">HESY:lle</strong> — Helsingin Eläinsuojeluyhdistykselle. Hyvä teko tuottaa hyvää mieltä kaikille.</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:24px;">
-          <div style="font-size:28px;margin-bottom:12px;">🏅</div>
-          <div style="font-size:15px;font-weight:700;color:white;margin-bottom:8px;" data-i18n="vibes_badge_title">Merkintä profiiliin</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;" data-i18n="vibes_badge_desc">Jokainen onnistunut palautus jättää merkinnän molempien profiiliin. Rehellisyys näkyy — ja palkitsee.</div>
-        </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
+        <div style="font-size:28px;margin-bottom:8px;">💬</div>
+        <div style="font-size:13px;font-weight:600;color:white;">Kiitosviesti</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;">Omistajalta</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
+        <div style="font-size:28px;margin-bottom:8px;">📖</div>
+        <div style="font-size:13px;font-weight:600;color:white;">Onnistumistarina</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;">Julkinen feed</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- ── FINAL CTA ── -->
   <section class="section-cta">
@@ -1656,8 +1643,6 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
         <button class="feed-filter active-all" data-filter="all" onclick="setFeedFilter('all',this)" data-i18n="feed_all">Kaikki</button>
         <button class="feed-filter" data-filter="lost" onclick="setFeedFilter('lost',this)" data-i18n="feed_lost">🔍 Kadonneet</button>
         <button class="feed-filter" data-filter="found" onclick="setFeedFilter('found',this)" data-i18n="feed_found">📦 Löydetyt</button>
-        <button class="feed-filter" data-filter="stolen" onclick="setFeedFilter('stolen',this)" data-i18n="feed_stolen">🚨 Varastetut</button>
-        <button class="feed-filter" data-filter="pet" onclick="setFeedFilter('pet',this)" data-i18n="feed_pets">🐾 Eläimet</button>
         <input class="feed-search" placeholder="🔍 Hae ilmoituksista..." id="feed-search-input" oninput="renderFeed()" />
       </div>
       <div class="feed-grid" id="feed-grid">
@@ -1846,9 +1831,6 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <option>💎 Koru / kello</option>
             <option>🎧 Elektroniikka</option>
             <option>🚲 Polkupyörä</option>
-            <option>🐕 Koira</option>
-            <option>🐈 Kissa</option>
-            <option>🐾 Muu eläin</option>
             <option>📄 Asiakirjat / ID</option>
             <option>Muu</option>
           </select>
@@ -3330,14 +3312,10 @@ async function openListing(id) {
       <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:8px;">Ilmoitus poistetaan listalta ja saat merkinnän profiiliin.</div>
     </div>` : ''}
     ${status === 'returned' ? `
-    <div style="background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.12);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+    <div style="background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.12);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
       <div style="font-size:28px;margin-bottom:8px;">💛</div>
-      <div style="font-size:17px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:6px;color:white;">Tavara on palautettu!</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:20px;">Löytäjä teki hyvän teon. Haluatko osoittaa kiitoksesi?</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button onclick="openTipModal('${l.id}')" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:white;">💸 Anna tippiä löytäjälle</button>
-        <a href="https://hesy.fi/lahjoita/" target="_blank" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);text-decoration:none;">🐾 Lahjoita HESY:lle</a>
-      </div>
+      <div style="font-size:16px;font-weight:700;color:white;margin-bottom:6px;">Tavara on palautettu!</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);">Kiitos yhteistyöstä. Tämä tapaus on suljettu.</div>
     </div>` : ''}
     ${isOwn ? `<div style="margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -5662,7 +5640,7 @@ async function loadProfile() {
 
   // Show Stripe Connect card if user has any found listings
   const hasFoundListings = (listings || []).some(l => l.type === 'found');
-  document.getElementById('stripe-connect-card').style.display = hasFoundListings ? 'block' : 'none';
+  document.getElementById('stripe-connect-card').style.display = 'none'; // Phase 4 — disabled
 
   const myListings = document.getElementById('my-listings-list');
   if (!listings || listings.length === 0) {
