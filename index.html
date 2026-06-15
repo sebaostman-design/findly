@@ -296,6 +296,91 @@ nav.scrolled { background: rgba(5,15,10,0.95); box-shadow: 0 4px 30px rgba(0,184
 }
 .btn-check-matches:hover { border-color: rgba(0,184,101,0.5); color: #6EEDB0; background: rgba(0,184,101,0.1); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,184,101,0.15); }
 
+.hero-cta-pair {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  max-width: 520px; margin-bottom: 18px;
+  animation: heroTextIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.hero-cta {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 20px 14px; border: 1.5px solid; border-radius: 18px;
+  font-family: 'Syne', sans-serif; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  background: rgba(255,255,255,0.03);
+}
+.hero-cta-icon { font-size: 28px; line-height: 1; }
+.hero-cta-label { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+.hero-cta-sub { font-size: 11px; font-weight: 500; opacity: 0.55; }
+.hero-cta-lost {
+  border-color: rgba(59,130,246,0.35); color: #93C5FD;
+  box-shadow: 0 6px 24px rgba(59,130,246,0.12);
+}
+.hero-cta-lost:hover {
+  background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.6);
+  transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(59,130,246,0.22);
+}
+.hero-cta-found {
+  border-color: rgba(0,184,101,0.4); color: #6EEDB0;
+  box-shadow: 0 6px 24px rgba(0,184,101,0.15);
+}
+.hero-cta-found:hover {
+  background: rgba(0,184,101,0.1); border-color: rgba(0,184,101,0.65);
+  transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(0,184,101,0.25);
+}
+@media (max-width: 480px) {
+  .hero-cta-pair { gap: 10px; }
+  .hero-cta { padding: 16px 10px; }
+  .hero-cta-icon { font-size: 24px; }
+  .hero-cta-label { font-size: 13px; }
+}
+
+.two-flow-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  text-align: left; max-width: 880px; margin: 0 auto;
+}
+.flow-card {
+  background: rgba(255,255,255,0.04); border: 1.5px solid; border-radius: 20px;
+  padding: 26px 24px; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  display: flex; flex-direction: column;
+}
+.flow-card-lost  { border-color: rgba(59,130,246,0.25); }
+.flow-card-lost:hover  { border-color: rgba(59,130,246,0.5); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(59,130,246,0.15); }
+.flow-card-found { border-color: rgba(0,184,101,0.3); }
+.flow-card-found:hover { border-color: rgba(0,184,101,0.6); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,184,101,0.15); }
+.flow-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.flow-card-icon { font-size: 36px; line-height: 1; }
+.flow-card-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+.flow-card-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: white; margin-top: 2px; }
+.flow-steps {
+  list-style: none; padding: 0; margin: 0 0 22px; counter-reset: stepc;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.flow-steps li {
+  position: relative; padding-left: 32px; font-size: 13.5px; line-height: 1.55;
+  color: rgba(255,255,255,0.7); counter-increment: stepc;
+}
+.flow-steps li::before {
+  content: counter(stepc); position: absolute; left: 0; top: 0;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+}
+.flow-card-lost  .flow-steps li::before { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); color: #93C5FD; }
+.flow-card-found .flow-steps li::before { background: rgba(0,184,101,0.12);  border-color: rgba(0,184,101,0.35); color: #6EEDB0; }
+.flow-card-cta {
+  margin-top: auto; padding: 12px 16px; border: none; border-radius: 14px;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; color: white; transition: transform 0.2s, box-shadow 0.2s;
+}
+.flow-card-cta-lost  { background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%); box-shadow: 0 6px 20px rgba(59,130,246,0.3); }
+.flow-card-cta-found { background: var(--gradient-brand); box-shadow: 0 6px 20px rgba(0,184,101,0.3); }
+.flow-card-cta:hover { transform: translateY(-2px) scale(1.02); }
+@media (max-width: 720px) {
+  .two-flow-grid { grid-template-columns: 1fr; gap: 14px; }
+  .flow-card { padding: 22px 20px; }
+}
+
 .hero-visual {
   flex-shrink: 0; display: flex; flex-direction: column; gap: 18px; align-items: flex-end;
 }
@@ -1206,20 +1291,111 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 </nav>
 
 <!-- LOST CHECK PROMPT MODAL -->
-<div id="lost-check-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+<!-- Check-prompt: shown before lost-form ("tarkista löytökartta") tai found-form ("tarkista kadotetut") -->
+<div id="check-prompt-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:rgba(10,20,16,0.98);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;max-width:420px;width:calc(100% - 40px);color:white;text-align:center;" onclick="event.stopPropagation()">
-    <div style="font-size:40px;margin-bottom:12px;">🔍</div>
-    <h3 style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:12px;">Tarkista ensin löytökartta!</h3>
-    <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:24px;">
+    <div id="check-prompt-icon" style="font-size:40px;margin-bottom:12px;">🔍</div>
+    <h3 id="check-prompt-title" style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:12px;">Tarkista ensin löytökartta!</h3>
+    <p id="check-prompt-text" style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:24px;">
       Joku on ehkä jo löytänyt tavarasi. Tarkista ensin löytöilmoitukset ennen kuin teet katoamisilmoituksen.
     </p>
-    <button onclick="document.getElementById('lost-check-modal').style.display='none';showPage('map');switchMapTab('found')"
+    <button id="check-prompt-go"
       style="width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-brand);color:white;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">
       📦 Tarkista löytökartta →
     </button>
-    <button onclick="document.getElementById('lost-check-modal').style.display='none';window._skipLostCheck=true;openFormTab('lost')"
+    <button id="check-prompt-skip"
       style="width:100%;padding:12px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:transparent;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;">
-      Olen jo tarkistanut — tee katoamisilmoitus →
+      Olen jo tarkistanut — tee ilmoitus →
+    </button>
+  </div>
+</div>
+
+<!-- GIFT MODAL — owner sends karma to finder after a successful return -->
+<div id="gift-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;overflow-y:auto;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(10,20,16,0.99);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;max-width:440px;width:100%;color:white;" onclick="event.stopPropagation()">
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-size:44px;line-height:1;margin-bottom:8px;">💛</div>
+      <h3 style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:4px;">Kiitä löytäjää</h3>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);">Aineeton kiitos joka näkyy löytäjän profiilissa.</p>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);">Valitse emoji *</label>
+      <div id="gift-emoji-row" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+        <button type="button" class="gift-emoji-opt" data-value="💛" onclick="selectGiftEmoji(this,'💛')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">💛</button>
+        <button type="button" class="gift-emoji-opt" data-value="🙏" onclick="selectGiftEmoji(this,'🙏')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🙏</button>
+        <button type="button" class="gift-emoji-opt" data-value="😘" onclick="selectGiftEmoji(this,'😘')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">😘</button>
+        <button type="button" class="gift-emoji-opt" data-value="🥹" onclick="selectGiftEmoji(this,'🥹')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🥹</button>
+        <button type="button" class="gift-emoji-opt" data-value="🌟" onclick="selectGiftEmoji(this,'🌟')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🌟</button>
+        <button type="button" class="gift-emoji-opt" data-value="🏅" onclick="selectGiftEmoji(this,'🏅')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🏅</button>
+        <button type="button" class="gift-emoji-opt" data-value="🌈" onclick="selectGiftEmoji(this,'🌈')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🌈</button>
+        <button type="button" class="gift-emoji-opt" data-value="🎁" onclick="selectGiftEmoji(this,'🎁')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🎁</button>
+        <button type="button" class="gift-emoji-opt" data-value="🦸" onclick="selectGiftEmoji(this,'🦸')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🦸</button>
+        <button type="button" class="gift-emoji-opt" data-value="🍀" onclick="selectGiftEmoji(this,'🍀')" style="font-size:24px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);cursor:pointer;">🍀</button>
+      </div>
+      <input type="hidden" id="gift-emoji-val" value="" />
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);">Kiitosviesti <span style="font-weight:400;opacity:0.7;">(valinnainen, max 120 mrk)</span></label>
+      <textarea id="gift-message" maxlength="120" rows="2" placeholder="Esim: Pelastit päiväni, kiitos rehellisyydestä!"
+        style="width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid rgba(255,255,255,0.1);border-radius:11px;font-size:14px;outline:none;background:rgba(255,255,255,0.06);color:white;box-sizing:border-box;font-family:inherit;resize:vertical;"></textarea>
+    </div>
+
+    <button id="gift-submit-btn" onclick="sendGift()"
+      style="width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-brand);color:white;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;">
+      💛 Lähetä kiitos →
+    </button>
+    <button onclick="document.getElementById('gift-modal').style.display='none'"
+      style="width:100%;margin-top:8px;padding:11px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:transparent;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;">
+      Peruuta
+    </button>
+  </div>
+</div>
+
+<!-- FINDER INTRO MODAL — opens when a finder clicks "Kerro löydöstäsi" on a lost-listing -->
+<div id="finder-intro-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;overflow-y:auto;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(10,20,16,0.99);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;max-width:480px;width:100%;color:white;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <div style="font-size:32px;line-height:1;">🤝</div>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(0,184,101,0.8);text-transform:uppercase;">Kerro löydöstäsi</div>
+        <h3 style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin:2px 0 0;">Kadottajalle lähetettävä viesti</h3>
+      </div>
+    </div>
+    <p id="finder-intro-listing" style="font-size:13px;color:rgba(255,255,255,0.5);margin:6px 0 18px;"></p>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);">1. Mitä löysit? <span style="color:rgba(239,68,68,0.7);">älä kerro kaikkea</span></label>
+      <input type="text" id="finder-q1" maxlength="60" placeholder="Esim: musta lompakko, hopeinen avainnippu, sininen reppu..."
+        style="width:100%;margin-top:6px;padding:11px 12px;border:1.5px solid rgba(255,255,255,0.1);border-radius:11px;font-size:14px;outline:none;background:rgba(255,255,255,0.06);color:white;box-sizing:border-box;" />
+      <p style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;line-height:1.5;">Vain yleinen kuvaus — anna kadottajan todistaa omistajuus tunnistetiedoilla. Max 60 mrk.</p>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);">2. Mitä teit löydölle? *</label>
+      <div id="finder-q3-options" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+        <button type="button" class="finder-action-opt" data-value="keep" onclick="selectFinderAction(this,'keep')" style="padding:11px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:600;cursor:pointer;color:white;text-align:left;">🔒 Pidän hallussani</button>
+        <button type="button" class="finder-action-opt" data-value="police" onclick="selectFinderAction(this,'police')" style="padding:11px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:600;cursor:pointer;color:white;text-align:left;">🏛️ Toimitin poliisille tai löytötavaratoimistoon</button>
+        <button type="button" class="finder-action-opt" data-value="left" onclick="selectFinderAction(this,'left')" style="padding:11px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:600;cursor:pointer;color:white;text-align:left;">📍 Jätin paikoilleen</button>
+        <button type="button" class="finder-action-opt" data-value="delivered" onclick="selectFinderAction(this,'delivered')" style="padding:11px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:600;cursor:pointer;color:white;text-align:left;">🏪 Toimitin läheiseen liikkeeseen tai paikkaan</button>
+        <button type="button" class="finder-action-opt" data-value="other" onclick="selectFinderAction(this,'other')" style="padding:11px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:600;cursor:pointer;color:white;text-align:left;">✏️ Muu (tarkennetaan chatissa)</button>
+      </div>
+      <input type="hidden" id="finder-q3-val" value="" />
+    </div>
+
+    <div style="margin-bottom:20px;padding:14px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.18);border-radius:12px;">
+      <div style="font-size:12px;font-weight:700;color:#93C5FD;margin-bottom:4px;">3. Findly kysyy kadottajalta:</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;">"Mistä tiedän, että tämä on sinun?" — kadottaja kertoo tunnistetiedot vasta sinulle, ne pysyvät vain teidän välisinä.</div>
+    </div>
+
+    <button id="finder-intro-submit" onclick="submitFinderIntro()"
+      style="width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-brand);color:white;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;">
+      🤝 Lähetä viesti kadottajalle →
+    </button>
+    <button onclick="document.getElementById('finder-intro-modal').style.display='none'"
+      style="width:100%;margin-top:8px;padding:11px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:transparent;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;">
+      Peruuta
     </button>
   </div>
 </div>
@@ -1247,19 +1423,21 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     <div class="hero-inner">
       <div class="hero-content">
         <div class="hero-badge"><div class="badge-dot"></div><span data-i18n="hero_badge">Suomen löytötavaralain mukainen palvelu</span></div>
-        <h1 data-i18n="hero_title" data-i18n-html="1">Löysitkö tavaran?<br><span class="accent">Findly hoitaa loput.</span></h1>
-        <p class="hero-lead" data-i18n="hero_lead">Ilmoita löydöstäsi 30 sekunnissa. Findly yhdistää sen oikeaan omistajaan — turvallisesti ja anonyymisti.</p>
+        <h1 data-i18n="hero_title" data-i18n-html="1">Kadotitko vai löysitkö?<br><span class="accent">Findly yhdistää teidät.</span></h1>
+        <p class="hero-lead" data-i18n="hero_lead">Kaksi karttaa, yksi tavoite — palauttaa tavarat oikeille omistajilleen. Ilmainen, anonyymi ja turvallinen.</p>
 
-        <!-- Primary CTA -->
-        <button onclick="openFormTab('found')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:420px;padding:18px 32px;border:none;border-radius:20px;background:var(--gradient-brand);color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(0,184,101,0.3);transition:all 0.3s cubic-bezier(0.16,1,0.3,1);animation:glowPulse 3s ease-in-out infinite;margin-bottom:14px;font-family:'Syne',sans-serif;letter-spacing:-0.3px;" onmouseover="this.style.transform='translateY(-3px) scale(1.02)'" onmouseout="this.style.transform=''">
-          📦 Ilmoita löydöstä →
-        </button>
-
-        <!-- Secondary links -->
-        <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;">
-          <button onclick="openFormTab('lost')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#6EEDB0'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🔍 Kadotin tavaran</button>
-          <span style="color:rgba(255,255,255,0.15);">|</span>
-          <button onclick="openFormTab('pet')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:8px 0;transition:color 0.2s;font-weight:500;" onmouseover="this.style.color='#FBBF24'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🐾 Kadonnut eläin</button>
+        <!-- Equal-weight dual CTA -->
+        <div class="hero-cta-pair">
+          <button class="hero-cta hero-cta-lost" onclick="openFormTab('lost')">
+            <span class="hero-cta-icon">🔍</span>
+            <span class="hero-cta-label">Kadotin tavaran</span>
+            <span class="hero-cta-sub">Tee katoamisilmoitus</span>
+          </button>
+          <button class="hero-cta hero-cta-found" onclick="openFormTab('found')">
+            <span class="hero-cta-icon">📦</span>
+            <span class="hero-cta-label">Löysin tavaran</span>
+            <span class="hero-cta-sub">Tee löytöilmoitus</span>
+          </button>
         </div>
 
         <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
@@ -1277,8 +1455,8 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <div><div class="fc-title" data-i18n="fc_wallet">Lompakko löydetty</div><div class="fc-sub" data-i18n="fc_wallet_sub">Lähellä Kalliota · 30 min</div><span class="fc-badge badge-blue" data-i18n="fc_match">Osuma löytyi</span></div>
         </div>
         <div class="floating-card">
-          <div class="fc-icon">🐕</div>
-          <div><div class="fc-title" data-i18n="fc_dog">Kultainennoutaja</div><div class="fc-sub" data-i18n="fc_dog_sub">Töölön alueella</div><span class="fc-badge badge-amber">🐾 Eläin</span></div>
+          <div class="fc-icon">💛</div>
+          <div><div class="fc-title">Kiitos löytäjälle!</div><div class="fc-sub">Karma +1 · ”Pelastit päivän”</div><span class="fc-badge badge-amber">🎁 Karma</span></div>
         </div>
       </div>
     </div>
@@ -1291,45 +1469,52 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
   </div>
 
-  <!-- ── HOW IT WORKS — ANIMATED 3-STEP ── -->
+  <!-- ── HOW IT WORKS — TWO MAPS, ONE GOAL ── -->
   <section style="background:#0A1410;padding:56px 0;">
-    <div class="wrap" style="max-width:800px;margin:0 auto;text-align:center;">
-      <div class="section-label">Ei rekisteröitymistä — näin se toimii</div>
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:start;margin-top:32px;" id="how-steps-animated">
-        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(1)">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,184,101,0.1);border:2px solid rgba(0,184,101,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-1">📦</div>
-          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">1. Ilmoita</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Löysit tai kadotit? Täytä lyhyt lomake.</div>
-          <div id="how-detail-1" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
-            <div style="margin-top:12px;padding:12px;background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.15);border-radius:12px;text-align:left;">
-              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Täytä lyhyt lomake — kuvaus, sijainti ja yhteystiedot. Kestää alle minuutin.</div>
-              <button type="button" onclick="event.stopPropagation();showPage('new-listing')" style="margin-top:10px;padding:8px 16px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:white;cursor:pointer;width:100%;">Kokeile →</button>
+    <div class="wrap" style="max-width:880px;margin:0 auto;text-align:center;">
+      <div class="section-label">Näin Findly toimii</div>
+      <h2 class="section-title" style="margin-bottom:8px;">Kaksi karttaa, yksi tavoite</h2>
+      <p class="section-sub" style="margin:0 auto 36px;">Findly vertaa kadotettuja ja löydettyjä — kun pari löytyy, ilmoitamme molemmille.</p>
+
+      <div class="two-flow-grid">
+        <div class="flow-card flow-card-lost">
+          <div class="flow-card-header">
+            <span class="flow-card-icon">🔍</span>
+            <div>
+              <div class="flow-card-eyebrow">Kartta 1</div>
+              <div class="flow-card-title">Kadotitko tavaran?</div>
             </div>
           </div>
+          <ol class="flow-steps">
+            <li><b>Tarkista ensin löytökartta.</b> Joku saattaa jo etsiä sinua.</li>
+            <li>Jos sopivaa ei ole, <b>tee katoamisilmoitus</b> mahdollisimman pian.</li>
+            <li>Löytäjä ottaa yhteyttä chatissa, pyytää <b>tuntomerkkejä</b> ja vahvistaa omistajuuden.</li>
+            <li>Löytäjä kertoo missä tavarasi on. <b>Sovitaan palautus.</b></li>
+          </ol>
+          <button class="flow-card-cta flow-card-cta-lost" onclick="openFormTab('lost')">🔍 Tee katoamisilmoitus →</button>
         </div>
-        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite;margin-top:20px;">→</div>
-        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(2)">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);border:2px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 1s;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-2">🎯</div>
-          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">2. Matchaa</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Findly yhdistää löydöt ja katoamiset automaattisesti.</div>
-          <div id="how-detail-2" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
-            <div style="margin-top:12px;padding:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:12px;text-align:left;">
-              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Findly vertaa ilmoituksia automaattisesti. Saat ilmoituksen kun mahdollinen osuma löytyy.</div>
+
+        <div class="flow-card flow-card-found">
+          <div class="flow-card-header">
+            <span class="flow-card-icon">📦</span>
+            <div>
+              <div class="flow-card-eyebrow">Kartta 2</div>
+              <div class="flow-card-title">Löysitkö tavaran?</div>
             </div>
           </div>
-        </div>
-        <div style="font-size:20px;color:rgba(0,184,101,0.3);animation:pulse 2s infinite 1s;margin-top:20px;">→</div>
-        <div style="text-align:center;padding:0 8px;cursor:pointer;" onclick="toggleHowStep(3)">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;animation:floatSlow 4s ease-in-out infinite 2s;transition:transform 0.2s,box-shadow 0.2s;" class="how-step-circle" id="how-circle-3">🤝</div>
-          <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">3. Palauta</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;">Sovitaan palautus turvallisesti chatin kautta.</div>
-          <div id="how-detail-3" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
-            <div style="margin-top:12px;padding:12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:12px;text-align:left;">
-              <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;">Löytäjä tarkistaa omistajuutesi. Palautus sovitaan turvallisesti chatin kautta.</div>
-            </div>
-          </div>
+          <ol class="flow-steps">
+            <li><b>Selaa kadotetut-karttaa.</b> Jos löytösi muistuttaa jotain ilmoitusta — ota yhteyttä.</li>
+            <li>Chat ohjaa <b>3 peruskysymyksellä</b>: mitä löysit, mistä tunnistat, mihin veit löydön.</li>
+            <li>Jos sopivaa kadottajaa ei ole, <b>jätä löytöilmoitus</b> kartalle (anonyymisti).</li>
+            <li>Omistaja voi kiittää sinua karmalla, suukoilla tai kuvalla. <b>Hyvä teko palkitaan.</b></li>
+          </ol>
+          <button class="flow-card-cta flow-card-cta-found" onclick="openFormTab('found')">📦 Tee löytöilmoitus →</button>
         </div>
       </div>
+
+      <p style="margin-top:32px;font-size:13px;color:rgba(255,255,255,0.4);">
+        ⏱️ Ilmoitukset säilyvät kartalla <b style="color:rgba(255,255,255,0.7);">7 päivää</b>. Sen jälkeen ne katoavat automaattisesti.
+      </p>
     </div>
   </section>
 
@@ -1794,20 +1979,16 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
       <p style="font-size:14px;color:var(--ink3);" data-i18n="form_sub">Ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistetaan automaattisesti.</p>
     </div>
 
-    <div class="form-type-tabs" id="form-type-tabs">
-      <div class="ftype-btn active-lost" onclick="setFormType('lost')">🔍 Kadonnut</div>
-      <div class="ftype-btn" onclick="setFormType('found')">📦 Löydetty</div>
-      <div class="ftype-btn" onclick="setFormType('pet')">🐾 Eläin</div>
-    </div>
-
-    <!-- Pet subtype selector (lost/found) -->
-    <div id="pet-subtype-field" style="display:none;margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Onko eläin kadonnut vai löytynyt?</div>
-      <div style="display:flex;gap:10px;">
-        <button type="button" class="pet-sub-btn" onclick="setPetSubtype('lost',this)" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);font-size:14px;font-weight:600;cursor:pointer;color:white;">🔴 Kadonnut</button>
-        <button type="button" class="pet-sub-btn" onclick="setPetSubtype('found',this)" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);font-size:14px;font-weight:600;cursor:pointer;color:white;">🟢 Löysin eläimen</button>
+    <!-- Type indicator (set by CTA, no longer user-switchable) -->
+    <div id="form-type-indicator" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;padding:14px 18px;border-radius:14px;border:1.5px solid;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="form-type-icon" style="font-size:24px;line-height:1;">🔍</span>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.55;" id="form-type-eyebrow">Kartta 1 — Kadotetut</div>
+          <div id="form-type-title" style="font-size:15px;font-weight:800;font-family:'Syne',sans-serif;">Tee katoamisilmoitus</div>
+        </div>
       </div>
-      <input type="hidden" id="f-pet-subtype" value="lost" />
+      <button type="button" id="form-type-switch" onclick="switchListingType()" style="padding:8px 14px;font-size:12px;font-weight:600;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);cursor:pointer;white-space:nowrap;">Vaihda →</button>
     </div>
 
     <div id="form-notice" class="notice-info" style="margin-bottom:20px;">
@@ -1822,9 +2003,9 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 
     <form id="listing-form" onsubmit="submitListing(event)" novalidate>
       <div class="form-grid">
-        <div class="form-group">
-          <label data-i18n="form_category">Kategoria *</label>
-          <select id="f-category" required onchange="updateDescPlaceholder(this.value)">
+        <div class="form-group full">
+          <label data-i18n="form_category">Mitä? *</label>
+          <select id="f-category" required onchange="onCategoryChange(this.value)">
             <option value="">Valitse...</option>
             <option>📱 Puhelin</option>
             <option>💳 Lompakko / kortit</option>
@@ -1836,6 +2017,11 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
             <option>📄 Asiakirjat / ID</option>
             <option>Muu</option>
           </select>
+          <!-- "Muu" rajoitettu vapaateksti (found-flow vain) -->
+          <div id="found-other-wrap" style="display:none;margin-top:10px;">
+            <input type="text" id="f-found-other" maxlength="40" placeholder="Mitä löysit? (max 40 merkkiä)" />
+            <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Vain yleinen luokitus — tarkat tunnistetiedot kerrotaan vasta omistajalle.</p>
+          </div>
         </div>
         <div class="form-group" id="f-when-exact-group">
           <label id="f-when-label" data-i18n="form_when">Milloin löysit *</label>
@@ -1915,26 +2101,32 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
           <p style="font-size:11px;color:var(--ink3);margin-top:6px;">📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.</p>
         </div>
 
-        <!-- FOUND SPECIFIC: where did you take it -->
+        <!-- FOUND SPECIFIC: action taken (5 options) -->
         <div class="form-group full" id="found-location-field" style="display:none;">
-          <label>Mitä teit tavaralle? *</label>
-          <select id="f-taken-to" required style="display:none;">
-            <option value="">Valitse...</option>
-            <option value="police">🏛️ Vein poliisille</option>
-            <option value="info">📍 Vein infopisteelle</option>
-            <option value="lostfound">📦 Vein löytötavaratoimistoon</option>
-            <option value="safe">🔒 Säilytän turvallisesti</option>
-            <option value="other">✏️ Muu (kerro alla)</option>
-          </select>
+          <label>Mitä teit löydölle? *</label>
           <div class="loc-options" id="loc-options">
-            <div class="loc-opt" onclick="selectLoc(this,'police')">🏛️ Vein poliisille</div>
-            <div class="loc-opt" onclick="selectLoc(this,'info')">📍 Vein infopisteelle</div>
-            <div class="loc-opt" onclick="selectLoc(this,'lostfound')">📦 Löytötavaratoimisto</div>
-            <div class="loc-opt" onclick="selectLoc(this,'safe')">🔒 Säilytän turvallisesti</div>
+            <div class="loc-opt" onclick="selectLoc(this,'keep')">🔒 Pidän hallussani</div>
+            <div class="loc-opt" onclick="selectLoc(this,'police')">🏛️ Toimitin poliisille tai löytötavaratoimistoon</div>
+            <div class="loc-opt" onclick="selectLoc(this,'left')">📍 Jätin paikoilleen</div>
+            <div class="loc-opt" onclick="selectLoc(this,'delivered')">🏪 Toimitin läheiseen liikkeeseen tai paikkaan</div>
+            <div class="loc-opt" onclick="selectLoc(this,'other')">✏️ Muu (tarkennetaan chatissa)</div>
           </div>
           <input type="hidden" id="f-taken-to-val" />
           <input type="text" id="f-taken-to-detail" placeholder="Lisätiedot, esim. aseman nimi tai viite..." style="margin-top:10px;" />
-          <p style="font-size:11px;color:var(--ink3);margin-top:4px;">🔒 Nämä tiedot näytetään omistajalle vasta omistajuuden vahvistuksen jälkeen.</p>
+          <p style="font-size:11px;color:var(--ink3);margin-top:4px;">🔒 Nämä tiedot näytetään vasta omistajuuden vahvistuksen jälkeen.</p>
+        </div>
+
+        <!-- FOUND SPECIFIC: allow contact yes/no -->
+        <div class="form-group full" id="allow-contact-field" style="display:none;">
+          <label>Saako sinulle laittaa viestiä Findlyssä tähän liittyen? *</label>
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button type="button" class="contact-opt" data-value="yes" onclick="selectAllowContact(this,'yes')" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);font-size:14px;font-weight:600;cursor:pointer;color:white;">✅ Kyllä</button>
+            <button type="button" class="contact-opt" data-value="no" onclick="selectAllowContact(this,'no')" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);font-size:14px;font-weight:600;cursor:pointer;color:white;">🚫 Ei</button>
+          </div>
+          <input type="hidden" id="f-allow-contact" value="" />
+          <p style="font-size:12px;color:var(--ink3);margin-top:8px;line-height:1.5;">
+            Valitsemalla <b>Kyllä</b> saat Findlyssä ilmoituksen jos kadottajan ilmoitus täsmää löytöösi — ja saat myös tiedon kun tavara päätyy omistajalleen.
+          </p>
         </div>
 
         <input type="hidden" id="f-visibility" value="public" />
@@ -2174,6 +2366,21 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
     </div>
     <div id="profile-badge-card" style="display:none;" class="profile-card">
       <div id="profile-badge-content"></div>
+    </div>
+
+    <!-- Saatu karma — saadut lahjat löytäjänä -->
+    <div class="profile-card" id="profile-gifts-card" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-size:22px;">💛</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Saatu karma</div>
+            <div style="font-size:15px;font-weight:700;color:white;font-family:'Syne',sans-serif;" id="profile-gifts-title">Kiitokset löytäjälle</div>
+          </div>
+        </div>
+        <span id="profile-gifts-count" style="font-size:12px;font-weight:700;color:#FBBF24;background:rgba(245,158,11,0.1);padding:4px 10px;border-radius:12px;">0</span>
+      </div>
+      <div id="profile-gifts-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;"></div>
     </div>
     <div class="profile-card" id="qr-tags-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -2770,17 +2977,20 @@ function showPage(name) {
       const savedPhone = currentUser.user_metadata?.phone;
       if (savedPhone) document.getElementById('f-phone').value = savedPhone;
       restoreDraft();
-    } else if (currentFormType === 'found' || currentFormType === 'pet') {
-      // Found and pet listings: no gate, allow form without login
+    } else if (currentFormType === 'found') {
+      // Found = low barrier (no full account required, email-only at submit)
       gate.style.display = 'none';
       wrap.style.display = '';
       initFormMap();
       restoreDraft();
     } else {
-      // Lost/stolen/pet: require account
+      // Lost = full account required
       gate.style.display = 'block';
       wrap.style.display = 'none';
     }
+    // Apply form type (drives visibility + indicator pill) and pending category from CTA
+    setFormType(currentFormType || 'lost');
+    applyPendingCategory();
   }
 }
 
@@ -2791,18 +3001,44 @@ function goBack() {
 }
 
 function openFormTab(type) {
-  if (type === 'lost' && !window._skipLostCheck) {
-    showLostCheckPrompt();
+  // Pet is no longer offered as a user-facing flow — fall through gracefully if called
+  if (type === 'pet') type = 'found';
+  if ((type === 'lost' || type === 'found') && !window._skipCheckPrompt) {
+    showCheckPrompt(type);
     return;
   }
-  window._skipLostCheck = false;
+  window._skipCheckPrompt = false;
   setFormType(type);
   showPage('new-listing');
 }
 
-function showLostCheckPrompt() {
-  const modal = document.getElementById('lost-check-modal');
-  if (modal) modal.style.display = 'flex';
+// Shows the "check the other map first" prompt for whichever flow we're entering.
+function showCheckPrompt(type) {
+  const modal = document.getElementById('check-prompt-modal');
+  const icon  = document.getElementById('check-prompt-icon');
+  const title = document.getElementById('check-prompt-title');
+  const text  = document.getElementById('check-prompt-text');
+  const go    = document.getElementById('check-prompt-go');
+  const skip  = document.getElementById('check-prompt-skip');
+  if (!modal) return;
+  if (type === 'lost') {
+    icon.textContent  = '📦';
+    title.textContent = 'Tarkista ensin löytökartta!';
+    text.textContent  = 'Joku on ehkä jo löytänyt tavarasi. Selaa löytöilmoituksia ennen kuin teet katoamisilmoituksen.';
+    go.textContent    = '📦 Tarkista löytökartta →';
+    go.onclick   = () => { modal.style.display = 'none'; showPage('map'); switchMapTab('found'); };
+    skip.textContent  = 'Olen jo tarkistanut — tee katoamisilmoitus →';
+    skip.onclick = () => { modal.style.display = 'none'; window._skipCheckPrompt = true; openFormTab('lost'); };
+  } else {
+    icon.textContent  = '🔍';
+    title.textContent = 'Tarkista ensin kadotetut-kartta!';
+    text.textContent  = 'Joku saattaa odottaa juuri tätä löytöä. Selaa kadotetut-ilmoituksia — jos sopiva löytyy, voit ottaa yhteyttä suoraan.';
+    go.textContent    = '🔍 Tarkista kadotetut-kartta →';
+    go.onclick   = () => { modal.style.display = 'none'; showPage('map'); switchMapTab('lost'); };
+    skip.textContent  = 'En löytänyt sopivaa — tee löytöilmoitus →';
+    skip.onclick = () => { modal.style.display = 'none'; window._skipCheckPrompt = true; openFormTab('found'); };
+  }
+  modal.style.display = 'flex';
 }
 
 function switchMapTab(type) {
@@ -2837,12 +3073,22 @@ function switchMapTab(type) {
 }
 
 function openFormCat(category) {
-  showPage('new-listing');
-  setTimeout(() => {
-    const sel = document.getElementById('f-category');
-    if (sel) sel.value = category;
-    updateDescPlaceholder(category);
-  }, 100);
+  // Categories section on the homepage is "Mitä olet kadottanut?" → opens lost-flow
+  // with the category preselected. Goes through the check-prompt like the main CTA.
+  window._pendingCategory = category;
+  openFormTab('lost');
+}
+
+// Apply pending category once the form is ready (called from showPage)
+function applyPendingCategory() {
+  const cat = window._pendingCategory;
+  if (!cat) return;
+  window._pendingCategory = null;
+  const sel = document.getElementById('f-category');
+  if (sel) {
+    sel.value = cat;
+    onCategoryChange(cat);
+  }
 }
 
 function updateDescPlaceholder(category) {
@@ -2961,12 +3207,30 @@ async function updateMatchBadge() {
   if (!myListings || myListings.length === 0) { setMatchBadge(0); return; }
   let total = 0;
   for (const mine of myListings) {
+    // Finder who declined contact opted out of match notifications
+    if (mine.type === 'found' && !listingAllowsContact(mine)) continue;
     for (const other of (allOther || [])) {
+      // Skip found-listings whose finder declined contact
+      if (other.type === 'found' && !listingAllowsContact(other)) continue;
       const result = scoreMatch(mine, other);
       if (result && result.score >= 20) total++;
     }
   }
   setMatchBadge(total);
+  // Surface a toast for new matches the first time they appear (per browser).
+  notifyNewMatches(total);
+}
+
+// One-shot toast when match count grows since last check (persisted in localStorage).
+function notifyNewMatches(currentCount) {
+  if (!currentUser) return;
+  const key = 'findly-last-match-count-' + currentUser.id;
+  const prev = parseInt(localStorage.getItem(key) || '0', 10);
+  if (currentCount > prev) {
+    const delta = currentCount - prev;
+    toast(delta === 1 ? '🎯 Uusi mahdollinen osuma!' : `🎯 ${delta} uutta mahdollista osumaa!`, 'green');
+  }
+  localStorage.setItem(key, String(currentCount));
 }
 
 function updateNavAuth() {
@@ -3109,7 +3373,7 @@ function renderFeed() {
   if (feedFilter !== 'all') items = items.filter(l => l.type === feedFilter);
   if (search) items = items.filter(l =>
     (l.title || '').toLowerCase().includes(search) ||
-    (l.description || '').toLowerCase().includes(search) ||
+    listingPublicDescription(l).toLowerCase().includes(search) ||
     (l.address || '').toLowerCase().includes(search)
   );
   if (items.length === 0) {
@@ -3153,7 +3417,7 @@ function renderCard(l) {
         <span class="feed-card-badge ${labelMap[l.type]||''}">${badgeMap[l.type]||l.type}</span>
       </div>
       <div class="feed-card-loc">📍 ${esc(displayAddr)}</div>
-      <div class="feed-card-desc">${esc(l.description||'')}</div>
+      <div class="feed-card-desc">${esc(listingPublicDescription(l))}</div>
       <div class="feed-card-footer">
         <span class="feed-card-time">${timeStr} · ${expiresIn(l.created_at)}</span>
         ${l.reward ? `<span class="feed-card-reward">💰 ${l.reward}€</span>` : ''}
@@ -3207,7 +3471,12 @@ async function openListing(id) {
     other: {fi:'✏️ Muu',sv:'✏️ Annat',en:'✏️ Other'}[_tt]
   };
 
-  const canContact = currentUser && currentUser.id !== l.user_id;
+  // Standard "can I contact this listing's owner?" — denied if:
+  //  - not logged in, or this is my own listing, OR
+  //  - the listing is a found-listing whose finder said "do not contact me"
+  const canContact = currentUser
+    && currentUser.id !== l.user_id
+    && listingAllowsContact(l);
   const isOwn = currentUser && currentUser.id === l.user_id;
 
   // Status flow
@@ -3246,7 +3515,7 @@ async function openListing(id) {
     </div>
     <div class="listing-title">${esc(l.title)}</div>
     <div class="listing-loc">📍 ${esc(displayAddr)} · ${timeAgo(l.created_at)}</div>
-    <div class="listing-desc">${esc(l.description||'').replace(/\n/g,'<br>')}</div>
+    <div class="listing-desc">${esc(listingPublicDescription(l)).replace(/\n/g,'<br>')}</div>
 
     ${l.type === 'found' && l.taken_to ? `
     <div style="background:rgba(0,184,101,0.08);border:1px solid rgba(0,184,101,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#6EEDB0;">
@@ -3286,11 +3555,16 @@ async function openListing(id) {
 
     ${l.lat && l.lng ? `<div id="listing-map"></div>` : ''}
 
+    ${currentUser && currentUser.id !== l.user_id && l.type === 'found' && !listingAllowsContact(l) ? `
+    <div style="background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:rgba(255,255,255,0.55);text-align:center;">
+      🔕 Löytäjä ei ole antanut lupaa ottaa yhteyttä Findlyssä tämän ilmoituksen kautta.
+    </div>` : ''}
+
     ${canContact && l.type === 'lost' ? `
     <div class="contact-card">
       <h3>${{fi:'Löysitkö tämän tavaran?',sv:'Hittade du detta föremål?',en:'Did you find this item?'}[currentLang]}</h3>
-      <p>${{fi:'Ilmoita löydöstäsi omistajalle. Chat aukeaa suoraan — omistaja todistaa omistajuutensa sinulle.',sv:'Meddela ägaren om ditt fynd. Chatten öppnas direkt — ägaren bevisar sitt ägande.',en:'Notify the owner about your find. Chat opens directly — the owner will prove their ownership to you.'}[currentLang]}</p>
-      <button class="btn-primary" style="border:none;" onclick="startDirectChat('${l.id}','${l.user_id}')">${{fi:'💬 Ilmoita löydöstä omistajalle →',sv:'💬 Meddela ägaren →',en:'💬 Notify the owner →'}[currentLang]}</button>
+      <p>${{fi:'Kerro lyhyesti mitä löysit, valitse mitä teit löydölle — Findly pyytää kadottajaa todistamaan omistajuutensa.',sv:'Berätta kort vad du hittade och vad du gjorde med fyndet — Findly ber ägaren bevisa sitt ägande.',en:'Tell us briefly what you found and what you did with it — Findly will ask the owner to prove ownership.'}[currentLang]}</p>
+      <button class="btn-primary" style="border:none;" onclick="openFinderIntro('${l.id}','${l.user_id}', ${JSON.stringify(l.title || '')})">${{fi:'🤝 Kerro löydöstäsi →',sv:'🤝 Berätta om ditt fynd →',en:'🤝 Tell about your find →'}[currentLang]}</button>
     </div>` : ''}
 
     ${canContact && l.type === 'found' ? `
@@ -3317,7 +3591,8 @@ async function openListing(id) {
     <div style="background:rgba(0,184,101,0.06);border:1px solid rgba(0,184,101,0.12);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
       <div style="font-size:28px;margin-bottom:8px;">💛</div>
       <div style="font-size:16px;font-weight:700;color:white;margin-bottom:6px;">Tavara on palautettu!</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.4);">Kiitos yhteistyöstä. Tämä tapaus on suljettu.</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:${isOwn ? '14px' : '0'};">Kiitos yhteistyöstä. Tämä tapaus on suljettu.</div>
+      ${isOwn ? `<button onclick="openGiftFromListing('${l.id}')" style="padding:11px 22px;font-size:13px;font-weight:700;border:1px solid rgba(245,158,11,0.4);border-radius:20px;background:rgba(245,158,11,0.1);color:#FBBF24;cursor:pointer;">💛 Anna karmaa löytäjälle</button>` : ''}
     </div>` : ''}
     ${isOwn ? `<div style="margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -3866,9 +4141,13 @@ async function pollForNotifications() {
   ]);
   if (!mine) return;
   let count = 0;
-  for (const m of mine)
-    for (const o of (others || []))
+  for (const m of mine) {
+    if (m.type === 'found' && !listingAllowsContact(m)) continue;
+    for (const o of (others || [])) {
+      if (o.type === 'found' && !listingAllowsContact(o)) continue;
       if (scoreMatch(m, o)?.score >= 20) count++;
+    }
+  }
 
   if (lastMatchCount > 0 && count > lastMatchCount) {
     sendNotification('Findly — Uusi osuma 🎯', `${count - lastMatchCount} uusi mahdollinen osuma ilmoituksellesi!`);
@@ -4321,41 +4600,97 @@ function initFormMap() {
 // FORM TYPE
 // ═══════════════════════════════════════════════════════
 function setFormType(type) {
+  // Only 'lost' and 'found' are user-facing; coerce anything else
+  if (type !== 'lost' && type !== 'found') type = 'lost';
   currentFormType = type;
-  // Re-check gate for non-logged-in users when switching types
+  const isFound = type === 'found';
+  const isLost  = type === 'lost';
+
+  // Update the type-indicator pill (icon, label, accent color)
+  const indicator = document.getElementById('form-type-indicator');
+  const indIcon   = document.getElementById('form-type-icon');
+  const indBrow   = document.getElementById('form-type-eyebrow');
+  const indTitle  = document.getElementById('form-type-title');
+  if (indicator) {
+    if (isLost) {
+      indicator.style.borderColor = 'rgba(59,130,246,0.35)';
+      indicator.style.background  = 'rgba(59,130,246,0.06)';
+      indicator.style.color       = '#93C5FD';
+      indIcon.textContent  = '🔍';
+      indBrow.textContent  = 'Kartta 1 — Kadotetut';
+      indTitle.textContent = 'Tee katoamisilmoitus';
+    } else {
+      indicator.style.borderColor = 'rgba(0,184,101,0.4)';
+      indicator.style.background  = 'rgba(0,184,101,0.06)';
+      indicator.style.color       = '#6EEDB0';
+      indIcon.textContent  = '📦';
+      indBrow.textContent  = 'Kartta 2 — Löydetyt';
+      indTitle.textContent = 'Tee löytöilmoitus';
+    }
+  }
+
+  // Re-check gate for non-logged-in users
   if (!currentUser) {
     const gate = document.getElementById('new-listing-gate');
     const wrap = document.getElementById('new-listing-form-wrap');
-    if (type === 'found' || type === 'pet') {
+    if (isFound) {
+      // Found = low barrier (email-only OK on submit)
       gate.style.display = 'none';
       wrap.style.display = '';
       initFormMap();
     } else {
+      // Lost = full account required
       gate.style.display = 'block';
       wrap.style.display = 'none';
     }
   }
-  const tabs = document.querySelectorAll('#form-type-tabs .ftype-btn');
-  const typeMap = ['lost','found','pet'];
-  tabs.forEach((t, i) => {
-    if (i === 2) return; // Skip the disabled "PIAN" pet tab
-    t.className = 'ftype-btn' + (typeMap[i] === type ? ' active-' + type : '');
-  });
 
-  const noticeTexts = {
-    lost: 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.',
-    found: '💛 Auta hädässä olevaa kadottajaa ja ansaitse karmaa! Kuvaile löytö <strong>yleisellä tasolla</strong> — omistaja todistaa omistajuutensa kuvailemalla tavaraa tarkemmin. <strong>Jos tavara löytyi julkisesta tilasta</strong> (bussi, kauppakeskus), luovuta se ensisijaisesti henkilökunnalle.',
-    stolen: 'Tee ensin rikosilmoitus poliisille. Findly toimii täydentävänä palveluna.',
-    pet: '🐾 Lisää selkeä kuva ja mahdollisimman tarkka kuvaus lemmikistä — rotu, väri, erityispiirteet.'
-  };
+  // Notice copy
+  const notice = document.getElementById('form-notice');
+  if (notice) {
+    if (isFound) {
+      document.getElementById('form-notice-icon').textContent = '💛';
+      document.getElementById('form-notice-text').innerHTML = 'Auta kadottajaa ja ansaitse karmaa! <strong>Anna vain rajatusti tietoja</strong> — kadottaja todistaa omistajuutensa tunnistetiedoilla. Jos tavara löytyi julkisesta tilasta, harkitse luovuttamista henkilökunnalle.';
+    } else {
+      document.getElementById('form-notice-icon').textContent = '🔍';
+      document.getElementById('form-notice-text').innerHTML = 'Kuvaa tavara riittävästi matchausta varten, mutta <strong>älä paljasta kaikkia tunnistetietoja</strong> julkisesti. Jätä osa yksityiskohdista varmistusta varten.';
+    }
+  }
 
-  document.getElementById('form-notice-text').innerHTML = noticeTexts[type];
-  document.getElementById('form-notice-icon').textContent = type === 'pet' ? '🐾' : '🔴';
-  document.getElementById('stolen-warning').style.display = type === 'stolen' ? 'block' : 'none';
-  document.getElementById('found-location-field').style.display = type === 'found' ? 'block' : 'none';
-  document.getElementById('pet-subtype-field').style.display = type === 'pet' ? 'block' : 'none';
-  document.getElementById('image-upload-field').style.display = type === 'lost' ? 'none' : 'block';
-  document.getElementById('reward-field').style.display = type === 'lost' ? 'block' : 'none';
+  // Stale UI bits: stolen + pet — no longer active flows
+  const stolenW = document.getElementById('stolen-warning'); if (stolenW) stolenW.style.display = 'none';
+  const petSub  = document.getElementById('pet-subtype-field'); if (petSub) petSub.style.display = 'none';
+
+  // Found-only fields
+  document.getElementById('found-location-field').style.display = isFound ? 'block' : 'none';
+  const allowContactField = document.getElementById('allow-contact-field');
+  if (allowContactField) allowContactField.style.display = isFound ? 'block' : 'none';
+
+  // Lost-only fields
+  const titleEl  = document.getElementById('f-title');
+  const descEl   = document.getElementById('f-desc');
+  const titleWrap = titleEl?.closest('.form-group');
+  const descWrap  = descEl?.closest('.form-group');
+  if (titleWrap) titleWrap.style.display = isLost ? '' : 'none';
+  if (descWrap)  descWrap.style.display  = isLost ? '' : 'none';
+  if (titleEl) titleEl.required = isLost;
+  if (descEl)  descEl.required  = isLost;
+
+  // Image upload, reward, last-seen, phone: lost-only (anti-abuse for found)
+  document.getElementById('image-upload-field').style.display = isLost ? 'block' : 'none';
+  document.getElementById('reward-field').style.display = isLost ? 'block' : 'none';
+  const lastSeenGrp = document.getElementById('f-last-seen-group');
+  if (lastSeenGrp) lastSeenGrp.style.display = isLost ? 'block' : 'none';
+  const phoneWrap = document.getElementById('f-phone')?.closest('.form-group');
+  if (phoneWrap) phoneWrap.style.display = isLost ? '' : 'none';
+
+  // Reset found-only state when switching away
+  if (!isFound) {
+    const fOther = document.getElementById('f-found-other'); if (fOther) fOther.value = '';
+    const fAllow = document.getElementById('f-allow-contact'); if (fAllow) fAllow.value = '';
+    document.querySelectorAll('.contact-opt').forEach(b => { b.style.background='rgba(255,255,255,0.06)'; b.style.borderColor='rgba(255,255,255,0.1)'; });
+    document.getElementById('found-other-wrap').style.display = 'none';
+  }
 
   // Update image guidance based on type
   const imgGuide = document.getElementById('image-guidance');
@@ -4369,23 +4704,18 @@ function setFormType(type) {
     }
   }
 
-  // found: make taken-to required
+  // found: make action-taken required
   const takenToVal = document.getElementById('f-taken-to-val');
-  if (type === 'found') takenToVal.required = true;
-  else takenToVal.required = false;
+  if (takenToVal) takenToVal.required = isFound;
 
-  // Show date range for lost/stolen/pet, exact datetime for found
-  const useRange = type !== 'found';
-  document.getElementById('f-when-exact-group').style.display = useRange ? 'none' : 'block';
-  document.getElementById('f-when-range-group').style.display = useRange ? 'block' : 'none';
-  document.getElementById('f-last-seen-group').style.display = (type === 'lost' || type === 'stolen') ? 'block' : 'none';
-  if (useRange) {
+  // Date: lost = range, found = exact "when did you find it"
+  document.getElementById('f-when-exact-group').style.display = isFound ? 'block' : 'none';
+  document.getElementById('f-when-range-group').style.display = isLost ? 'block' : 'none';
+  if (isLost) {
     document.getElementById('f-when').required = false;
     document.getElementById('f-when-from').required = true;
     document.getElementById('f-when-to').required = true;
-    const rangeLabels = { lost: 'Milloin katosi (arvio) *', stolen: 'Milloin tapahtui (arvio) *', pet: 'Milloin katosi / löytyi (arvio) *' };
-    document.getElementById('f-when-range-label').textContent = rangeLabels[type] || 'Milloin (arvio) *';
-    // Default "to" to today
+    document.getElementById('f-when-range-label').textContent = 'Milloin katosi (arvio) *';
     const today = new Date().toISOString().split('T')[0];
     if (!document.getElementById('f-when-to').value) document.getElementById('f-when-to').value = today;
   } else {
@@ -4394,45 +4724,55 @@ function setFormType(type) {
     document.getElementById('f-when-to').required = false;
     document.getElementById('f-when-label').textContent = 'Milloin löysit *';
   }
-  const locLabels = { found: 'Löytöpaikka *', stolen: 'Tapahtumapaikka *', pet: 'Missä eläin katosi / löytyi *', lost: 'Katoamispaikka *' };
-  document.getElementById('f-location-label').textContent = locLabels[type] || 'Katoamispaikka *';
-  const locHints = { found: 'Mistä löysit tavaran? Hae paikan nimellä.', stolen: 'Missä varkaus tapahtui? Hae paikan nimellä.', pet: 'Missä eläin katosi tai löytyi? Hae paikan nimellä.', lost: 'Missä viimeksi muistat nähneesi tavaran? Hae paikan nimellä.' };
+  document.getElementById('f-location-label').textContent = isFound ? 'Löytöpaikka *' : 'Katoamispaikka *';
   const hintEl = document.getElementById('f-location-hint');
-  if (hintEl) hintEl.textContent = locHints[type] || locHints.lost;
+  if (hintEl) hintEl.textContent = isFound ? 'Mistä löysit tavaran? Hae paikan nimellä.' : 'Missä viimeksi muistat nähneesi tavaran? Hae paikan nimellä.';
 
-  // Phone: optional for found/pet, required for lost
-  const phoneLabel = document.querySelector('label[data-i18n="form_phone"]');
+  // Phone: lost-only and required
   const phoneInput = document.getElementById('f-phone');
-  const phoneNote = document.querySelector('p[data-i18n="form_phone_note"]');
-  if (phoneLabel) {
-    if (type === 'found' || type === 'pet') {
-      phoneLabel.textContent = 'Puhelinnumero (valinnainen)';
-      if (phoneInput) phoneInput.required = false;
-      if (phoneNote) phoneNote.textContent = 'Jos haluat, että sinuun voi ottaa yhteyttä. Ilman numeroa löytöpalkkio ei ole mahdollinen.';
-    } else {
-      phoneLabel.textContent = 'Puhelinnumero *';
-      if (phoneInput) phoneInput.required = true;
-      if (phoneNote) phoneNote.textContent = 'Näytetään vain matchin jälkeen.';
-    }
-  }
+  if (phoneInput) phoneInput.required = isLost;
 
+  // Submit button
   const submitBtn = document.getElementById('submit-btn');
-  const btnLabels = { lost: 'Julkaise kadonnut-ilmoitus →', found: 'Julkaise löytöilmoitus →', stolen: 'Julkaise varastettu-ilmoitus →', pet: 'Julkaise eläinilmoitus →' };
-  submitBtn.textContent = btnLabels[type];
+  submitBtn.textContent = isFound ? 'Julkaise löytöilmoitus →' : 'Julkaise kadonnut-ilmoitus →';
   submitBtn.className = 'submit-btn ' + type;
 
-  // Type-aware placeholders
-  const titleEl = document.getElementById('f-title');
-  const descEl = document.getElementById('f-desc');
-  if (type === 'pet') {
-    titleEl.placeholder = {fi:'Esim: Ruskea labradori, harmaa kissa...',sv:'T.ex: Brun labrador, grå katt...',en:'E.g.: Brown labrador, gray cat...'}[currentLang];
-    descEl.placeholder = {fi:'Rotu, väri, koko, erityispiirteet, onko panta, mikronäyte...',sv:'Ras, färg, storlek, särskilda drag, har halsband, mikrochip...',en:'Breed, color, size, distinguishing features, collar, microchip...'}[currentLang];
-  } else if (type === 'found') {
-    titleEl.placeholder = {fi:'Esim: Musta lompakko, avainnippu...',sv:'T.ex: Svart plånbok, nyckelknippa...',en:'E.g.: Black wallet, set of keys...'}[currentLang];
-    descEl.placeholder = {fi:'Kuvaile yleisellä tasolla. Älä paljasta kaikkia tunnistetietoja — omistaja todistaa omistajuutensa.',sv:'Beskriv på en allmän nivå. Avslöja inte alla detaljer — ägaren bevisar sitt ägande.',en:'Describe at a general level. Don\'t reveal all details — the owner will prove ownership.'}[currentLang];
+  // Lost-only placeholders
+  if (isLost) {
+    const titleP = document.getElementById('f-title');
+    const descP  = document.getElementById('f-desc');
+    if (titleP) titleP.placeholder = 'Esim: Musta Nike-reppu, iPhone 15 Pro...';
+    if (descP)  descP.placeholder  = 'Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen.';
+  }
+}
+
+// Swap between lost <-> found from the form indicator (uses check-prompt, like CTA)
+function switchListingType() {
+  const next = currentFormType === 'lost' ? 'found' : 'lost';
+  openFormTab(next);
+}
+
+// Called from the category select; shows the 40-char "Muu" input only when category=Muu in found-flow
+function onCategoryChange(val) {
+  const wrap = document.getElementById('found-other-wrap');
+  if (!wrap) return;
+  const showOther = (currentFormType === 'found' && val === 'Muu');
+  wrap.style.display = showOther ? 'block' : 'none';
+  updateDescPlaceholder(val);
+}
+
+function selectAllowContact(btn, val) {
+  document.getElementById('f-allow-contact').value = val;
+  document.querySelectorAll('.contact-opt').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.06)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  if (val === 'yes') {
+    btn.style.background = 'rgba(0,184,101,0.14)';
+    btn.style.borderColor = '#6EEDB0';
   } else {
-    titleEl.placeholder = {fi:'Esim: Musta Nike-reppu, iPhone 15 Pro...',sv:'T.ex: Svart Nike-ryggsäck, iPhone 15 Pro...',en:'E.g.: Black Nike backpack, iPhone 15 Pro...'}[currentLang];
-    descEl.placeholder = {fi:'Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen.',sv:'Färg, märke, särskilda drag. Avslöja inte alla detaljer — de bekräftas efter matchning.',en:'Color, brand, distinguishing features. Don\'t reveal all details — they\'re confirmed after matching.'}[currentLang];
+    btn.style.background = 'rgba(239,68,68,0.12)';
+    btn.style.borderColor = 'rgba(239,68,68,0.4)';
   }
 }
 
@@ -4588,44 +4928,56 @@ async function submitFoundWithEmail() {
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
   e.preventDefault();
-  if (!currentUser && (currentFormType === 'found' || currentFormType === 'pet')) {
-    // Show email-only publish UI for found and pet listings (low barrier)
+  const isFound = currentFormType === 'found';
+  const isLost  = currentFormType === 'lost';
+
+  if (!currentUser && isFound) {
+    // Low barrier: email-only publish for finders
     showFoundEmailPrompt();
     return;
   }
   if (!currentUser) {
-    // Lost/stolen require full auth
+    // Lost requires full auth
     saveDraft();
     showPage('auth');
     return;
   }
 
-  // Manual validation
+  // Common validation
   const category = document.getElementById('f-category').value;
-  const title = document.getElementById('f-title').value.trim();
-  const desc = document.getElementById('f-desc').value.trim();
-  const useRange = currentFormType !== 'found';
-  const when = useRange ? null : document.getElementById('f-when').value;
-  const whenFrom = useRange ? document.getElementById('f-when-from').value : null;
-  const whenTo = useRange ? document.getElementById('f-when-to').value : null;
-  const phone = document.getElementById('f-phone').value.trim();
-
-  if (!category) { toast(t('toast_select_cat'), 'red'); document.getElementById('f-category').focus(); return; }
-  if (!title) { toast(t('toast_write_title'), 'red'); document.getElementById('f-title').focus(); return; }
-  if (!desc) { toast(t('toast_write_desc'), 'red'); document.getElementById('f-desc').focus(); return; }
-  if (useRange) {
-    if (!whenFrom || !whenTo) { toast(t('toast_select_date'), 'red'); return; }
-    if (whenFrom > whenTo) { toast({fi:'Alkupäivä ei voi olla loppupäivän jälkeen.',sv:'Startdatum kan inte vara efter slutdatum.',en:'Start date cannot be after end date.'}[currentLang], 'red'); return; }
-  } else {
-    if (!when) { toast(t('toast_select_date'), 'red'); document.getElementById('f-when').focus(); return; }
-  }
-  if (!phone && currentFormType !== 'found' && currentFormType !== 'pet') { toast(t('toast_write_phone'), 'red'); document.getElementById('f-phone').focus(); return; }
+  if (!category) { toast(t('toast_select_cat') || 'Valitse kategoria', 'red'); document.getElementById('f-category').focus(); return; }
   const hasAddress = document.getElementById('f-address').value.trim();
   const hasLat = document.getElementById('f-lat').value;
-  if (!hasAddress && !hasLat) { toast(t('toast_set_location'), 'red'); return; }
-  if (currentFormType === 'found' && !document.getElementById('f-taken-to-val').value) {
-    toast(t('toast_select_taken'), 'red');
-    return;
+  if (!hasAddress && !hasLat) { toast(t('toast_set_location') || 'Aseta sijainti', 'red'); return; }
+
+  // Found-specific
+  let foundOther = '', actionTaken = '', allowContact = '';
+  if (isFound) {
+    if (category === 'Muu') {
+      foundOther = document.getElementById('f-found-other').value.trim();
+      if (!foundOther) { toast('Kirjoita lyhyesti mitä löysit (max 40 mrk)', 'red'); document.getElementById('f-found-other').focus(); return; }
+    }
+    actionTaken = document.getElementById('f-taken-to-val').value;
+    if (!actionTaken) { toast('Valitse mitä teit löydölle', 'red'); return; }
+    allowContact = document.getElementById('f-allow-contact').value;
+    if (!allowContact) { toast('Valitse, saako sinuun ottaa yhteyttä Findlyssä', 'red'); return; }
+    const when = document.getElementById('f-when').value;
+    if (!when) { toast(t('toast_select_date') || 'Valitse päivämäärä', 'red'); document.getElementById('f-when').focus(); return; }
+  }
+
+  // Lost-specific
+  let title = '', desc = '', whenFrom = '', whenTo = '', phone = '';
+  if (isLost) {
+    title = document.getElementById('f-title').value.trim();
+    desc  = document.getElementById('f-desc').value.trim();
+    whenFrom = document.getElementById('f-when-from').value;
+    whenTo   = document.getElementById('f-when-to').value;
+    phone    = document.getElementById('f-phone').value.trim();
+    if (!title) { toast(t('toast_write_title') || 'Kirjoita otsikko', 'red'); document.getElementById('f-title').focus(); return; }
+    if (!desc)  { toast(t('toast_write_desc')  || 'Kirjoita kuvaus', 'red'); document.getElementById('f-desc').focus(); return; }
+    if (!whenFrom || !whenTo) { toast(t('toast_select_date') || 'Valitse päivämäärä', 'red'); return; }
+    if (whenFrom > whenTo) { toast('Alkupäivä ei voi olla loppupäivän jälkeen.', 'red'); return; }
+    if (!phone) { toast(t('toast_write_phone') || 'Anna puhelinnumero', 'red'); document.getElementById('f-phone').focus(); return; }
   }
 
   const btn = document.getElementById('submit-btn');
@@ -4635,7 +4987,7 @@ async function submitListing(e) {
   // Upload image if provided (owner types only)
   let image_url = null;
   const imageFile = document.getElementById('f-image')?.files[0];
-  if (imageFile && currentFormType !== 'lost') {
+  if (imageFile && currentFormType === 'lost') {
     btn.textContent = 'Ladataan kuvaa...';
     const ext = imageFile.name.split('.').pop();
     const path = `${currentUser.id}/${Date.now()}.${ext}`;
@@ -4652,25 +5004,40 @@ async function submitListing(e) {
     btn.textContent = 'Julkaistaan...';
   }
 
+  // Compose listing title/desc:
+  //   lost  → user-provided title + desc
+  //   found → category (or "Muu" text) as title.
+  //           description encodes consent flag inline (no DB migration needed):
+  //           found+allow_contact='no'  → "[NO_CONTACT]"
+  //           found+allow_contact='yes' → "" (empty)
+  const computedTitle = isFound
+    ? (category === 'Muu' ? foundOther : category)
+    : title;
+  const computedDesc  = isFound
+    ? (allowContact === 'no' ? '[NO_CONTACT]' : '')
+    : desc;
+
   const payload = {
     user_id: currentUser.id,
     type: currentFormType,
-    category: document.getElementById('f-category').value,
-    title: document.getElementById('f-title').value.trim(),
-    description: document.getElementById('f-desc').value.trim(),
+    category: category,
+    title: computedTitle,
+    description: computedDesc,
     address: document.getElementById('f-address').value.trim(),
     lat: parseFloat(document.getElementById('f-lat').value) || null,
     lng: parseFloat(document.getElementById('f-lng').value) || null,
-    incident_time: useRange ? (whenFrom + 'T12:00') : (document.getElementById('f-when').value || null),
-    ...(whenFrom ? { incident_time_from: whenFrom } : {}),
-    ...(whenTo ? { incident_time_to: whenTo } : {}),
-    ...(document.getElementById('f-last-seen')?.value?.trim() ? { last_seen_context: document.getElementById('f-last-seen').value.trim() } : {}),
-    reward: document.getElementById('f-reward')?.value ? parseFloat(document.getElementById('f-reward').value) : null,
-    contact: document.getElementById('f-phone').value.trim() || null,
-    taken_to: document.getElementById('f-taken-to-val')?.value || null,
-    taken_to_detail: document.getElementById('f-taken-to-detail')?.value?.trim() || null,
+    incident_time: isLost ? (whenFrom + 'T12:00') : (document.getElementById('f-when').value || null),
+    ...(isLost && whenFrom ? { incident_time_from: whenFrom } : {}),
+    ...(isLost && whenTo   ? { incident_time_to:   whenTo   } : {}),
+    ...(isLost && document.getElementById('f-last-seen')?.value?.trim()
+         ? { last_seen_context: document.getElementById('f-last-seen').value.trim() } : {}),
+    reward: isLost && document.getElementById('f-reward')?.value
+              ? parseFloat(document.getElementById('f-reward').value) : null,
+    contact: isLost ? (document.getElementById('f-phone').value.trim() || null) : null,
+    taken_to:        isFound ? actionTaken : null,
+    taken_to_detail: isFound ? (document.getElementById('f-taken-to-detail')?.value?.trim() || null) : null,
     police_report: null,
-    subtype: currentFormType === 'pet' ? (document.getElementById('f-pet-subtype')?.value || 'lost') : null,
+    subtype: null,
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     image_url
   };
@@ -4867,8 +5234,8 @@ function scoreMatch(mine, other) {
 
   // Keyword overlap — Finnish-aware (stem matching for inflected words)
   const stopWords = ['löydetty','kadonnut','tavara','paikka','lähellä','sitten','tämä','joka','olen','minun','kanssa','ollut','myös','tässä','siinä','mutta','koska','kuin','hyvin','paljon','vähän','ihan','aika','noin'];
-  const myText = ((mine.title || '') + ' ' + (mine.description || '') + ' ' + (mine.last_seen_context || '')).toLowerCase();
-  const otherText = ((other.title || '') + ' ' + (other.description || '') + ' ' + (other.last_seen_context || '')).toLowerCase();
+  const myText    = ((mine.title  || '') + ' ' + listingPublicDescription(mine)  + ' ' + (mine.last_seen_context  || '')).toLowerCase();
+  const otherText = ((other.title || '') + ' ' + listingPublicDescription(other) + ' ' + (other.last_seen_context || '')).toLowerCase();
   const myWords = myText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
   const otherWords = otherText.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
 
@@ -4945,9 +5312,13 @@ async function loadMatches() {
   }
 
   for (const mine of activeMyListings) {
+    // Finder who said "do not contact me" opts out of the matches view for their own found-listings
+    if (mine.type === 'found' && !listingAllowsContact(mine)) continue;
     const candidates = (allOther || []).map(other => {
       if (isDismissed(mine.id, other.id)) return null;
       if (resolvedConvListingIds.has(other.id)) return null;
+      // Hide found-listings whose finder declined contact — there's no actionable path
+      if (other.type === 'found' && !listingAllowsContact(other)) return null;
       const result = scoreMatch(mine, other);
       if (!result || result.score < 20) return null;
       return { listing: other, score: result.score, reasons: result.reasons };
@@ -5003,12 +5374,12 @@ async function loadMatches() {
               <span>🕐 ${timeAgo(l.created_at)}</span>
               ${l.incident_time_from && l.incident_time_to ? `<span>📅 ${new Date(l.incident_time_from).toLocaleDateString('fi-FI')} — ${new Date(l.incident_time_to).toLocaleDateString('fi-FI')}</span>` : l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
             </div>
-            <div class="match-card-desc">${esc(l.description || '')}</div>
+            <div class="match-card-desc">${esc(listingPublicDescription(l))}</div>
             <div class="match-card-actions">
               ${isPending
                 ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1px solid rgba(245,158,11,0.2);background:rgba(245,158,11,0.12);color:#FBBF24;width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
-                : l.type === 'pet' || mine.type === 'found'
-                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;${mine.type === 'found' ? '' : 'background:var(--amber);'}" onclick="event.stopPropagation();startDirectChat('${l.id}','${l.user_id}')">${mine.type === 'found' ? '💬 Ilmoita löydöstä omistajalle' : '💬 Avaa chat'}</button>`
+                : mine.type === 'found'
+                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();openFinderIntro('${l.id}','${l.user_id}', ${JSON.stringify(l.title || '')})">🤝 Kerro löydöstäsi</button>`
                   : `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Tämä on minun — todista omistajuus</button>`}
             </div>
           </div>
@@ -5124,6 +5495,224 @@ function dismissMatch(myListingId, otherListingId) {
 function isDismissed(myListingId, otherListingId) {
   const dismissed = JSON.parse(localStorage.getItem('dismissed_' + myListingId) || '[]');
   return dismissed.includes(otherListingId);
+}
+
+// ═══════════════════════════════════════════════════════
+// GIFTS / KARMA — owner thanks finder after successful return
+// ═══════════════════════════════════════════════════════
+// Lookup the conversation tied to a returned listing → open gift modal targeting the finder.
+async function openGiftFromListing(listingId) {
+  if (!currentUser) { showPage('auth'); return; }
+  const { data: conv } = await sb.from('conversations')
+    .select('id, user_a, user_b')
+    .eq('listing_id', listingId)
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!conv) {
+    toast('Keskustelua ei löytynyt — lahja vaatii että olette chatanneet aiemmin.', 'red');
+    return;
+  }
+  const finderUserId = conv.user_a === currentUser.id ? conv.user_b : conv.user_a;
+  openGiftModal(listingId, conv.id, finderUserId);
+}
+
+function openGiftModal(listingId, convId, finderUserId) {
+  if (!currentUser) { showPage('auth'); return; }
+  if (currentUser.id === finderUserId) { toast('Et voi lähettää lahjaa itsellesi.', 'red'); return; }
+  window._giftCtx = { listingId, convId, finderUserId };
+  document.getElementById('gift-emoji-val').value = '';
+  document.getElementById('gift-message').value = '';
+  document.querySelectorAll('.gift-emoji-opt').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.06)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  document.getElementById('gift-modal').style.display = 'flex';
+}
+
+function selectGiftEmoji(btn, val) {
+  document.getElementById('gift-emoji-val').value = val;
+  document.querySelectorAll('.gift-emoji-opt').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.06)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  btn.style.background = 'rgba(245,158,11,0.18)';
+  btn.style.borderColor = '#FBBF24';
+}
+
+async function sendGift() {
+  const ctx = window._giftCtx;
+  if (!ctx) return;
+  const emoji = document.getElementById('gift-emoji-val').value;
+  const msg   = document.getElementById('gift-message').value.trim().slice(0, 120);
+  if (!emoji) { toast('Valitse emoji.', 'red'); return; }
+
+  const btn = document.getElementById('gift-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Lähetetään...';
+
+  const payload = {
+    emoji,
+    message: msg,
+    listing_id: ctx.listingId,
+    receiver_id: ctx.finderUserId,
+    sender_id: currentUser.id,
+    sender_name: currentUser.user_metadata?.name || '',
+    sent_at: new Date().toISOString()
+  };
+  const content = encodeGift(payload);
+
+  const { error } = await sb.from('messages').insert({
+    conversation_id: ctx.convId,
+    sender_id: currentUser.id,
+    content
+  });
+  if (error) {
+    toast('Lahjan lähetys epäonnistui: ' + error.message, 'red');
+    btn.disabled = false;
+    btn.textContent = '💛 Lähetä kiitos →';
+    return;
+  }
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', ctx.convId);
+  document.getElementById('gift-modal').style.display = 'none';
+  btn.disabled = false;
+  btn.textContent = '💛 Lähetä kiitos →';
+  toast('Kiitos lähetetty löytäjälle! 💛', 'green');
+  updateMsgBadge();
+}
+
+// Render the "Saatu karma" gallery on the profile page.
+async function renderReceivedGifts() {
+  const card = document.getElementById('profile-gifts-card');
+  const grid = document.getElementById('profile-gifts-grid');
+  const countEl = document.getElementById('profile-gifts-count');
+  if (!card || !grid) return;
+  const gifts = await fetchMyReceivedGifts();
+  if (!gifts || gifts.length === 0) {
+    card.style.display = 'block';
+    countEl.textContent = '0';
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:rgba(255,255,255,0.4);text-align:center;padding:18px 8px;line-height:1.6;">Ei vielä saatua karmaa.<br>Auta kadottajaa ja kiitokset näkyvät täällä. ✨</div>';
+    return;
+  }
+  card.style.display = 'block';
+  countEl.textContent = String(gifts.length);
+  grid.innerHTML = gifts.map(g => {
+    const when = g.created_at ? timeAgo(g.created_at) : '';
+    const senderLabel = g.sender_name ? esc(g.sender_name) : 'Kadottajalta';
+    const msg = g.message ? `<div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:6px;line-height:1.45;">"${esc(g.message)}"</div>` : '';
+    return `<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:14px 12px;text-align:center;">
+      <div style="font-size:30px;line-height:1;margin-bottom:6px;">${esc(g.emoji || '💛')}</div>
+      <div style="font-size:11px;font-weight:600;color:#FBBF24;">${senderLabel}</div>
+      ${msg}
+      <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:8px;">${when}</div>
+    </div>`;
+  }).join('');
+}
+
+// Read all gifts received by current user (across all their conversations).
+async function fetchMyReceivedGifts() {
+  if (!currentUser) return [];
+  // 1. Find every conversation I'm part of
+  const { data: convs } = await sb.from('conversations')
+    .select('id, listing_id')
+    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`);
+  if (!convs || !convs.length) return [];
+  const convIds = convs.map(c => c.id);
+  // 2. Pull gift-prefixed messages NOT from me (i.e. sent TO me) in those conversations
+  const { data: msgs } = await sb.from('messages')
+    .select('id, conversation_id, sender_id, content, created_at')
+    .in('conversation_id', convIds)
+    .neq('sender_id', currentUser.id)
+    .ilike('content', GIFT_PREFIX.replace(/[\[\]]/g,'%') + '%')  // SQL LIKE-friendly
+    .order('created_at', { ascending: false })
+    .limit(100);
+  return (msgs || []).filter(isGiftMessage).map(m => ({
+    id: m.id,
+    sender_id: m.sender_id,
+    created_at: m.created_at,
+    ...(parseGift(m) || {})
+  }));
+}
+
+// ═══════════════════════════════════════════════════════
+// FINDER INTRO FLOW — 3-question guided message to a lost-listing owner
+// ═══════════════════════════════════════════════════════
+const FINDER_ACTION_LABELS = {
+  keep:      '🔒 Pidän hallussani',
+  police:    '🏛️ Toimitin poliisille tai löytötavaratoimistoon',
+  left:      '📍 Jätin paikoilleen',
+  delivered: '🏪 Toimitin läheiseen liikkeeseen tai paikkaan',
+  other:     '✏️ Muu (tarkennetaan chatissa)'
+};
+
+function openFinderIntro(listingId, ownerId, listingTitle) {
+  if (!currentUser) { showPage('auth'); return; }
+  if (currentUser.id === ownerId) { toast(t('toast_no_self_msg') || 'Et voi viestiä omalle ilmoituksellesi.', 'red'); return; }
+  window._finderIntroCtx = { listingId, ownerId, listingTitle: listingTitle || '' };
+  document.getElementById('finder-q1').value = '';
+  document.getElementById('finder-q3-val').value = '';
+  document.querySelectorAll('.finder-action-opt').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.04)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  const listingLabel = listingTitle ? `Koskee ilmoitusta: "${listingTitle}"` : 'Aloitat keskustelun kadottajan kanssa.';
+  document.getElementById('finder-intro-listing').textContent = listingLabel;
+  document.getElementById('finder-intro-modal').style.display = 'flex';
+}
+
+function selectFinderAction(btn, val) {
+  document.getElementById('finder-q3-val').value = val;
+  document.querySelectorAll('.finder-action-opt').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.04)';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  btn.style.background  = 'rgba(0,184,101,0.14)';
+  btn.style.borderColor = 'rgba(0,184,101,0.5)';
+}
+
+async function submitFinderIntro() {
+  const ctx = window._finderIntroCtx;
+  if (!ctx) return;
+  const q1 = document.getElementById('finder-q1').value.trim();
+  const q3 = document.getElementById('finder-q3-val').value;
+  if (!q1) { toast('Kirjoita lyhyt kuvaus mitä löysit (max 60 mrk).', 'red'); document.getElementById('finder-q1').focus(); return; }
+  if (!q3) { toast('Valitse mitä teit löydölle.', 'red'); return; }
+
+  const btn = document.getElementById('finder-intro-submit');
+  btn.disabled = true;
+  btn.textContent = 'Lähetetään...';
+
+  const { convId, isNew } = await getOrCreateConversation(ctx.listingId, ctx.ownerId);
+  if (!convId) { btn.disabled = false; btn.textContent = '🤝 Lähetä viesti kadottajalle →'; return; }
+
+  // Compose the structured first message
+  const msg =
+    '🤝 LÖYTÄJÄLTÄ — kerron mitä löysin\n\n' +
+    '1) Mitä löysin: "' + q1 + '"\n' +
+    '2) Mitä tein löydölle: ' + (FINDER_ACTION_LABELS[q3] || q3) + '\n\n' +
+    '❓ Voitko kertoa tunnistetiedot, jotta varmistun että tämä on sinun? ' +
+    '(Esim. erityispiirteet, sisältö, kaiverrukset — ne pysyvät vain meidän välisinä.)\n\n' +
+    (ctx.listingTitle ? 'Koskee ilmoitusta: "' + ctx.listingTitle + '"' : '');
+
+  const { error } = await sb.from('messages').insert({
+    conversation_id: convId,
+    sender_id: currentUser.id,
+    content: msg
+  });
+  if (error) {
+    toast('Viestin lähetys epäonnistui: ' + error.message, 'red');
+    btn.disabled = false;
+    btn.textContent = '🤝 Lähetä viesti kadottajalle →';
+    return;
+  }
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', convId);
+
+  document.getElementById('finder-intro-modal').style.display = 'none';
+  btn.disabled = false;
+  btn.textContent = '🤝 Lähetä viesti kadottajalle →';
+  updateMsgBadge();
+  openChat(convId, { listing_id: ctx.listingId });
 }
 
 async function startDirectChat(listingId, ownerId) {
@@ -5328,10 +5917,13 @@ async function loadConversations() {
     if (lastMsg) {
       const isOwn = lastMsg.sender_id === currentUser.id;
       let text = lastMsg.content.substring(0, 60);
-      if (text.startsWith('🔐 OSUMAILMOITUS')) text = '🔐 Osumailmoitus lähetetty';
+      if (isGiftMessage(lastMsg)) {
+        const g = parseGift(lastMsg) || {};
+        text = (g.emoji || '💛') + ' Kiitos lähetetty';
+      } else if (text.startsWith('🔐 OSUMAILMOITUS')) text = '🔐 Osumailmoitus lähetetty';
       else if (text.startsWith('✅ OMISTAJUUS')) text = '✅ Omistajuus vahvistettu';
       preview = (isOwn ? 'Sinä: ' : '') + text;
-      if (lastMsg.content.length > 60) preview += '...';
+      if (lastMsg.content.length > 60 && !isGiftMessage(lastMsg)) preview += '...';
     }
 
     const bg = isArchived ? 'rgba(255,255,255,0.03)' : (isUnread ? 'rgba(0,184,101,0.08)' : 'rgba(255,255,255,0.05)');
@@ -5497,6 +6089,21 @@ async function loadMessages() {
         <div style="font-size:14px;font-weight:600;color:#FBBF24;margin-bottom:8px;">Kiitos löytäjälle!</div>
         <pre style="font-family:inherit;white-space:pre-wrap;font-size:14px;color:rgba(255,255,255,0.7);">${esc(m.content.replace('💛 KIITOS LÖYTÄJÄLLE\n\n',''))}</pre>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:8px;">${timeAgo(m.created_at)}</div>
+      </div>`;
+    }
+    // Gift / karma message — render as a celebratory card
+    if (isGiftMessage(m)) {
+      const g = parseGift(m) || {};
+      const fromMe = own;
+      const heading = fromMe ? 'Lähetit kiitoksen löytäjälle' : 'Sait kiitoksen kadottajalta';
+      const sub = g.sender_name && !fromMe ? esc(g.sender_name) : '';
+      const msg = g.message ? `<div style="font-size:13px;color:rgba(255,255,255,0.78);margin-top:8px;line-height:1.5;">"${esc(g.message)}"</div>` : '';
+      return `<div style="background:rgba(245,158,11,0.08);border:2px solid rgba(245,158,11,0.25);border-radius:var(--radius);padding:18px;text-align:center;margin:10px 0;">
+        <div style="font-size:38px;line-height:1;margin-bottom:8px;">${esc(g.emoji || '💛')}</div>
+        <div style="font-size:13px;font-weight:700;color:#FBBF24;">${heading}</div>
+        ${sub ? `<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">${sub}</div>` : ''}
+        ${msg}
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:10px;">${timeAgo(m.created_at)}</div>
       </div>`;
     }
     const isCloseMsg = m.content.startsWith('🎉 TAPAUS SULJETTU') || m.content.startsWith('🎉 ÄRENDE AVSLUTAT') || m.content.startsWith('🎉 CASE CLOSED');
@@ -5690,6 +6297,9 @@ async function loadProfile() {
   // Show Stripe Connect card if user has any found listings
   const hasFoundListings = (listings || []).some(l => l.type === 'found');
   document.getElementById('stripe-connect-card').style.display = 'none'; // Phase 4 — disabled
+
+  // Saatu karma -galleria
+  renderReceivedGifts();
 
   const myListings = document.getElementById('my-listings-list');
   if (!listings || listings.length === 0) {
@@ -6053,6 +6663,29 @@ function esc(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Listing helpers (encode/decode metadata in existing columns) ──
+// allow_contact is stored as a marker "[NO_CONTACT]" in description for type=found.
+// lost listings always allow contact.
+function listingAllowsContact(l) {
+  if (!l || l.type !== 'found') return true;
+  return ((l.description || '').indexOf('[NO_CONTACT]') === -1);
+}
+function listingPublicDescription(l) {
+  if (!l || !l.description) return '';
+  return l.description.replace(/\[NO_CONTACT\]/g, '').trim();
+}
+
+// ── Karma/gifts (no dedicated table) ──
+// A gift is encoded as a message with content prefixed "[GIFT]:" + JSON-payload.
+// The conversation already exists between the two parties, so RLS just works.
+const GIFT_PREFIX = '[GIFT]:';
+function isGiftMessage(m) { return !!m && typeof m.content === 'string' && m.content.startsWith(GIFT_PREFIX); }
+function parseGift(m) {
+  try { return JSON.parse(m.content.slice(GIFT_PREFIX.length)); }
+  catch (e) { return null; }
+}
+function encodeGift(payload) { return GIFT_PREFIX + JSON.stringify(payload); }
 
 // ═══════════════════════════════════════════════════════
 // INIT
