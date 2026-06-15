@@ -844,74 +844,26 @@ footer::before { display: none; }
 }
 
 /* ── HOME MAP PREVIEW ── */
-.home-map-section {
-  background: var(--bg);
-  padding: 0 0 80px;
-  position: relative;
-}
-.home-map-wrap {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px;
-  position: relative;
-}
-.home-map-container {
-  width: 100%;
-  height: 400px;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1.5px solid rgba(31,94,61,0.2);
-  box-shadow: 0 0 40px rgba(31,94,61,0.2), 0 8px 32px rgba(0,0,0,0.3);
-  position: relative;
-}
-.home-map-container #home-map {
-  width: 100%;
-  height: 100%;
-}
+.home-map-section { background: var(--bg); padding: 24px 0 88px; }
+.home-map-wrap { max-width: 960px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }
+.home-map-container { width: 100%; height: 380px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-md); position: relative; background: var(--paper); }
+.home-map-container #home-map { width: 100%; height: 100%; }
 .home-map-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 32px 24px 20px;
-  background: linear-gradient(to top, rgba(5,15,10,0.95) 0%, rgba(5,15,10,0.6) 60%, transparent 100%);
-  z-index: 2;
-  pointer-events: none;
-  border-radius: 0 0 18px 18px;
+  position: absolute; bottom: 16px; left: 16px;
+  padding: 14px 18px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  z-index: 2; max-width: 280px;
 }
-.home-map-overlay h3 {
-  font-family: 'Fraunces','Georgia',serif;
-  font-size: clamp(16px, 3vw, 20px);
-  font-weight: 800;
-  color:var(--ink);
-  margin: 0 0 4px;
-}
-.home-map-overlay p {
-  font-size: 13px;
-  color:var(--ink3);
-  margin: 0;
-}
-.home-map-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 20px;
-  text-align: center;
-  pointer-events: auto;
-  background: var(--green);
-  color:var(--ink);
-  border: none;
-  padding: 10px 22px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+.home-map-overlay h3 { font-family: 'Fraunces','Georgia',serif; font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 4px; letter-spacing: -0.2px; }
+.home-map-overlay p { font-size: 12px; color: var(--ink2); margin: 0; line-height: 1.5; }
+.home-map-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: var(--green); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
 .home-map-btn:hover { background: var(--green-dark); }
 @media (max-width: 600px) {
-  .home-map-container { height: 300px; border-radius: 14px; }
-  .home-map-overlay { border-radius: 0 0 14px 14px; }
+  .home-map-container { height: 320px; border-radius: 14px; }
+  .home-map-overlay { left: 12px; right: 12px; bottom: 12px; max-width: none; }
 }
 
 /* ── FORM STEPS STRIP ── */
@@ -1346,15 +1298,13 @@ footer::before { display: none; }
 
   <!-- ── HERO ── -->
   <section class="hero">
-    <div class="hero-bg"></div>
     <div class="hero-inner">
-      <div class="hero-content">
+      <div class="hero-content" style="text-align:center;margin:0 auto;max-width:640px;">
         <div class="hero-badge"><div class="badge-dot"></div><span data-i18n="hero_badge">Suomen löytötavaralain mukainen palvelu</span></div>
         <h1 data-i18n="hero_title" data-i18n-html="1">Kadotitko vai löysitkö?<br><span class="accent">Findly yhdistää teidät.</span></h1>
-        <p class="hero-lead" data-i18n="hero_lead">Kaksi karttaa, yksi tavoite — palauttaa tavarat oikeille omistajilleen. Ilmainen, anonyymi ja turvallinen.</p>
+        <p class="hero-lead" data-i18n="hero_lead" style="margin-left:auto;margin-right:auto;">Kaksi karttaa, yksi tavoite — palauttaa tavarat oikeille omistajilleen.</p>
 
-        <!-- Equal-weight dual CTA -->
-        <div class="hero-cta-pair">
+        <div class="hero-cta-pair" style="margin-left:auto;margin-right:auto;">
           <button class="hero-cta hero-cta-lost" onclick="openFormTab('lost')">
             <span class="hero-cta-icon">🔍</span>
             <span class="hero-cta-label">Kadotin tavaran</span>
@@ -1366,42 +1316,14 @@ footer::before { display: none; }
             <span class="hero-cta-sub">Tee löytöilmoitus</span>
           </button>
         </div>
-
-        <button class="btn-check-matches" id="hero-match-btn" onclick="showPage(currentUser ? 'matches' : 'auth')">
-          <span id="hero-match-text" data-i18n="hero_matches">🔔 Tarkista osumat</span>
-          <span id="hero-match-badge" style="display:none;background:var(--green);color:var(--ink);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:4px;"></span>
-        </button>
-      </div>
-      <div class="hero-visual">
-        <div class="floating-card">
-          <div class="fc-icon">🔐</div>
-          <div><div class="fc-title" data-i18n="fc_verified">Osuma vahvistettu</div><div class="fc-sub" data-i18n="fc_ownership">Omistajuus todistettu</div><span class="fc-badge badge-green" data-i18n="fc_approved">✓ Hyväksytty</span></div>
-        </div>
-        <div class="floating-card">
-          <div class="fc-icon">💳</div>
-          <div><div class="fc-title" data-i18n="fc_wallet">Lompakko löydetty</div><div class="fc-sub" data-i18n="fc_wallet_sub">Lähellä Kalliota · 30 min</div><span class="fc-badge badge-blue" data-i18n="fc_match">Osuma löytyi</span></div>
-        </div>
-        <div class="floating-card">
-          <div class="fc-icon">💛</div>
-          <div><div class="fc-title">Kiitos löytäjälle!</div><div class="fc-sub">Karma +1 · ”Pelastit päivän”</div><span class="fc-badge badge-amber">🎁 Karma</span></div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── STATS BAR ── -->
-  <div class="stats-bar">
-    <div class="stats-bar-inner" id="stats-bar-content">
-      <!-- Populated by JS: shows real stats or beta message -->
-    </div>
-  </div>
-
   <!-- ── HOW IT WORKS — TWO MAPS, ONE GOAL ── -->
-  <section style="background:var(--paper);padding:56px 0;">
+  <section style="background:var(--paper);padding:72px 0;">
     <div class="wrap" style="max-width:880px;margin:0 auto;text-align:center;">
-      <div class="section-label">Näin Findly toimii</div>
-      <h2 class="section-title" style="margin-bottom:8px;">Kaksi karttaa, yksi tavoite</h2>
-      <p class="section-sub" style="margin:0 auto 36px;">Findly vertaa kadotettuja ja löydettyjä — kun pari löytyy, ilmoitamme molemmille.</p>
+      <h2 class="section-title" style="margin-bottom:28px;">Kaksi karttaa, yksi tavoite</h2>
 
       <div class="two-flow-grid">
         <div class="flow-card flow-card-lost">
@@ -1413,12 +1335,11 @@ footer::before { display: none; }
             </div>
           </div>
           <ol class="flow-steps">
-            <li><b>Tarkista ensin löytökartta.</b> Joku saattaa jo etsiä sinua.</li>
-            <li>Jos sopivaa ei ole, <b>tee katoamisilmoitus</b> mahdollisimman pian.</li>
-            <li>Löytäjä ottaa yhteyttä chatissa, pyytää <b>tuntomerkkejä</b> ja vahvistaa omistajuuden.</li>
-            <li>Löytäjä kertoo missä tavarasi on. <b>Sovitaan palautus.</b></li>
+            <li>Tarkista ensin <b>löytökartta</b> — joku saattaa etsiä sinua jo.</li>
+            <li>Jos ei, <b>tee katoamisilmoitus</b> ja Findly etsii löytäjiä puolestasi.</li>
+            <li>Löytäjä ottaa yhteyttä chatissa. <b>Sovitte palautuksesta.</b></li>
           </ol>
-          <button class="flow-card-cta flow-card-cta-lost" onclick="openFormTab('lost')">🔍 Tee katoamisilmoitus →</button>
+          <button class="flow-card-cta flow-card-cta-lost" onclick="openFormTab('lost')">Tee katoamisilmoitus →</button>
         </div>
 
         <div class="flow-card flow-card-found">
@@ -1430,31 +1351,19 @@ footer::before { display: none; }
             </div>
           </div>
           <ol class="flow-steps">
-            <li><b>Selaa kadotetut-karttaa.</b> Jos löytösi muistuttaa jotain ilmoitusta — ota yhteyttä.</li>
-            <li>Chat ohjaa <b>3 peruskysymyksellä</b>: mitä löysit, mistä tunnistat, mihin veit löydön.</li>
-            <li>Jos sopivaa kadottajaa ei ole, <b>jätä löytöilmoitus</b> kartalle (anonyymisti).</li>
-            <li>Omistaja voi kiittää sinua karmalla, suukoilla tai kuvalla. <b>Hyvä teko palkitaan.</b></li>
+            <li>Selaa <b>kadotetut-karttaa</b> — sopiva ilmoitus voi olla siellä.</li>
+            <li>Jos ei, <b>jätä löytöilmoitus</b> kartalle (anonyymisti).</li>
+            <li>Kun tavara palautuu, omistaja voi kiittää sinua <b>karmalla</b>.</li>
           </ol>
-          <button class="flow-card-cta flow-card-cta-found" onclick="openFormTab('found')">📦 Tee löytöilmoitus →</button>
+          <button class="flow-card-cta flow-card-cta-found" onclick="openFormTab('found')">Tee löytöilmoitus →</button>
         </div>
       </div>
 
-      <p style="margin-top:32px;font-size:13px;color:var(--ink3);">
-        ⏱️ Ilmoitukset säilyvät kartalla <b style="color:var(--ink2);">7 päivää</b>. Sen jälkeen ne katoavat automaattisesti.
+      <p style="margin-top:28px;font-size:13px;color:var(--ink2);">
+        Ilmoitukset säilyvät kartalla 7 päivää.
       </p>
     </div>
   </section>
-
-  <!-- ── TRUST BAR ── -->
-  <div style="background:var(--paper);padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);">
-    <div class="wrap" style="max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);">
-      <span>🔒 Sijaintisi pysyy piilossa ennen matchausta</span>
-      <span style="color:var(--ink3);">·</span>
-      <span>🛡️ Ilmoitukset tarkistetaan</span>
-      <span style="color:var(--ink3);">·</span>
-      <span>📋 Tietosuojalain mukainen</span>
-    </div>
-  </div>
 
   <!-- ── HOME MAP PREVIEW ── -->
   <section class="home-map-section">
@@ -1462,261 +1371,10 @@ footer::before { display: none; }
       <div class="home-map-container">
         <div id="home-map"></div>
         <div class="home-map-overlay">
-          <h3>Löydöt ja katoamiset lähialueellasi</h3>
-          <p>Sijainnit näytetään 300-500 m tarkkuudella</p>
-          <button class="home-map-btn" onclick="showPage('map')">Avaa koko kartta →</button>
+          <h3>Lähialueesi ilmoitukset</h3>
+          <p>Sijainnit näkyvät ±500 m tarkkuudella.</p>
+          <button class="home-map-btn" onclick="showPage('map')">Avaa kartta →</button>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- section divider -->
-  <div style="height:1px;background:linear-gradient(90deg,transparent 10%,rgba(31,94,61,0.15) 50%,transparent 90%);margin:0;"></div>
-
-  <!-- ── CATEGORIES ── -->
-  <section style="background:var(--bg-tint);padding:72px 0;">
-    <div class="wrap">
-      <div class="section-label" data-i18n="cat_label">Kategoriat</div>
-      <div class="section-title" data-i18n="cat_title">Mitä olet kadottanut?</div>
-      <div class="section-sub" data-i18n="cat_sub">Klikkaa ja tee ilmoitus suoraan.</div>
-      <div class="category-grid">
-        <div class="category-card" onclick="openFormCat('📱 Puhelin')">
-          <span class="cat-icon">📱</span>
-          <div class="cat-label" data-i18n="cat_phone">Puhelin</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('💳 Lompakko / kortit')">
-          <span class="cat-icon">💳</span>
-          <div class="cat-label" data-i18n="cat_wallet">Lompakko</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('🔑 Avaimet')">
-          <span class="cat-icon">🔑</span>
-          <div class="cat-label" data-i18n="cat_keys">Avaimet</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('👜 Laukku / reppu')">
-          <span class="cat-icon">👜</span>
-          <div class="cat-label" data-i18n="cat_bag">Laukku / reppu</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('💎 Koru / kello')">
-          <span class="cat-icon">💎</span>
-          <div class="cat-label" data-i18n="cat_jewelry">Koru / kello</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('🎧 Elektroniikka')">
-          <span class="cat-icon">🎧</span>
-          <div class="cat-label" data-i18n="cat_electronics">Elektroniikka</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('🚲 Polkupyörä')">
-          <span class="cat-icon">🚲</span>
-          <div class="cat-label" data-i18n="cat_bike">Polkupyörä</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('📄 Asiakirjat / ID')">
-          <span class="cat-icon">📄</span>
-          <div class="cat-label">Asiakirjat / ID</div>
-        </div>
-        <div class="category-card" onclick="openFormCat('Muu')">
-          <span class="cat-icon">📦</span>
-          <div class="cat-label" data-i18n="cat_other">Muu tavara</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- section divider -->
-  <div style="height:1px;background:linear-gradient(90deg,transparent 10%,rgba(31,94,61,0.15) 50%,transparent 90%);margin:0;"></div>
-
-  <!-- ── WHY FINDLY vs FACEBOOK ── -->
-  <section style="background:var(--bg);padding:72px 0;">
-    <div class="wrap" style="max-width:880px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:40px;">
-        <div class="section-label">Vertailu</div>
-        <h2 class="section-title">Miksi Findly eikä Facebook?</h2>
-        <p class="section-sub" style="margin:0 auto;">Facebook-ryhmissä selaat ja toivot. Findly hoitaa matchauksen puolestasi.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--radius-lg);overflow:hidden;border: 1.5px solid var(--border);word-break:break-word;">
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;font-weight:600;color:var(--ink3);">Facebook-ryhmät</div>
-        <div style="background:rgba(31,94,61,0.1);padding:12px 14px;font-size:12px;font-weight:600;color:var(--green);">Findly</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink3);">❌ Selaat satoja postauksia manuaalisesti</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">✅ Automaattinen matchaus — osumat tulevat sinulle</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink3);">❌ Kaikki tiedot julkisia kaikille</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">✅ Tiedot jaetaan vasta omistajuuden vahvistuksen jälkeen</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink3);">❌ Ei tapaa todistaa omistajuutta</div>
-        <div style="background: var(--paper);padding:12px 14px;font-size:12px;color:var(--ink2);">✅ Pakollinen vahvistusprosessi ennen kontaktia</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── WHY FINDLY ── -->
-  <section class="section-dark">
-    <div class="wrap">
-      <div class="section-label" data-i18n="why_label">Miksi Findly?</div>
-      <div class="section-title" data-i18n="why_title">Rakennettu turvallisuus edellä</div>
-      <div class="section-sub" data-i18n="why_sub">Muissa palveluissa jaat kaiken julkisesti. Findly suojaa yksityisyytesi ja varmistaa oikean omistajan.</div>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">📍</div>
-          <h3 data-i18n="why_loc_title">Sijainti piilotettu</h3>
-          <p data-i18n="why_loc_desc">Tarkka sijainti jaetaan vasta vahvistuksen jälkeen. Muille näkyy vain ±500 m alue.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🛡️</div>
-          <h3 data-i18n="why_verify_title">Pakollinen verificaatio</h3>
-          <p data-i18n="why_verify_desc">Löytäjä päättää hyväksyykö — ei kontaktia ennen vahvistusta.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">⚖️</div>
-          <h3 data-i18n="why_law_title">Lain mukainen</h3>
-          <p data-i18n="why_law_desc">Löytötavaralain mukainen. Löytäjällä oikeus palkkioon, velvollisuus ilmoittaa.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🎯</div>
-          <h3 data-i18n="why_match_title">Älykäs matchaus</h3>
-          <p data-i18n="why_match_desc">Ei selailua — osumat tulevat automaattisesti kategorian, ajan ja sijainnin perusteella.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🆓</div>
-          <h3 data-i18n="why_free_title">Täysin ilmainen</h3>
-          <p data-i18n="why_free_desc">Ilmainen kaikille. Löytöpalkkio sovitaan suoraan keskenänne.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- section divider -->
-  <div style="height:1px;background:linear-gradient(90deg,transparent 10%,rgba(139,92,246,0.12) 50%,transparent 90%);margin:0;"></div>
-
-  <!-- ── STORIES ── -->
-  <section style="background:var(--paper);padding:72px 0;">
-    <div class="wrap" style="max-width:800px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:40px;">
-        <div class="section-label" data-i18n="stories_label">Findly-tarinat</div>
-        <div class="section-title" data-i18n="stories_title">Tämä tarina päättyi hyvin</div>
-        <div class="section-sub" data-i18n="stories_sub">Oikeita kokemuksia Findly-käyttäjiltä. Jokainen palautus on pieni voitto.</div>
-      </div>
-      <div id="stories-feed" style="display:grid;gap:16px;">
-        <div class="loading"><div class="spinner"></div></div>
-      </div>
-      <div id="stories-empty" style="display:none;text-align:center;padding:32px;color:var(--ink3);font-size:14px;" data-i18n="stories_empty">
-        Tarinoita ei ole vielä — ensimmäinen onnistuminen on tulossa! 💛
-      </div>
-    </div>
-  </section>
-
-  <!-- ── GOOD VIBES ── -->
-<section style="background:var(--bg);padding:56px 0;">
-  <div class="wrap" style="max-width:700px;margin:0 auto;text-align:center;">
-    <div style="font-size:40px;margin-bottom:16px;">💛</div>
-    <h2 style="font-family:'Fraunces','Georgia',serif;font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--ink);margin-bottom:12px;">Rehellisyys palkitsee</h2>
-    <p style="font-size:14px;color:var(--ink3);line-height:1.7;margin-bottom:28px;">Jokainen palautus kasvattaa löytäjän karma-profiilia. Kiitos-viestit ja onnistumistarinat näkyvät julkisesti.</p>
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-      <div style="background: var(--paper);border: 1px solid var(--border);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
-        <div style="font-size:28px;margin-bottom:8px;">🏅</div>
-        <div style="font-size:13px;font-weight:600;color:var(--ink);">Karma-badge</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Profiilimerkintä</div>
-      </div>
-      <div style="background: var(--paper);border: 1px solid var(--border);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
-        <div style="font-size:28px;margin-bottom:8px;">💬</div>
-        <div style="font-size:13px;font-weight:600;color:var(--ink);">Kiitosviesti</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Omistajalta</div>
-      </div>
-      <div style="background: var(--paper);border: 1px solid var(--border);border-radius:16px;padding:20px 24px;text-align:center;min-width:140px;">
-        <div style="font-size:28px;margin-bottom:8px;">📖</div>
-        <div style="font-size:13px;font-weight:600;color:var(--ink);">Onnistumistarina</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Julkinen feed</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-  <!-- ── FINAL CTA ── -->
-  <section class="section-cta">
-    <div class="wrap">
-      <h2 data-i18n="cta_title" data-i18n-html="1">Tavara kadoksissa?<br>Löysitkö jonkun tavaran?</h2>
-      <p data-i18n="cta_sub">Tee ilmoitus alle kahdessa minuutissa — täysin ilmaiseksi.</p>
-      <div class="cta-buttons">
-        <button class="cta-btn-primary" onclick="openFormTab('lost')" data-i18n="cta_lost">🔍 Kadotin tavaran</button>
-        <button class="cta-btn-secondary" onclick="openFormTab('found')" data-i18n="cta_found">📦 Löysin tavaran</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- section divider -->
-  <div style="height:1px;background:linear-gradient(90deg,transparent 10%,rgba(31,94,61,0.15) 50%,transparent 90%);margin:0;"></div>
-
-  <!-- ── FAQ (SEO + Rich Results) ── -->
-  <section style="background:var(--bg-tint);padding:72px 0;">
-    <div class="wrap">
-      <div class="section-label" data-i18n="faq_label">Usein kysyttyä</div>
-      <div class="section-title" style="margin-bottom:40px;" data-i18n="faq_title">Löytötavara-palvelun UKK</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:20px;max-width:960px;margin:0 auto;">
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q1">Miten ilmoitan kadonneesta tavarasta?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a1">Rekisteröidy ilmaiseksi, klikkaa "Kadotin tavaran" ja kuvaile tavara. Findly etsii automaattisesti vastaavia löytöilmoituksia ja ilmoittaa mahdollisesta matchista.</p>
-        </div>
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q2">Miten ilmoitan löydetystä tavarasta?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a2">Klikkaa "Löysin tavaran", täytä lyhyt lomake. Findly vertaa ilmoitustasi kadonneiden tavaroiden ilmoituksiin — Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota (enintään 10% tavaran arvosta).</p>
-        </div>
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q3">Onko Findly ilmainen?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a3">Kyllä, täysin ilmainen. Voit jättää ja selata löytötavara-ilmoituksia maksutta. Findly toimii koko Suomessa.</p>
-        </div>
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q4">Kuinka kauan ilmoitus on voimassa?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a4">Löytötavara-ilmoitus on näkyvissä 7 päivää, jonka jälkeen se poistuu automaattisesti. Voit tehdä uuden ilmoituksen tarvittaessa.</p>
-        </div>
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q5">Toimiiko Findly koko Suomessa?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a5">Kyllä — Helsingistä, Tampereelta, Turusta ja kaikkialta muualtakin. Findly on valtakunnallinen löytötavara-palvelu kaikille suomalaisille.</p>
-        </div>
-        <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius);padding:24px;">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink);" data-i18n="faq_q6">Onko sijainti turvallinen?</h3>
-          <p style="font-size:13px;color:var(--ink3);line-height:1.6;" data-i18n="faq_a6">Kyllä. Sijainti näytetään muille noin 300–500 metrin epätarkkuudella. Tarkka osoite jaetaan vasta kun omistajuus on vahvistettu.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── LAW BANNER ── -->
-  <div style="background:var(--bg);padding:40px 0 0;">
-    <div class="wrap">
-      <div class="law-banner-outer">
-        <div class="law-banner">
-          <div style="font-size:26px;flex-shrink:0;margin-top:2px;">⚖️</div>
-          <div class="law-content">
-            <h3 data-i18n="law_title" data-i18n-html="1">Löytötavaralaki (778/1988) — tiedä oikeutesi ja velvollisuutesi</h3>
-            <p data-i18n="law_text" data-i18n-html="1">Löytäjän tulee toimia löytötavaralain mukaisesti: <strong>ilmoita omistajalle</strong>, tai <strong>toimita poliisille</strong>, tai luovuta löytöpaikan ohjeiden mukaisesti. Löytäjällä on lain mukaan oikeus <strong>pyytää omistajalta löytöpalkkiota</strong> (enintään 10% tavaran käyvästä arvosta).</p>
-            <div class="law-points">
-              <span class="law-tag" data-i18n="law_tag1">📋 Ilmoita poliisille jos omistajaa ei löydy</span>
-              <span class="law-tag" data-i18n="law_tag2">💰 Löytäjän oikeus pyytää palkkiota (max 10%)</span>
-              <span class="law-tag" data-i18n="law_tag3">⏳ Omistajalla 3 kk hakea tavaransa</span>
-              <span class="law-tag" data-i18n="law_tag4">🔒 Tarkat tiedot vasta matchin jälkeen</span>
-              <span class="law-tag" data-i18n="law_tag5">🏢 Julkisesta tilasta löytynyt? Luovuta henkilökunnalle</span>
-            </div>
-            <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
-              <div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:8px;">⚠️ Tärkeää tietää</div>
-              <div style="font-size:12px;color:var(--ink3);line-height:1.7;">
-                Löydettyä tavaraa <strong>ei saa pitää itsellään</strong> ilman lain mukaisia toimenpiteitä. Arvokkaat tavarat tulee toimittaa poliisille. Findly on välityspalvelu — ei säilytyspaikka eikä lainmukaisen ilmoitusvelvollisuuden korvike.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── CITIES SEO ── -->
-  <section style="background:var(--bg);padding:56px 0;">
-    <div class="wrap">
-      <div class="section-label">Kaupungit</div>
-      <div class="section-title">Findly toimii koko Suomessa</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
-        <button onclick="openCity('Helsinki')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Helsinki</button>
-        <button onclick="openCity('Tampere')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Tampere</button>
-        <button onclick="openCity('Turku')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Turku</button>
-        <button onclick="openCity('Oulu')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Oulu</button>
-        <button onclick="openCity('Jyväskylä')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Jyväskylä</button>
-        <button onclick="openCity('Espoo')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Espoo</button>
-        <button onclick="openCity('Vantaa')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Vantaa</button>
-        <button onclick="openCity('Lahti')" style="padding:10px 20px;border: 1px solid var(--border);border-radius:24px;background: var(--paper);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(110,237,176,0.4)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Lahti</button>
       </div>
     </div>
   </section>
@@ -1725,23 +1383,15 @@ footer::before { display: none; }
   <footer>
     <div class="footer-inner">
       <div>
-        <div class="footer-logo">findly</div>
-        <div style="font-size:13px;color:var(--ink3);margin-bottom:8px;" data-i18n="footer_tagline">Löydä se mikä katosi. Hyvän mielen palvelu. 💛</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-          <span style="font-size:11px;color:var(--ink3);border: 1px solid var(--border);padding:3px 10px;border-radius:20px;">🇫🇮 Rakennettu Suomessa</span>
-          <span style="font-size:11px;color:var(--ink3);border: 1px solid var(--border);padding:3px 10px;border-radius:20px;">⚖️ Lain mukainen</span>
-          <span style="font-size:11px;color:var(--ink3);border: 1px solid var(--border);padding:3px 10px;border-radius:20px;">🔐 GDPR</span>
-        </div>
-        <div class="footer-legal" data-i18n="footer_legal" data-i18n-html="1">Findly toimii Suomen löytötavaralain (778/1988) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Tarkat sijaintitiedot jaetaan vasta matchauksen jälkeen.<br><br>Findly ei säilytä tavaroita. Palvelu ei korvaa poliisia tai löytötavaratoimistoa. Käyttäjä vastaa itse lain noudattamisesta.</div>
+        <div class="footer-logo">find<span>ly</span></div>
+        <div class="footer-legal">Findly toimii Suomen löytötavaralain (778/1988) mukaisesti välityspalveluna.</div>
       </div>
       <div class="footer-links">
-        <a href="https://poliisi.fi/loytotavarat" target="_blank" data-i18n="footer_police">Poliisi — löytötavarat</a>
-        <a href="https://hesy.fi" target="_blank" data-i18n="footer_hesy">HESY — eläinsuojelu</a>
         <a onclick="showPage('privacy')" style="cursor:pointer;" data-i18n="footer_privacy">Tietosuoja</a>
         <a onclick="showPage('terms')" style="cursor:pointer;" data-i18n="footer_terms">Käyttöehdot</a>
       </div>
     </div>
-    <div class="footer-copy" data-i18n="footer_copy">© 2025 Findly. Kaikki oikeudet pidätetään.</div>
+    <div class="footer-copy" data-i18n="footer_copy">© 2026 Findly</div>
   </footer>
 </div>
 
