@@ -1698,9 +1698,9 @@ footer::before { display: none; }
           <textarea id="f-desc" placeholder="Väri, merkki, erityispiirteet. Älä paljasta kaikkia tunnistetietoja — ne vahvistetaan matchauksen jälkeen." required></textarea>
         </div>
 
-        <!-- IMAGE UPLOAD (owner only — not shown for 'found' type) -->
+        <!-- IMAGE UPLOAD — only the finder can take a photo (löytäjä-flow only) -->
         <div class="form-group full" id="image-upload-field">
-          <label data-i18n="form_photo" data-i18n-html="1">Kuva <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
+          <label data-i18n="form_photo" data-i18n-html="1">Kuva löydöstä <span style="font-weight:400;color:var(--ink3);">(valinnainen, max 1)</span></label>
           <div id="image-drop-zone" onclick="document.getElementById('f-image').click()"
             style="border:2px dashed rgba(255,255,255,0.1);border-radius:var(--radius);padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;background: var(--paper);"
             onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
@@ -4539,7 +4539,9 @@ function setFormType(type) {
   if (descEl)  descEl.required  = isLost;
 
   // Image upload, reward, last-seen, phone: lost-only (anti-abuse for found)
-  document.getElementById('image-upload-field').style.display = isLost ? 'block' : 'none';
+  // Image upload: only the FINDER can take a photo (the loser can't photograph
+  // what they no longer have). Found-only.
+  document.getElementById('image-upload-field').style.display = isFound ? 'block' : 'none';
   document.getElementById('reward-field').style.display = isLost ? 'block' : 'none';
   const lastSeenGrp = document.getElementById('f-last-seen-group');
   if (lastSeenGrp) lastSeenGrp.style.display = isLost ? 'block' : 'none';
@@ -4557,16 +4559,11 @@ function setFormType(type) {
     document.querySelectorAll('.contact-opt').forEach(b => { b.style.background='rgba(255,255,255,0.06)'; b.style.borderColor='rgba(255,255,255,0.1)'; });
   }
 
-  // Update image guidance based on type
+  // Image guidance — only the finder sees this. The reminder is anti-abuse:
+  // a too-revealing photo would let anyone claim the item.
   const imgGuide = document.getElementById('image-guidance');
-  if (imgGuide) {
-    if (type === 'pet') {
-      imgGuide.innerHTML = '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Lisää mahdollisimman selkeä kuva lemmikistä. Näytä eläimen väri, koko ja erityispiirteet.</div>';
-    } else if (type === 'found') {
-      imgGuide.innerHTML = '<span>📷</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Kuva auttaa matchauksessa. Voit kuvata tavaran yleisellä tasolla — omistaja todistaa omistajuutensa yksityiskohdilla.</div>';
-    } else {
-      imgGuide.innerHTML = '<span>🛡️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Älä näytä kaikkia tunnistetietoja. Jätä esim. sarjanumero tai nimikirjoitus pois kuvasta — oikea omistaja tietää ne valmiiksi.</div>';
-    }
+  if (imgGuide && isFound) {
+    imgGuide.innerHTML = '<span>⚠️</span><div style="font-size:12px;"><strong>Kuvaohje:</strong> Yksi kuva, kuvattuna yleisellä tasolla — väri, malli, muoto. <strong>Älä näytä tunnistetietoja</strong>: sarjanumeroita, sisältöä, kaiverruksia, nimiä. Niistä kadottaja todistaa omistajuutensa.</div>';
   }
 
   // found: make action-taken required
@@ -4764,7 +4761,7 @@ async function submitListing(e) {
   // Upload image if provided (owner types only)
   let image_url = null;
   const imageFile = document.getElementById('f-image')?.files[0];
-  if (imageFile && currentFormType === 'lost') {
+  if (imageFile && currentFormType === 'found') {
     btn.textContent = 'Ladataan kuvaa...';
     const ext = imageFile.name.split('.').pop();
     const path = `${currentUser.id}/${Date.now()}.${ext}`;
