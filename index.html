@@ -3440,7 +3440,7 @@ async function openListing(id) {
     <div class="contact-card">
       <h3>${{fi:'Löysitkö tämän tavaran?',sv:'Hittade du detta föremål?',en:'Did you find this item?'}[currentLang]}</h3>
       <p>${{fi:'Kerro lyhyesti mitä löysit, valitse mitä teit löydölle — Findly pyytää kadottajaa todistamaan omistajuutensa.',sv:'Berätta kort vad du hittade och vad du gjorde med fyndet — Findly ber ägaren bevisa sitt ägande.',en:'Tell us briefly what you found and what you did with it — Findly will ask the owner to prove ownership.'}[currentLang]}</p>
-      <button class="btn-primary" style="border:none;" onclick="openFinderIntro('${l.id}','${l.user_id}', ${JSON.stringify(l.title || '')})">${{fi:'🤝 Kerro löydöstäsi →',sv:'🤝 Berätta om ditt fynd →',en:'🤝 Tell about your find →'}[currentLang]}</button>
+      <button class="btn-primary" style="border:none;" onclick="openFinderIntro('${l.id}','${l.user_id}')">${{fi:'🤝 Kerro löydöstäsi →',sv:'🤝 Berätta om ditt fynd →',en:'🤝 Tell about your find →'}[currentLang]}</button>
     </div>` : ''}
 
     ${canContact && l.type === 'found' ? `
@@ -5205,7 +5205,7 @@ async function loadMatches() {
               ${isPending
                 ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1px solid rgba(245,158,11,0.2);background:rgba(245,158,11,0.12);color:var(--amber);width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
                 : mine.type === 'found'
-                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();openFinderIntro('${l.id}','${l.user_id}', ${JSON.stringify(l.title || '')})">🤝 Kerro löydöstäsi</button>`
+                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();openFinderIntro('${l.id}','${l.user_id}')">🤝 Kerro löydöstäsi</button>`
                   : `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Tämä on minun — todista omistajuus</button>`}
             </div>
           </div>
@@ -5472,10 +5472,15 @@ const FINDER_ACTION_LABELS = {
   other:     '✏️ Muu (tarkennetaan chatissa)'
 };
 
-function openFinderIntro(listingId, ownerId, listingTitle) {
+async function openFinderIntro(listingId, ownerId) {
   if (!currentUser) { showPage('auth'); return; }
   if (currentUser.id === ownerId) { toast(t('toast_no_self_msg') || 'Et voi viestiä omalle ilmoituksellesi.', 'red'); return; }
-  window._finderIntroCtx = { listingId, ownerId, listingTitle: listingTitle || '' };
+  // Fetch the title here (was being passed inline before, but a title containing
+  // a quote-character broke the onclick HTML attribute and the whole call silently
+  // failed). The lookup is cheap and always works.
+  const { data: l } = await sb.from('listings').select('title').eq('id', listingId).maybeSingle();
+  const listingTitle = l?.title || '';
+  window._finderIntroCtx = { listingId, ownerId, listingTitle };
   document.getElementById('finder-q1').value = '';
   document.getElementById('finder-q3-val').value = '';
   document.querySelectorAll('.finder-action-opt').forEach(b => {
