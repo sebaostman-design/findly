@@ -543,6 +543,20 @@ section { padding: 80px 0; }
 .map-controls-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 #mapbox-container { flex: 1; min-height: 500px; }
 .mapboxgl-popup-content { font-family: 'Inter', sans-serif; font-size: 13px; border-radius: 12px !important; padding: 0 !important; box-shadow: var(--shadow-md) !important; background: transparent !important; border: none !important; }
+.mapboxgl-popup-close-button {
+  position: absolute !important; top: 6px !important; right: 8px !important;
+  width: 24px !important; height: 24px !important;
+  border-radius: 50% !important;
+  background: rgba(20,30,25,0.55) !important;
+  color: #fff !important;
+  font-size: 18px !important; line-height: 1 !important;
+  border: none !important; cursor: pointer !important;
+  padding: 0 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  transition: background 0.15s ease !important;
+  z-index: 5;
+}
+.mapboxgl-popup-close-button:hover { background: var(--ink) !important; }
 .mapboxgl-popup-tip { border-top-color: var(--paper) !important; }
 .popup-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--ink); }
 .popup-loc { color: var(--ink2); font-size: 12px; margin-bottom: 8px; }
@@ -4307,7 +4321,7 @@ function updateMapMarkers(listings) {
     el.onmouseover = () => { el.style.boxShadow = `0 6px 16px rgba(20,30,25,0.22), 0 0 0 4px ${mColor}33`; };
     el.onmouseout  = () => { el.style.boxShadow = '0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7)'; };
     const typeLbl = {lost:{fi:'Kadonnut',sv:'Förlorad',en:'Lost'},found:{fi:'Löydetty',sv:'Hittad',en:'Found'},stolen:{fi:'Varastettu',sv:'Stulen',en:'Stolen'},pet:{fi:'Eläin',sv:'Djur',en:'Pet'}}[l.type]?.[currentLang] || l.type;
-    const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, className: 'dark-popup' }).setHTML(`
+    const popup = new mapboxgl.Popup({ offset: 25, closeButton: true, closeOnMove: false, maxWidth: '260px' }).setHTML(`
       <div style="background: var(--paper);border:1px solid rgba(31,94,61,0.2);border-radius:14px;padding:14px 16px;color:var(--ink);min-width:180px;">
         <div style="font-size:14px;font-weight:700;margin-bottom:4px;">${categoryIcon(l.category)} ${esc(l.title)}</div>
         <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">${typeLbl} · ${esc((l.address||'').split(',')[0])}</div>
