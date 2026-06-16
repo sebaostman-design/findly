@@ -1594,7 +1594,7 @@ footer::before { display: none; }
         Tarvitset tilin jotta voit vastaanottaa viestejä ja saada tiedon vastaavista ilmoituksista. Sähköposti + salasana tai Google — kestää 20 sekuntia.
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto;">
-        <button class="btn-primary" style="width:100%;" onclick="saveDraft();showPage('auth')">Kirjaudu / luo tili →</button>
+        <button class="btn-primary" style="width:100%;" onclick="goToAuthForListing()">Kirjaudu / luo tili →</button>
       </div>
     </div>
 
@@ -2621,7 +2621,9 @@ let claimsToday = 0;
 // ═══════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════
-function showPage(name) {
+// `fromPopstate=true` means the browser back/forward triggered this call;
+// in that case we MUST NOT pushState again or we'd duplicate history entries.
+function showPage(name, fromPopstate) {
   // Clean up chat polling when leaving chat page
   if (name !== 'chat' && chatInterval) { clearInterval(chatInterval); chatInterval = null; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2633,6 +2635,18 @@ function showPage(name) {
   const m = document.getElementById('mobile-menu');
   if (m) m.style.display = 'none';
   if (pageHistory[pageHistory.length - 1] !== name) pageHistory.push(name);
+
+  // Browser history integration — every navigation pushes a state so the
+  // OS back gesture (swipe on mobile, back button on desktop) goes to the
+  // previous Findly page instead of leaving the app.
+  if (!fromPopstate) {
+    const url = '#' + name;
+    if (location.hash !== url) {
+      history.pushState({ page: name }, '', url);
+    } else if (!history.state) {
+      history.replaceState({ page: name }, '', url);
+    }
+  }
 
   if (name === 'home') setTimeout(initHomeMap, 200);
   if (name === 'feed') loadFeed();
@@ -2664,10 +2678,29 @@ function showPage(name) {
 }
 
 function goBack() {
-  pageHistory.pop();
-  const prev = pageHistory[pageHistory.length - 1] || 'home';
-  showPage(prev);
+  // Prefer the browser history so the back gesture matches what the user sees.
+  if (history.length > 1) history.back();
+  else {
+    pageHistory.pop();
+    const prev = pageHistory[pageHistory.length - 1] || 'home';
+    showPage(prev);
+  }
 }
+
+// Hook OS back/forward gesture (mobile swipe, browser button) into showPage
+window.addEventListener('popstate', (e) => {
+  const target = (e.state && e.state.page) || (location.hash || '').replace(/^#/, '') || 'home';
+  showPage(target, /* fromPopstate */ true);
+});
+// On initial load, honor a hash like #map or #profile (e.g. shared links)
+(() => {
+  const initial = (location.hash || '').replace(/^#/, '');
+  if (initial && document.getElementById('page-' + initial)) {
+    setTimeout(() => showPage(initial, true), 0);
+  } else {
+    history.replaceState({ page: 'home' }, '', '#home');
+  }
+})();
 
 function openFormTab(type) {
   // Pet is no longer offered as a user-facing flow — fall through gracefully if called
@@ -2851,6 +2884,14 @@ function submitFeedback() {
 // ═══════════════════════════════════════════════════════
 // AUTH
 // ═══════════════════════════════════════════════════════
+// Pre-auth navigation: remember where to send the user after login.
+// Survives reloads via localStorage.
+function goToAuthForListing() {
+  saveDraftNow();
+  localStorage.setItem('findly-after-auth', 'new-listing');
+  showPage('auth');
+}
+
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
   updateNavAuth();
@@ -2860,9 +2901,15 @@ sb.auth.onAuthStateChange((event, session) => {
     showSetNewPasswordForm();
     return;
   }
-  // Redirect away from auth page if user just signed in (but NOT during recovery)
+  // Just signed in (and not mid-recovery): honour a pending post-auth target
   if (currentUser && document.getElementById('page-auth').classList.contains('active') && !window._passwordRecoveryActive) {
-    showPage('home');
+    const target = localStorage.getItem('findly-after-auth');
+    if (target) {
+      localStorage.removeItem('findly-after-auth');
+      showPage(target);
+    } else {
+      showPage('home');
+    }
   }
   if (currentUser) {
     setTimeout(updateMatchBadge, 1500);
@@ -4641,8 +4688,7 @@ async function submitListing(e) {
 
   if (!currentUser) {
     // Both flows require a light account (email + password or Google)
-    saveDraft();
-    showPage('auth');
+    goToAuthForListing();
     return;
   }
 
@@ -6178,23 +6224,39 @@ function shareIG(id) {
 // OFFLINE DRAFT SUPPORT
 // ═══════════════════════════════════════════════════════
 let draftTimeout = null;
+function _buildDraft() {
+  return {
+    type:        currentFormType || '',
+    category:    document.getElementById('f-category')?.value || '',
+    title:       document.getElementById('f-title')?.value || '',
+    description: document.getElementById('f-desc')?.value || '',
+    address:     document.getElementById('f-address')?.value || '',
+    lat:         document.getElementById('f-lat')?.value || '',
+    lng:         document.getElementById('f-lng')?.value || '',
+    phone:       document.getElementById('f-phone')?.value || '',
+    reward:      document.getElementById('f-reward')?.value || '',
+    when:        document.getElementById('f-when')?.value || '',
+    whenFrom:    document.getElementById('f-when-from')?.value || '',
+    whenTo:      document.getElementById('f-when-to')?.value || '',
+    lastSeen:    document.getElementById('f-last-seen')?.value || '',
+    // found-only fields
+    foundBrief:  document.getElementById('f-found-brief')?.value || '',
+    takenTo:     document.getElementById('f-taken-to-val')?.value || '',
+    takenToDetail: document.getElementById('f-taken-to-detail')?.value || '',
+    allowContact:document.getElementById('f-allow-contact')?.value || ''
+  };
+}
 function saveDraft() {
   clearTimeout(draftTimeout);
   draftTimeout = setTimeout(() => {
-    const draft = {
-      type: currentFormType || '',
-      category: document.getElementById('f-category')?.value || '',
-      title: document.getElementById('f-title')?.value || '',
-      description: document.getElementById('f-desc')?.value || '',
-      address: document.getElementById('f-address')?.value || '',
-      lat: document.getElementById('f-lat')?.value || '',
-      lng: document.getElementById('f-lng')?.value || '',
-      phone: document.getElementById('f-phone')?.value || '',
-      reward: document.getElementById('f-reward')?.value || '',
-      when: document.getElementById('f-when')?.value || ''
-    };
-    localStorage.setItem('findly-draft', JSON.stringify(draft));
+    localStorage.setItem('findly-draft', JSON.stringify(_buildDraft()));
   }, 1000);
+}
+// Synchronous save — use before navigating away (auth redirect) so the
+// latest keystrokes don't get lost in the debounce.
+function saveDraftNow() {
+  clearTimeout(draftTimeout);
+  localStorage.setItem('findly-draft', JSON.stringify(_buildDraft()));
 }
 function restoreDraft() {
   const raw = localStorage.getItem('findly-draft');
@@ -6202,16 +6264,35 @@ function restoreDraft() {
   try {
     const d = JSON.parse(raw);
     if (d.type) setFormType(d.type);
-    if (d.category) document.getElementById('f-category').value = d.category;
-    if (d.title) document.getElementById('f-title').value = d.title;
-    if (d.description) document.getElementById('f-desc').value = d.description;
-    if (d.address) document.getElementById('f-address').value = d.address;
-    if (d.lat) document.getElementById('f-lat').value = d.lat;
-    if (d.lng) document.getElementById('f-lng').value = d.lng;
-    if (d.phone) document.getElementById('f-phone').value = d.phone;
-    if (d.reward && document.getElementById('f-reward')) document.getElementById('f-reward').value = d.reward;
-    if (d.when && document.getElementById('f-when')) document.getElementById('f-when').value = d.when;
-    toast('Luonnos palautettu', 'green');
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v != null && v !== '') el.value = v; };
+    set('f-category',    d.category);
+    set('f-title',       d.title);
+    set('f-desc',        d.description);
+    set('f-address',     d.address);
+    set('f-lat',         d.lat);
+    set('f-lng',         d.lng);
+    set('f-phone',       d.phone);
+    set('f-reward',      d.reward);
+    set('f-when',        d.when);
+    set('f-when-from',   d.whenFrom);
+    set('f-when-to',     d.whenTo);
+    set('f-last-seen',   d.lastSeen);
+    set('f-found-brief', d.foundBrief);
+    set('f-taken-to-val',  d.takenTo);
+    set('f-taken-to-detail', d.takenToDetail);
+    set('f-allow-contact', d.allowContact);
+    // Reflect the action-taken + allow-contact selections in the UI
+    if (d.takenTo) {
+      document.querySelectorAll('.loc-opt').forEach(o => o.classList.remove('selected'));
+      const opt = Array.from(document.querySelectorAll('.loc-opt')).find(o => o.getAttribute('onclick')?.includes(`'${d.takenTo}'`));
+      if (opt) opt.classList.add('selected');
+    }
+    if (d.allowContact) {
+      const btn = document.querySelector(`.contact-opt[data-value="${d.allowContact}"]`);
+      if (btn) selectAllowContact(btn, d.allowContact);
+    }
+    if (d.category) onCategoryChange(d.category);
+    toast('Jatkoit siitä mihin jäit', 'green');
   } catch(e) {}
 }
 // Attach draft listener once DOM ready
