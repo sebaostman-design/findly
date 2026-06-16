@@ -1655,11 +1655,15 @@ footer::before { display: none; }
             <option>📄 Asiakirjat / ID</option>
             <option>Muu</option>
           </select>
-          <!-- "Muu" rajoitettu vapaateksti (found-flow vain) -->
-          <div id="found-other-wrap" style="display:none;margin-top:10px;">
-            <input type="text" id="f-found-other" maxlength="40" placeholder="Mitä löysit? (max 40 merkkiä)" />
-            <p style="font-size:11px;color:var(--ink3);margin-top:4px;">Vain yleinen luokitus — tarkat tunnistetiedot kerrotaan vasta omistajalle.</p>
-          </div>
+        </div>
+
+        <!-- Found-only: brief description with anti-abuse reminder -->
+        <div class="form-group full" id="found-brief-field" style="display:none;">
+          <label>Mitä löysit lyhyesti? <span style="font-weight:500;color:var(--red);">⚠️ älä paljasta kaikkea</span></label>
+          <input type="text" id="f-found-brief" maxlength="60" placeholder="Esim. musta nahkalompakko · hopeinen avainnippu · sininen reppu" />
+          <p style="font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5;">
+            Anna vain yleinen kuvaus (väri, malli, koko). <b>Jätä tunnistetiedot pois</b> — sarjanumerot, sisältö, kaiverrukset jne. niistä kadottaja todistaa omistajuutensa. Max 60 mrk.
+          </p>
         </div>
         <div class="form-group" id="f-when-exact-group">
           <label id="f-when-label" data-i18n="form_when">Milloin löysit *</label>
@@ -4460,12 +4464,15 @@ function setFormType(type) {
   const phoneWrap = document.getElementById('f-phone')?.closest('.form-group');
   if (phoneWrap) phoneWrap.style.display = isLost ? '' : 'none';
 
+  // Found-only "brief description" field
+  const briefField = document.getElementById('found-brief-field');
+  if (briefField) briefField.style.display = isFound ? '' : 'none';
+
   // Reset found-only state when switching away
   if (!isFound) {
-    const fOther = document.getElementById('f-found-other'); if (fOther) fOther.value = '';
+    const fBrief = document.getElementById('f-found-brief'); if (fBrief) fBrief.value = '';
     const fAllow = document.getElementById('f-allow-contact'); if (fAllow) fAllow.value = '';
     document.querySelectorAll('.contact-opt').forEach(b => { b.style.background='rgba(255,255,255,0.06)'; b.style.borderColor='rgba(255,255,255,0.1)'; });
-    document.getElementById('found-other-wrap').style.display = 'none';
   }
 
   // Update image guidance based on type
@@ -4528,12 +4535,8 @@ function switchListingType() {
   openFormTab(next);
 }
 
-// Called from the category select; shows the 40-char "Muu" input only when category=Muu in found-flow
+// Called from the category select; the brief-field shows for any found category.
 function onCategoryChange(val) {
-  const wrap = document.getElementById('found-other-wrap');
-  if (!wrap) return;
-  const showOther = (currentFormType === 'found' && val === 'Muu');
-  wrap.style.display = showOther ? 'block' : 'none';
   updateDescPlaceholder(val);
 }
 
@@ -4646,12 +4649,10 @@ async function submitListing(e) {
   if (!hasAddress && !hasLat) { toast(t('toast_set_location') || 'Aseta sijainti', 'red'); return; }
 
   // Found-specific
-  let foundOther = '', actionTaken = '', allowContact = '';
+  let foundBrief = '', actionTaken = '', allowContact = '';
   if (isFound) {
-    if (category === 'Muu') {
-      foundOther = document.getElementById('f-found-other').value.trim();
-      if (!foundOther) { toast('Kirjoita lyhyesti mitä löysit (max 40 mrk)', 'red'); document.getElementById('f-found-other').focus(); return; }
-    }
+    foundBrief = document.getElementById('f-found-brief').value.trim();
+    if (!foundBrief) { toast('Kirjoita lyhyt kuvaus löydöstäsi (max 60 mrk)', 'red'); document.getElementById('f-found-brief').focus(); return; }
     actionTaken = document.getElementById('f-taken-to-val').value;
     if (!actionTaken) { toast('Valitse mitä teit löydölle', 'red'); return; }
     allowContact = document.getElementById('f-allow-contact').value;
@@ -4701,13 +4702,11 @@ async function submitListing(e) {
 
   // Compose listing title/desc:
   //   lost  → user-provided title + desc
-  //   found → category (or "Muu" text) as title.
+  //   found → brief description as title (max 60 chars, e.g. "musta nahkalompakko").
   //           description encodes consent flag inline (no DB migration needed):
   //           found+allow_contact='no'  → "[NO_CONTACT]"
   //           found+allow_contact='yes' → "" (empty)
-  const computedTitle = isFound
-    ? (category === 'Muu' ? foundOther : category)
-    : title;
+  const computedTitle = isFound ? foundBrief : title;
   const computedDesc  = isFound
     ? (allowContact === 'no' ? '[NO_CONTACT]' : '')
     : desc;
