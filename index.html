@@ -2891,6 +2891,11 @@ function goToAuthForListing() {
   localStorage.setItem('findly-after-auth', 'new-listing');
   showPage('auth');
 }
+// Login from a listing detail page — remember the listing id and reopen it.
+function goToAuthFromListing(listingId) {
+  localStorage.setItem('findly-after-auth', 'listing:' + listingId);
+  showPage('auth');
+}
 
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
@@ -2906,7 +2911,11 @@ sb.auth.onAuthStateChange((event, session) => {
     const target = localStorage.getItem('findly-after-auth');
     if (target) {
       localStorage.removeItem('findly-after-auth');
-      showPage(target);
+      if (target.startsWith('listing:')) {
+        openListing(target.slice(8));
+      } else {
+        showPage(target);
+      }
     } else {
       showPage('home');
     }
@@ -3397,11 +3406,6 @@ async function openListing(id) {
 
     ${l.lat && l.lng ? `<div id="listing-map"></div>` : ''}
 
-    ${currentUser && currentUser.id !== l.user_id && l.type === 'found' && !listingAllowsContact(l) ? `
-    <div style="background: var(--paper);border:1px dashed rgba(255,255,255,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--ink2);text-align:center;">
-      🔕 Löytäjä ei ole antanut lupaa ottaa yhteyttä Findlyssä tämän ilmoituksen kautta.
-    </div>` : ''}
-
     ${canContact && l.type === 'lost' ? `
     <div class="contact-card">
       <h3>${{fi:'Löysitkö tämän tavaran?',sv:'Hittade du detta föremål?',en:'Did you find this item?'}[currentLang]}</h3>
@@ -3421,6 +3425,21 @@ async function openListing(id) {
       <h3>🐾 Ota yhteyttä</h3>
       <p>Eläinhavainnossa ei tarvita vahvistusprosessia — chat aukeaa suoraan. Kerro omistajalle missä ja milloin näit eläimen.</p>
       <button class="btn-primary" style="border:none;background:var(--amber);" onclick="startDirectChat('${l.id}','${l.user_id}')">💬 Avaa chat omistajan kanssa →</button>
+    </div>` : ''}
+
+    ${!currentUser && !isOwn ? `
+    <div class="contact-card">
+      <h3>${l.type === 'lost' ? 'Löysitkö tämän tavaran?' : 'Onko tämä sinun tavarasi?'}</h3>
+      <p>Sinun pitää kirjautua sisään ennen kuin voit ottaa yhteyttä — kevyt kirjautuminen (sähköposti+salasana tai Google) riittää.</p>
+      <button class="btn-primary" style="border:none;" onclick="goToAuthFromListing('${l.id}')">🔐 Kirjaudu sisään ottaaksesi yhteyttä →</button>
+    </div>` : ''}
+
+    ${currentUser && !isOwn && l.type === 'found' && !listingAllowsContact(l) ? `
+    <div class="contact-card" style="background:var(--bg-tint);border-color:var(--border);">
+      <h3>🔕 Löytäjä ei halua viestejä Findlyssä</h3>
+      <p>Tämä löytäjä on jättänyt ilmoituksen vain karttaan eikä halua yhteydenottoja sovelluksen kautta. Yllä näkyy mihin tavara on toimitettu — voit noutaa sen suoraan sieltä (esim. poliisilta tai löytötavaratoimistosta).</p>
+      <p style="margin-top:6px;">Jos tavara on sinun, kannattaa myös <strong>tehdä oma katoamisilmoitus</strong> — jos sama löytö tulee Findlyyn uudestaan, saat siitä heti ilmoituksen.</p>
+      <button class="btn-primary" style="border:none;background:var(--ink);border-color:var(--ink);" onclick="openFormTab('lost')">🔍 Tee katoamisilmoitus →</button>
     </div>` : ''}
 
     ${isOwn && status !== 'returned' ? `
