@@ -1798,8 +1798,9 @@ footer::before { display: none; }
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px;">Mitä seuraavaksi?</div>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">
-        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">Katso osumia →</button>
-        <button onclick="resetListingForm()" style="padding:13px 20px;font-size:14px;font-weight:600;border: 1px solid var(--border);border-radius:12px;background: var(--paper);color:var(--ink2);cursor:pointer;">Tee uusi ilmoitus</button>
+        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;">Katso osumia →</button>
+        <button onclick="resetListingForm();showPage('home')" style="padding:13px 20px;font-size:14px;font-weight:600;border:1px solid var(--border);border-radius:12px;background:var(--paper);color:var(--ink);cursor:pointer;">← Palaa etusivulle</button>
+        <button onclick="resetListingForm()" style="padding:11px 20px;font-size:13px;font-weight:500;border:none;background:none;color:var(--ink2);cursor:pointer;text-decoration:underline;">Tee uusi ilmoitus</button>
       </div>
       <div id="install-prompt-area" style="display:none;margin-top:24px;">
         <button onclick="promptInstall()" style="padding:10px 20px;font-size:12px;font-weight:600;border:1px solid rgba(31,94,61,0.2);border-radius:20px;background:rgba(31,94,61,0.08);color:var(--green);cursor:pointer;">📲 Lisää kotinäytölle</button>
