@@ -2650,7 +2650,11 @@ function showPage(name, fromPopstate) {
 
   if (name === 'home') setTimeout(initHomeMap, 200);
   if (name === 'feed') loadFeed();
-  if (name === 'map') { initMap().then(() => { if (!window._mapTabSet) switchMapTab('lost'); window._mapTabSet = false; }); }
+  if (name === 'map') {
+    // Default to "Kadotetut" the first time we open the map page in this session
+    if (!window._mapTab) window._mapTab = 'lost';
+    initMap();
+  }
   if (name === 'pets') { loadPets(); loadSightings(); }
   if (name === 'matches') { loadMatches(); setMatchBadge(0); }
   if (name === 'messages') { loadConversations(); setMsgBadge(0); lastSeenMsgTime = new Date().toISOString(); localStorage.setItem('findly-last-msg', lastSeenMsgTime); }
@@ -4206,7 +4210,8 @@ async function initMap() {
   if (statReturned) statReturned.textContent = returned.length + ' ' + {fi:'palautettua',sv:'returnerade',en:'returned'}[currentLang] + ' 💛';
 
   if (mapInstance) {
-    updateMapMarkers(active);
+    // Re-apply the current tab filter so we never flash other-type markers
+    switchMapTab(window._mapTab || 'lost');
     if (showStories) addStoryMarkers(returned);
     return;
   }
@@ -4221,7 +4226,8 @@ async function initMap() {
   mapInstance.addControl(mapGeoCtrl);
   mapInstance.on('load', () => {
     mapGeoCtrl.trigger();
-    updateMapMarkers(active);
+    // Use the current tab filter from the start; never render all-types markers
+    switchMapTab(window._mapTab || 'lost');
     if (showStories) addStoryMarkers(returned);
     // Fade out privacy note after 4 seconds
     setTimeout(() => { const note = document.getElementById('map-privacy-note'); if (note) note.style.opacity = '0'; }, 4000);
