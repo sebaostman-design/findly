@@ -2,7 +2,9 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 
@@ -157,7 +159,11 @@ h1,h2,h3,h4 { font-family: 'Fraunces', 'Georgia', serif; line-height: 1.15; colo
 button, a, [onclick] { cursor: pointer; }
 
 /* ── LAYOUT ── */
-.wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 100px); width: 100%; }
+.wrap {
+  max-width: 1280px; margin: 0 auto; width: 100%;
+  padding-left:  max(clamp(24px, 6vw, 100px), env(safe-area-inset-left));
+  padding-right: max(clamp(24px, 6vw, 100px), env(safe-area-inset-right));
+}
 
 /* ── NAV ── */
 nav {
@@ -175,7 +181,9 @@ nav::before {
 nav.scrolled { background: rgba(247,245,240,0.97); box-shadow: 0 6px 20px -10px rgba(20,30,25,0.18); border-color: transparent; }
 .nav-inner {
   max-width: 1280px; margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 80px); height: 76px;
+  padding-top: 0; padding-bottom: 0; height: 76px;
+  padding-left:  max(clamp(20px, 5vw, 80px), env(safe-area-inset-left));
+  padding-right: max(clamp(20px, 5vw, 80px), env(safe-area-inset-right));
   display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between;
 }
 .nav-logo {
@@ -566,7 +574,12 @@ section { padding: 80px 0; }
 /* ── FORM PAGE — DARK THEME ── */
 #page-new-listing { background: var(--bg); min-height: 100vh; position: relative; }
 #page-new-listing::before, #page-new-listing::after { display: none; }
-.form-page-wrap { max-width: 720px; margin: 0 auto; padding: 44px clamp(20px, 5vw, 40px); position: relative; z-index: 1; }
+.form-page-wrap {
+  max-width: 720px; margin: 0 auto; position: relative; z-index: 1;
+  padding-top: 44px; padding-bottom: 44px;
+  padding-left:  max(clamp(20px, 5vw, 40px), env(safe-area-inset-left));
+  padding-right: max(clamp(20px, 5vw, 40px), env(safe-area-inset-right));
+}
 .form-page-header { margin-bottom: 28px; }
 .form-page-header h2 { color: var(--ink) !important; }
 .form-page-header p { color: var(--ink2) !important; }
@@ -695,7 +708,12 @@ textarea { resize: vertical; min-height: 88px; }
 .chat-send:active { transform: scale(0.95); }
 
 /* ── PROFILE ── */
-.profile-wrap { max-width: 620px; margin: 0 auto; padding: 36px clamp(20px, 5vw, 40px); }
+.profile-wrap {
+  max-width: 620px; margin: 0 auto;
+  padding-top: 36px; padding-bottom: 36px;
+  padding-left:  max(clamp(20px, 5vw, 40px), env(safe-area-inset-left));
+  padding-right: max(clamp(20px, 5vw, 40px), env(safe-area-inset-right));
+}
 .profile-card { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 18px; box-shadow: var(--shadow); }
 .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: var(--green); margin-bottom: 14px; }
 .profile-name { font-family: 'Fraunces','Georgia',serif; font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
@@ -1191,7 +1209,7 @@ footer::before { display: none; }
         <button class="nav-cta" onclick="showPage('new-listing')" data-i18n="nav_new">+ Tee ilmoitus</button>
       </div>
       <div id="nav-user-area" style="display:none;flex-direction:row;gap:10px;align-items:center;">
-        <button class="nav-auth-btn" onclick="showPage('messages')" style="position:relative;" data-i18n="nav_messages">💬 Viestit<span id="msg-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;min-width:14px;text-align:center;line-height:14px;"></span></button>
+        <button class="nav-auth-btn" onclick="showPage('messages')" style="position:relative;" data-i18n="nav_messages">💬 Viestit<span id="msg-badge" style="display:none;position:absolute;top:-5px;right:-6px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:1.1;box-shadow:0 0 0 2px var(--bg);"></span></button>
         <button class="nav-cta" onclick="showPage('new-listing')" data-i18n="nav_new">+ Tee ilmoitus</button>
         <button class="nav-auth-btn" onclick="showPage('profile')" id="nav-profile-btn">👤</button>
       </div>
@@ -1314,7 +1332,7 @@ footer::before { display: none; }
 
 <!-- FEEDBACK FAB — always visible bottom-right -->
 <button id="feedback-fab" onclick="openFeedbackModal()" title="Anna palautetta"
-  style="position:fixed;bottom:20px;right:20px;z-index:150;display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border:1px solid var(--ink);border-radius:30px;background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 8px 20px -8px rgba(20,30,25,0.45);transition:all 0.2s ease;"
+  style="position:fixed;bottom:max(20px, env(safe-area-inset-bottom));right:max(20px, env(safe-area-inset-right));z-index:150;display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border:1px solid var(--ink);border-radius:30px;background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 8px 20px -8px rgba(20,30,25,0.45);transition:all 0.2s ease;"
   onmouseover="this.style.background='var(--green)';this.style.borderColor='var(--green)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px -8px rgba(31,94,61,0.5)';"
   onmouseout="this.style.background='var(--ink)';this.style.borderColor='var(--ink)';this.style.transform='';this.style.boxShadow='0 8px 20px -8px rgba(20,30,25,0.45)';">
   💬 <span>Palaute</span>
@@ -1366,7 +1384,7 @@ footer::before { display: none; }
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('lost');toggleMobileMenu()">🔍 Kadotetut</a>
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('found');toggleMobileMenu()">📦 Löydetyt</a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:4px;">
-    <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;margin-left:6px;"></span></a>
+    <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:8px;"></span></a>
     <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
   </div>
   <a style="font-size:15px;color:var(--green);font-weight:600;text-decoration:none;cursor:pointer;" onclick="showPage('new-listing');toggleMobileMenu()" data-i18n="nav_new">+ Tee ilmoitus</a>
@@ -3978,6 +3996,26 @@ function dismissNotifBanner() {
   localStorage.setItem('notif-dismissed', '1');
 }
 
+// Briefly flash the browser tab title to surface a new message even if the
+// user is on a different tab. Restores on the next focus.
+function flashTitle(text) {
+  if (document.visibilityState === 'visible') return;
+  if (window._titleFlash) clearInterval(window._titleFlash);
+  const original = window._titleOriginal || (window._titleOriginal = document.title);
+  let on = true;
+  document.title = '🔔 ' + text;
+  window._titleFlash = setInterval(() => {
+    document.title = on ? original : '🔔 ' + text;
+    on = !on;
+  }, 1400);
+  const restore = () => {
+    if (window._titleFlash) { clearInterval(window._titleFlash); window._titleFlash = null; }
+    document.title = original;
+    document.removeEventListener('visibilitychange', restore);
+  };
+  document.addEventListener('visibilitychange', restore);
+}
+
 function sendNotification(title, body, url) {
   if (Notification.permission !== 'granted') return;
   if (document.visibilityState === 'visible') return; // skip if app is in focus
@@ -4003,15 +4041,36 @@ function startInAppPolling() {
     if (!currentUser) return;
     updateMsgBadge();
     updateMatchBadge();
+    // pollForNotifications keeps lastMessageCount fresh + fires toasts on new
+    // conversations / messages even without browser-notification permission.
+    pollForNotifications();
   }, 12000);
+}
+
+// In-app message banner — visible even when the tab is focused (sendNotification
+// is silent in that case). Lightweight slide-in at top-right with an "Avaa"
+// button that jumps straight to the chat.
+function showInAppMessageBanner(convId, summary) {
+  // Reuse the toast bottom-bar for simplicity; nudge a longer duration.
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.innerHTML = '💬 Uusi viesti — <span style="text-decoration:underline;cursor:pointer;" onclick="if(window._lastInAppMsgConvId){openChat(window._lastInAppMsgConvId,{listing_id:null});}">avaa keskustelu</span>';
+  t.className = 'toast show green';
+  window._lastInAppMsgConvId = convId;
+  setTimeout(() => t.classList.remove('show'), 7000);
 }
 
 async function pollForNotifications() {
   if (!currentUser) return;
 
-  // Check for new messages
+  // Check for new messages on ANY of my conversations.
+  // Important nuance: the very first time we see a brand-new conversation in this
+  // tab, the previous code skipped the notification (no prior updated_at to
+  // compare). That meant the FIRST message in a new chat — exactly the moment a
+  // löytäjä reaches out to a kadottaja — was silent. We now treat any unseen
+  // conversation as a new message once we've completed at least one poll cycle.
   const { data: convs } = await sb.from('conversations')
-    .select('id, updated_at')
+    .select('id, updated_at, user_a, user_b, listing_id')
     .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
     .order('updated_at', { ascending: false });
 
@@ -4019,14 +4078,33 @@ async function pollForNotifications() {
     let newMsgCount = 0;
     for (const c of convs) {
       const prev = lastMessageCount[c.id];
-      if (prev && new Date(c.updated_at) > new Date(prev)) {
-        sendNotification('Findly — Uusi viesti 💬', {fi:'Sinulle on saapunut uusi viesti.',sv:'Du har fått ett nytt meddelande.',en:'You have a new message.'}[currentLang]);
-        newMsgCount++;
+      const isFirstPoll = !window._notifPollSeeded;
+      const newMessage = prev && new Date(c.updated_at) > new Date(prev);
+      const newConversation = !prev && !isFirstPoll;
+      if (newMessage || newConversation) {
+        const otherUser = c.user_a === currentUser.id ? c.user_b : c.user_a;
+        // Only notify if the LATEST message in this conversation was NOT from us
+        const { data: lastMsg } = await sb.from('messages')
+          .select('sender_id, content')
+          .eq('conversation_id', c.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (lastMsg && lastMsg.sender_id !== currentUser.id) {
+          sendNotification(
+            newConversation ? 'Findly — Vastapari löytyi 🎯' : 'Findly — Uusi viesti 💬',
+            newConversation ? 'Joku otti yhteyttä ilmoituksesi kautta.' : (lastMsg.content || '').substring(0, 90)
+          );
+          showInAppMessageBanner(c.id);
+          flashTitle(newConversation ? '🎯 Vastapari löytyi' : '💬 Uusi viesti');
+          newMsgCount++;
+        }
       }
       lastMessageCount[c.id] = c.updated_at;
     }
     if (newMsgCount > 0) updateMsgBadge();
   }
+  window._notifPollSeeded = true;
 
   // Check for new matches
   const [{ data: mine }, { data: others }] = await Promise.all([
