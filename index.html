@@ -162,42 +162,68 @@ button, a, [onclick] { cursor: pointer; }
 /* ── NAV ── */
 nav {
   position: sticky; top: 0; z-index: 200;
-  background: rgba(247,245,240,0.92); backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  background: rgba(247,245,240,0.85); backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
   border-bottom: 1px solid var(--border);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
-nav.scrolled { background: rgba(247,245,240,0.98); box-shadow: 0 1px 0 var(--border); }
+/* Subtle green accent strip across the top */
+nav::before {
+  content: ''; display: block; height: 3px; width: 100%;
+  background: linear-gradient(90deg, var(--green) 0%, #2C7A52 50%, var(--green) 100%);
+}
+nav.scrolled { background: rgba(247,245,240,0.97); box-shadow: 0 6px 20px -10px rgba(20,30,25,0.18); border-color: transparent; }
 .nav-inner {
   max-width: 1280px; margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 80px); height: 68px;
+  padding: 0 clamp(20px, 5vw, 80px); height: 76px;
   display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between;
 }
-.nav-logo { font-family: 'Fraunces','Georgia',serif; font-weight: 700; font-size: 24px; color: var(--ink); letter-spacing: -0.5px; cursor: pointer; transition: opacity 0.2s; }
-.nav-logo:hover { opacity: 0.75; }
-.nav-logo span { color: var(--green); font-style: italic; }
-.nav-links { display: flex; gap: 28px; align-items: center; }
-.nav-links a { text-decoration: none; color: var(--ink2); font-size: 14px; font-weight: 500; transition: color 0.2s; cursor: pointer; position: relative; }
-.nav-links a::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 2px; background: var(--green); border-radius: 2px; transition: width 0.25s ease; }
-.nav-links a:hover { color: var(--ink); }
-.nav-links a:hover::after { width: 100%; }
-.nav-right { display: flex; flex-direction: row; gap: 10px; align-items: center; }
-#nav-auth-area { display: flex; flex-direction: row; gap: 10px; align-items: center; }
-.nav-auth-btn {
-  padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--border);
-  background: transparent; color: var(--ink2);
+.nav-logo {
+  font-family: 'Fraunces','Georgia',serif; font-weight: 700; font-size: 30px;
+  color: var(--ink); letter-spacing: -0.8px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: transform 0.2s ease;
 }
-.nav-auth-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--paper); }
+.nav-logo:hover { transform: translateY(-1px); }
+.nav-logo::before {
+  content: ''; display: inline-block; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 0 4px rgba(31,94,61,0.12);
+}
+.nav-logo span { color: var(--green); font-style: italic; font-weight: 600; }
+
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  text-decoration: none; color: var(--ink); font-size: 14.5px; font-weight: 600;
+  letter-spacing: -0.1px; cursor: pointer; position: relative; padding: 4px 0;
+  transition: color 0.2s ease;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 50%;
+  width: 0; height: 2px; background: var(--green); border-radius: 2px;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-links a:hover::after { width: 100%; left: 0; }
+
+.nav-right { display: flex; flex-direction: row; gap: 8px; align-items: center; }
+#nav-auth-area { display: flex; flex-direction: row; gap: 8px; align-items: center; }
+.nav-auth-btn {
+  padding: 9px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--border);
+  background: transparent; color: var(--ink);
+}
+.nav-auth-btn:hover { border-color: var(--ink); background: var(--paper); }
 .lang-btn.lang-active { border-color: var(--green) !important; background: var(--green-light) !important; color: var(--green) !important; }
 .lang-btn:hover { border-color: var(--border-strong) !important; }
 .nav-cta {
-  background: var(--ink); color: var(--paper); padding: 9px 20px;
-  border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;
+  background: var(--ink); color: #fff; padding: 10px 22px;
+  border-radius: 8px; font-size: 13.5px; font-weight: 600; text-decoration: none;
   transition: all 0.2s ease; cursor: pointer; border: 1px solid var(--ink);
+  box-shadow: 0 4px 14px -6px rgba(20,30,25,0.35);
 }
-.nav-cta:hover { background: var(--green); border-color: var(--green); }
-.nav-cta:active { transform: translateY(1px); }
+.nav-cta:hover { background: var(--green); border-color: var(--green); box-shadow: 0 6px 20px -6px rgba(31,94,61,0.45); transform: translateY(-1px); }
+.nav-cta:active { transform: translateY(0); }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
 .hamburger span { width: 22px; height: 2px; background: var(--ink2); border-radius: 2px; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); }
 
@@ -291,9 +317,9 @@ nav.scrolled { background: rgba(247,245,240,0.98); box-shadow: 0 1px 0 var(--bor
 .hero-cta-sub { font-size: 12px; font-weight: 500; color: var(--ink2); }
 .hero-cta-lost  { color: var(--ink); }
 .hero-cta-lost:hover  { border-color: var(--ink); background: #FAF9F4; transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.hero-cta-found { background: var(--green); border-color: var(--green); color:var(--ink); }
+.hero-cta-found { background: var(--green); border-color: var(--green); color: #fff; }
 .hero-cta-found .hero-cta-label,
-.hero-cta-found .hero-cta-sub { color:var(--ink); }
+.hero-cta-found .hero-cta-sub { color: #fff; }
 .hero-cta-found .hero-cta-sub { opacity: 0.85; }
 .hero-cta-found:hover { background: var(--green-dark); border-color: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(31,94,61,0.25); }
 @media (max-width: 480px) {
@@ -341,7 +367,7 @@ nav.scrolled { background: rgba(247,245,240,0.98); box-shadow: 0 1px 0 var(--bor
 }
 .flow-card-cta-lost  { background: var(--paper); border-color: var(--ink); color: var(--ink); box-shadow: none; }
 .flow-card-cta-lost:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
-.flow-card-cta-found { background: var(--green); border-color: var(--green); color:var(--ink); box-shadow: none; }
+.flow-card-cta-found { background: var(--green); border-color: var(--green); color: #fff; box-shadow: none; }
 .flow-card-cta-found:hover { background: var(--green-dark); border-color: var(--green-dark); transform: translateY(-1px); }
 @media (max-width: 720px) {
   .two-flow-grid { grid-template-columns: 1fr; gap: 14px; }
@@ -460,7 +486,7 @@ section { padding: 80px 0; }
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700; color:var(--ink3); flex-shrink: 0; background: var(--paper);
 }
-.vstep.active { background: var(--green); border-color: var(--green); color:var(--ink); box-shadow: 0 0 16px rgba(31,94,61,0.4); animation: glowPulse 2s ease-in-out infinite; }
+.vstep.active { background: var(--green); border-color: var(--green); color: #fff; box-shadow: 0 0 16px rgba(31,94,61,0.4); animation: glowPulse 2s ease-in-out infinite; }
 .vstep.done { background: rgba(31,94,61,0.15); border-color: var(--green); color: var(--green); }
 .vstep-line { flex: 1; height: 2px; background: var(--paper); }
 .vstep-line.done { background: var(--green); }
@@ -552,7 +578,7 @@ textarea { resize: vertical; min-height: 88px; }
 .submit-btn { width: 100%; padding: 14px; border: 1px solid; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; transition: all 0.2s ease; color: #fff; letter-spacing: 0.1px; }
 .submit-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .submit-btn:active { transform: translateY(0); }
-.submit-btn.lost   { background: var(--ink);   border-color: var(--ink); }
+.submit-btn.lost   { background: var(--ink);   border-color: #fff; }
 .submit-btn.lost:hover { background: #000; }
 .submit-btn.found  { background: var(--green); border-color: var(--green); }
 .submit-btn.found:hover { background: var(--green-dark); border-color: var(--green-dark); }
@@ -612,7 +638,7 @@ textarea { resize: vertical; min-height: 88px; }
 .auth-msg.success { color: var(--green); }
 
 /* ── CHAT ── */
-.chat-wrap { max-width: 680px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; height: calc(100vh - 68px); background: var(--bg); }
+.chat-wrap { max-width: 680px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; height: calc(100vh - 79px); background: var(--bg); }
 .chat-header { padding: 14px 20px; background: var(--paper); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
 .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--green); flex-shrink: 0; }
 .chat-name { font-size: 15px; font-weight: 600; color: var(--ink); }
@@ -929,7 +955,7 @@ footer::before { display: none; }
 #finder-action-bar .fab-claim { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; font-family: inherit; max-height: 120px; overflow-y: auto; color:var(--ink); }
 #finder-action-bar .fab-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 #finder-action-bar .fab-buttons button { padding: 10px 20px; font-size: 13px; font-weight: 600; border-radius: 24px; cursor: pointer; border: none; transition: all 0.15s; }
-#finder-action-bar .fab-btn-accept { background: var(--green); color:var(--ink); }
+#finder-action-bar .fab-btn-accept { background: var(--green); color: #fff; }
 #finder-action-bar .fab-btn-accept:hover { background: #009E55; }
 #finder-action-bar .fab-btn-ask { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
 #finder-action-bar .fab-btn-reject { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
@@ -985,7 +1011,7 @@ footer::before { display: none; }
     <div style="font-size:13px;font-weight:600;margin-bottom:2px;" data-i18n="notif_title">Salli ilmoitukset</div>
     <div style="font-size:11px;color:var(--ink2);" data-i18n="notif_sub">Saat tiedon matcheista ja viesteistä.</div>
   </div>
-  <button onclick="enableNotifications()" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color:var(--ink);cursor:pointer;flex-shrink:0;" data-i18n="notif_btn">Salli</button>
+  <button onclick="enableNotifications()" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:20px;background:var(--green);color: #fff;cursor:pointer;flex-shrink:0;" data-i18n="notif_btn">Salli</button>
   <button onclick="dismissNotifBanner()" style="padding:4px 8px;font-size:18px;background:none;border:none;color:var(--ink3);cursor:pointer;flex-shrink:0;">×</button>
 </div>
 
@@ -1039,7 +1065,7 @@ footer::before { display: none; }
     <div style="text-align:left;background: var(--paper);border-radius:12px;padding:16px;margin-top:16px;margin-bottom:20px;">
       <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink);">💬 Kerro miten kavi <span style="font-weight:400;color:var(--ink3);">(vapaaehtoinen)</span></div>
       <textarea id="success-story" rows="2" placeholder="Esim: Lompakko loytyi rehellisen loytajan ansiosta! Kaikki tallella." style="width:100%;padding:10px 12px;border: 1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none;resize:vertical;background: var(--paper);color:var(--ink);box-sizing:border-box;"></textarea>
-      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color:var(--ink);cursor:pointer;">Tallenna tarina</button>
+      <button onclick="saveStory()" style="margin-top:8px;padding:7px 16px;font-size:12px;font-weight:600;border:none;border-radius:10px;background:var(--green);color: #fff;cursor:pointer;">Tallenna tarina</button>
     </div>
 
     <button onclick="document.getElementById('success-modal').style.display='none';showPage('home')" style="width:100%;padding:12px;font-size:14px;font-weight:600;border: 1.5px solid var(--border);border-radius:14px;background: var(--paper);color:var(--ink2);cursor:pointer;">Etusivulle</button>
@@ -1085,7 +1111,7 @@ footer::before { display: none; }
 
     <div id="tip-min-warning" style="display:none;font-size:12px;color:var(--red);text-align:center;margin-bottom:8px;">Minimi 2 &euro;</div>
     <button id="tip-pay-btn" onclick="confirmAndSubmitTip()" disabled
-      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--green);color:var(--ink);cursor:pointer;opacity:0.4;transition:opacity 0.2s;margin-bottom:8px;">
+      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--green);color: #fff;cursor:pointer;opacity:0.4;transition:opacity 0.2s;margin-bottom:8px;">
       &#x1F4B3; Maksa turvallisesti &rarr;
     </button>
     <div style="font-size:11px;color:var(--ink3);text-align:center;margin-bottom:12px;">
@@ -1280,7 +1306,7 @@ footer::before { display: none; }
 </div>
 
 <!-- MOBILE MENU -->
-<div id="mobile-menu" style="display:none;position:fixed;top:72px;left:0;right:0;background:var(--paper);border-bottom:1px solid rgba(255,255,255,0.06);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
+<div id="mobile-menu" style="display:none;position:fixed;top:79px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('lost');toggleMobileMenu()">🔍 Kadotetut</a>
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('found');toggleMobileMenu()">📦 Löydetyt</a>
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat<span id="match-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
@@ -1441,7 +1467,7 @@ footer::before { display: none; }
         </div>
       </div>
     </div>
-    <div id="mapbox-container" style="height:calc(100vh - 72px - 80px);"></div>
+    <div id="mapbox-container" style="height:calc(100vh - 79px - 80px);"></div>
     <div id="map-list-view" style="display:none;overflow-y:auto;padding:16px;max-height:calc(100vh - 160px);"></div>
     <div id="map-stats" style="position:absolute;bottom:24px;left:24px;background:rgba(5,15,10,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(31,94,61,0.2);border-radius:16px;padding:14px 18px;box-shadow:0 8px 32px rgba(0,0,0,0.3);font-size:12px;z-index:10;pointer-events:none;">
       <div style="font-weight:700;font-size:14px;color:var(--ink);" id="map-stat-count">— ilmoitusta</div>
@@ -1495,7 +1521,7 @@ footer::before { display: none; }
           <input type="text" id="sight-address" placeholder="📍 Missä näit? Esim. Kallion kirjasto, Sörnäinen..." style="width:100%;padding:11px 14px;border: 1.5px solid var(--border);border-radius:12px;font-size:14px;margin-bottom:10px;outline:none;background: var(--paper);color:var(--ink);" />
           <textarea id="sight-desc" rows="2" placeholder="Kuvaile lyhyesti: väri, koko, käyttäytyminen..." style="width:100%;padding:11px 14px;border: 1.5px solid var(--border);border-radius:12px;font-size:14px;margin-bottom:14px;outline:none;resize:vertical;font-family:inherit;background: var(--paper);color:var(--ink);"></textarea>
           <div style="display:flex;gap:10px;align-items:center;">
-            <button onclick="submitSighting()" style="padding:11px 24px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:var(--ink);cursor:pointer;" data-i18n="sight_submit">Lähetä havainto →</button>
+            <button onclick="submitSighting()" style="padding:11px 24px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;" data-i18n="sight_submit">Lähetä havainto →</button>
             <span style="font-size:11px;color:var(--ink3);" data-i18n="sight_anon">Ei vaadi kirjautumista</span>
           </div>
         </div>
@@ -1733,7 +1759,7 @@ footer::before { display: none; }
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px;">Mitä seuraavaksi?</div>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">
-        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:var(--ink);cursor:pointer;">Katso osumia →</button>
+        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">Katso osumia →</button>
         <button onclick="resetListingForm()" style="padding:13px 20px;font-size:14px;font-weight:600;border: 1px solid var(--border);border-radius:12px;background: var(--paper);color:var(--ink2);cursor:pointer;">Tee uusi ilmoitus</button>
       </div>
       <div id="install-prompt-area" style="display:none;margin-top:24px;">
@@ -1916,7 +1942,7 @@ footer::before { display: none; }
       <div class="loading"><div class="spinner"></div>Ladataan viestejä...</div>
     </div>
     <div id="close-case-bar" style="display:none;padding:10px 16px;background:rgba(31,94,61,0.08);border-top:1px solid rgba(31,94,61,0.2);text-align:center;">
-      <button id="close-case-btn" onclick="closeCaseFromChat()" style="padding:10px 24px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:var(--ink);">✅ Sulje tapaus — tavara palautettu</button>
+      <button id="close-case-btn" onclick="closeCaseFromChat()" style="padding:10px 24px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color: #fff;">✅ Sulje tapaus — tavara palautettu</button>
     </div>
     <div class="chat-input-bar">
       <input class="chat-input" id="chat-input" placeholder="Kirjoita viesti..." onkeydown="if(event.key==='Enter')sendMessage()" />
@@ -3161,7 +3187,7 @@ async function openListing(id) {
     ${isOwn && status !== 'returned' ? `
     <div style="background:rgba(31,94,61,0.06);border:1.5px solid rgba(31,94,61,0.15);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center;">
       <div style="font-size:13px;color:var(--ink2);margin-bottom:12px;">Tavara löytyi ja palautettu omistajalle?</div>
-      <button onclick="updateListingStatus('${l.id}','returned')" style="padding:12px 28px;font-size:14px;font-weight:700;border:none;border-radius:20px;cursor:pointer;background:var(--green);color:var(--ink);width:100%;">✅ Merkitse tapaus ratkaistuksi</button>
+      <button onclick="updateListingStatus('${l.id}','returned')" style="padding:12px 28px;font-size:14px;font-weight:700;border:none;border-radius:20px;cursor:pointer;background:var(--green);color: #fff;width:100%;">✅ Merkitse tapaus ratkaistuksi</button>
       <div style="font-size:11px;color:var(--ink3);margin-top:8px;">Ilmoitus poistetaan listalta ja saat merkinnän profiiliin.</div>
     </div>` : ''}
     ${status === 'returned' ? `
@@ -3200,7 +3226,7 @@ async function openListing(id) {
           </div>
           <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
             <button onclick="document.getElementById('edit-listing-form').style.display='none'" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border: 1.5px solid var(--border);background: var(--paper);color:var(--ink2);">Peruuta</button>
-            <button onclick="saveEditListing('${l.id}')" id="save-edit-btn" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:var(--ink);">Tallenna muutokset</button>
+            <button onclick="saveEditListing('${l.id}')" id="save-edit-btn" style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color: #fff;">Tallenna muutokset</button>
           </div>
         </div>
       </div>
@@ -4732,7 +4758,7 @@ function showMatchAlert(count, bestMatch, score) {
       <div style="font-size:12px;font-weight:700;color:var(--green);background:rgba(31,94,61,0.12);padding:4px 10px;border-radius:20px;">${score}%</div>
     </div>` : ''}
     <div style="display:flex;gap:8px;">
-      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:var(--ink);cursor:pointer;">${{fi:'Katso osumat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
+      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">${{fi:'Katso osumat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
       <button onclick="document.getElementById('match-alert').remove()" style="padding:11px 16px;font-size:14px;border: 1.5px solid var(--border);border-radius:12px;background: var(--paper);color:var(--ink3);cursor:pointer;">${{fi:'Myöhemmin',sv:'Senare',en:'Later'}[L]}</button>
     </div>`;
   document.body.appendChild(el);
@@ -5644,7 +5670,7 @@ async function loadMessages() {
         <div style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:12px;">Arvioi onko tämä oikea omistaja. Voit hyväksyä, hylätä tai pyytää lisätietoja.</div>
         ${catHint ? `<div style="font-size:12px;color:rgba(245,158,11,0.8);background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:8px 12px;margin-bottom:12px;">${catHint}</div>` : ''}
         ${alreadyResponded ? `<div style="margin-top:12px;font-size:12px;color:var(--ink3);font-style:italic;">${{fi:'✓ Olet jo vastannut tähän pyyntöön',sv:'✓ Du har redan svarat på denna förfrågan',en:'✓ You have already responded to this request'}[currentLang]}</div>` : `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-          <button onclick="replyVerify('accepted')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color:var(--ink);">✓ Hyväksy</button>
+          <button onclick="replyVerify('accepted')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:none;background:var(--green);color: #fff;">✓ Hyväksy</button>
           <button onclick="replyVerify('more')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.12);color:var(--amber);">Pyydä lisätietoa</button>
           <button onclick="replyVerify('rejected')" style="padding:8px 16px;font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;border:1.5px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.12);color:var(--red);">✗ Hylkää</button>
         </div>`}
