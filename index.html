@@ -1162,7 +1162,7 @@ footer::before { display: none; }
     <div class="nav-links">
       <a onclick="showPage('map');switchMapTab('lost')">🔍 Kadotetut</a>
       <a onclick="showPage('map');switchMapTab('found')">📦 Löydetyt</a>
-      <a onclick="showPage('matches')" style="font-weight:600;position:relative;">🎯 Osumat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
+      <a onclick="showPage('matches')" style="font-weight:600;position:relative;">🎯 Vastaavat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
     </div>
     <div class="nav-right">
       <div id="lang-switcher" style="display:flex;gap:2px;margin-right:6px;flex-shrink:0;">
@@ -1349,7 +1349,7 @@ footer::before { display: none; }
 <div id="mobile-menu" style="display:none;position:fixed;top:79px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('lost');toggleMobileMenu()">🔍 Kadotetut</a>
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('found');toggleMobileMenu()">📦 Löydetyt</a>
-  <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Osumat<span id="match-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
+  <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Vastaavat<span id="match-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:4px;">
     <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;margin-left:6px;"></span></a>
     <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
@@ -1591,7 +1591,7 @@ footer::before { display: none; }
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
       <h3 style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:600;margin-bottom:8px;color:var(--ink);letter-spacing:-0.3px;">Kevyt kirjautuminen riittää</h3>
       <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6;">
-        Tarvitset tilin jotta voit vastaanottaa viestejä ja saada tiedon mahdollisesta osumasta. Sähköposti + salasana tai Google — kestää 20 sekuntia.
+        Tarvitset tilin jotta voit vastaanottaa viestejä ja saada tiedon vastaavista ilmoituksista. Sähköposti + salasana tai Google — kestää 20 sekuntia.
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto;">
         <button class="btn-primary" style="width:100%;" onclick="saveDraft();showPage('auth')">Kirjaudu / luo tili →</button>
@@ -1604,7 +1604,7 @@ footer::before { display: none; }
     <div class="form-steps-strip">
       <div class="form-step-item"><span class="form-step-num">1</span> Tee ilmoitus</div>
       <span class="form-step-arrow">→</span>
-      <div class="form-step-item"><span class="form-step-num">2</span> Osuma löytyy</div>
+      <div class="form-step-item"><span class="form-step-num">2</span> Vastaava löytyy</div>
       <span class="form-step-arrow">→</span>
       <div class="form-step-item"><span class="form-step-num">3</span> Todista omistajuus</div>
       <span class="form-step-arrow">→</span>
@@ -1778,9 +1778,9 @@ footer::before { display: none; }
           <input type="number" id="f-reward" placeholder="Summa euroissa..." min="0" />
         </div>
         <div class="form-group">
-          <label data-i18n="form_phone">Puhelinnumero *</label>
-          <input type="tel" id="f-phone" placeholder="+358 40 123 4567" required />
-          <p style="font-size:11px;color:var(--ink3);margin-top:4px;" data-i18n="form_phone_note">Näytetään vain matchin jälkeen.</p>
+          <label data-i18n="form_phone">Puhelinnumero <span style="font-weight:400;color:var(--ink3);">(valinnainen)</span></label>
+          <input type="tel" id="f-phone" placeholder="+358 40 123 4567" />
+          <p style="font-size:11px;color:var(--ink3);margin-top:4px;" data-i18n="form_phone_note">Näytetään vain kun ilmoituksesi saa vastaparin ja olette varmistaneet asian Findlyssä.</p>
         </div>
       </div>
 
@@ -1794,11 +1794,11 @@ footer::before { display: none; }
       <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px;font-family:'Fraunces','Georgia',serif;">Ilmoituksesi on julkaistu!</h2>
       <div id="confirm-listing-info" style="font-size:14px;color:var(--ink3);margin-bottom:20px;"></div>
       <div style="background: var(--paper);border: 1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:24px;">
-        <div style="font-size:13px;color:var(--ink2);line-height:1.6;">Saat sähköpostiviestin kun mahdollinen osuma löytyy.</div>
+        <div style="font-size:13px;color:var(--ink2);line-height:1.6;">Saat sähköpostiviestin kun sinulle löytyy vastaava ilmoitus.</div>
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px;">Mitä seuraavaksi?</div>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">
-        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;">Katso osumia →</button>
+        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;">Katso vastaavia ilmoituksia →</button>
         <button onclick="resetListingForm();showPage('home')" style="padding:13px 20px;font-size:14px;font-weight:600;border:1px solid var(--border);border-radius:12px;background:var(--paper);color:var(--ink);cursor:pointer;">← Palaa etusivulle</button>
         <button onclick="resetListingForm()" style="padding:11px 20px;font-size:13px;font-weight:500;border:none;background:none;color:var(--ink2);cursor:pointer;text-decoration:underline;">Tee uusi ilmoitus</button>
       </div>
@@ -1863,9 +1863,9 @@ footer::before { display: none; }
   <section>
     <div class="wrap">
       <div class="form-page-back" onclick="showPage('home')">← Etusivu</div>
-      <div class="section-label" data-i18n="match_label">Osumat</div>
-      <div class="section-title" data-i18n="match_title">Ehdotetut osumat</div>
-      <div class="section-sub" style="margin-bottom:36px;" data-i18n="match_sub">Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.</div>
+      <div class="section-label" data-i18n="match_label">Vastaavat</div>
+      <div class="section-title" data-i18n="match_title">Vastaavat ilmoitukset</div>
+      <div class="section-sub" style="margin-bottom:36px;" data-i18n="match_sub">Findly vertaa ilmoituksiasi muihin ilmoituksiin ja näyttää vastaavat sinulle.</div>
       <div id="matches-content">
         <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
       </div>
@@ -2001,7 +2001,7 @@ footer::before { display: none; }
       <span><strong>Turvamuistutus:</strong> Varmista omistajuus ennen luovutusta — pyydä jotain, mitä vain oikea omistaja tietää. Älä luovuta tavaraa ennen vahvistusta.</span>
     </div>
     <div id="finder-action-bar" style="display:none;">
-      <div style="font-weight:700;color:var(--green);margin-bottom:6px;">🔐 Osumailmoitus odottaa päätöstäsi</div>
+      <div style="font-weight:700;color:var(--green);margin-bottom:6px;">🔐 Omistajuustodistus odottaa päätöstäsi</div>
       <div class="fab-claim" id="fab-claim-text"></div>
       <div style="font-size:12px;color:var(--ink3);margin-top:6px;">Sinä päätät. Varmista omistajuus ennen hyväksyntää.</div>
       <div class="fab-buttons">
@@ -2193,7 +2193,7 @@ let currentLang = localStorage.getItem('findly-lang') || 'fi';
 
 const translations = {
   // ── NAV ──
-  nav_matches:  { fi: '🎯 Osumat', sv: '🎯 Träffar', en: '🎯 Matches' },
+  nav_matches:  { fi: '🎯 Vastaavat', sv: '🎯 Träffar', en: '🎯 Matches' },
   nav_login:    { fi: 'Kirjaudu', sv: 'Logga in', en: 'Log in' },
   nav_new:      { fi: '+ Tee ilmoitus', sv: '+ Ny anmälan', en: '+ New listing' },
   nav_messages: { fi: '💬 Viestit', sv: '💬 Meddelanden', en: '💬 Messages' },
@@ -2206,7 +2206,7 @@ const translations = {
   hero_lost_sub:  { fi: 'Tee ilmoitus, odota osumia', sv: 'Gör en anmälan, vänta på träffar', en: 'Create a listing, wait for matches' },
   hero_found:     { fi: 'Löysin tavaran', sv: 'Hittade något', en: 'I found something' },
   hero_found_sub: { fi: 'Ilmoita löydöstäsi', sv: 'Anmäl ditt fynd', en: 'Report your find' },
-  hero_matches:   { fi: '🔔 Tarkista osumat', sv: '🔔 Kolla träffar', en: '🔔 Check matches' },
+  hero_matches:   { fi: '🔔 Tarkista vastaavat', sv: '🔔 Kolla träffar', en: '🔔 Check matches' },
 
   // ── STATS ──
   stat_active:   { fi: 'aktiivista ilmoitusta', sv: 'aktiva anmälningar', en: 'active listings' },
@@ -2220,7 +2220,7 @@ const translations = {
   how_sub:        { fi: 'Findly ei ole pelkkä ilmoitustaulu — se ohjaa sinut turvallisesti läpi koko prosessin.', sv: 'Findly är inte bara en anslagstavla — det guidar dig säkert genom hela processen.', en: 'Findly is not just a bulletin board — it guides you safely through the entire process.' },
   how_step1:      { fi: 'Tee ilmoitus', sv: 'Gör en anmälan', en: 'Create a listing' },
   how_step1_desc: { fi: 'Kerro mitä kadotit tai löysit. Sijainti tallennetaan, mutta näytetään muille vain epätarkkana alueena yksityisyyden suojaamiseksi.', sv: 'Berätta vad du tappade eller hittade. Platsen sparas men visas bara som ett ungefärligt område för att skydda integriteten.', en: 'Describe what you lost or found. Location is saved but shown to others only as an approximate area for privacy.' },
-  how_step2:      { fi: 'Osuma löytyy', sv: 'Träff hittas', en: 'Match found' },
+  how_step2:      { fi: 'Vastaava löytyy', sv: 'Träff hittas', en: 'Match found' },
   how_step2_desc: { fi: 'Findly vertaa ilmoituksia kategorian, ajan ja sijainnin perusteella automaattisesti. Saat ilmoituksen mahdollisesta matchista.', sv: 'Findly jämför anmälningar automatiskt baserat på kategori, tid och plats. Du meddelas om en möjlig träff.', en: 'Findly automatically compares listings by category, time and location. You\'ll be notified of potential matches.' },
   how_step3:      { fi: 'Todista omistajuus', sv: 'Bevisa ägande', en: 'Prove ownership' },
   how_step3_desc: { fi: 'Kerro jotain, mitä vain oikea omistaja tietää. Löytäjä tarkistaa vastauksesi ja hyväksyy tai hylkää pyynnön.', sv: 'Berätta något som bara den riktiga ägaren vet. Upphittaren kontrollerar ditt svar och godkänner eller avslår.', en: 'Share something only the real owner would know. The finder verifies your answer and approves or rejects.' },
@@ -2337,9 +2337,9 @@ const translations = {
   form_pet_found: { fi: '🟢 Löysin eläimen', sv: '🟢 Jag hittade ett djur', en: '🟢 I found a pet' },
 
   // ── MATCHES ──
-  match_label:    { fi: 'Osumat', sv: 'Träffar', en: 'Matches' },
-  match_title:    { fi: 'Ehdotetut osumat', sv: 'Föreslagna träffar', en: 'Suggested matches' },
-  match_sub:      { fi: 'Findly vertaa ilmoituksiasi muiden ilmoituksiin kategorian, ajan ja sijainnin perusteella.', sv: 'Findly jämför dina anmälningar med andras baserat på kategori, tid och plats.', en: 'Findly compares your listings with others by category, time and location.' },
+  match_label:    { fi: 'Vastaavat', sv: 'Träffar', en: 'Matches' },
+  match_title:    { fi: 'Vastaavat ilmoitukset', sv: 'Föreslagna träffar', en: 'Suggested matches' },
+  match_sub:      { fi: 'Findly vertaa ilmoituksiasi muihin ilmoituksiin ja näyttää vastaavat sinulle.', sv: 'Findly jämför dina anmälningar med andras baserat på kategori, tid och plats.', en: 'Findly compares your listings with others by category, time and location.' },
 
   // ── MESSAGES ──
   msg_label:      { fi: 'Viestit', sv: 'Meddelanden', en: 'Messages' },
@@ -2401,12 +2401,12 @@ const translations = {
   footer_terms:   { fi: 'Käyttöehdot', sv: 'Villkor', en: 'Terms' },
 
   // ── FLOATING CARDS (hero examples) ──
-  fc_verified:    { fi: 'Osuma vahvistettu', sv: 'Träff verifierad', en: 'Match verified' },
+  fc_verified:    { fi: 'Pari vahvistettu', sv: 'Träff verifierad', en: 'Match verified' },
   fc_ownership:   { fi: 'Omistajuus todistettu', sv: 'Ägande bevisat', en: 'Ownership proven' },
   fc_approved:    { fi: '✓ Hyväksytty', sv: '✓ Godkänd', en: '✓ Approved' },
   fc_wallet:      { fi: 'Lompakko löydetty', sv: 'Plånbok hittad', en: 'Wallet found' },
   fc_wallet_sub:  { fi: 'Lähellä Kalliota · 30 min', sv: 'Nära Berghäll · 30 min', en: 'Near Kallio · 30 min' },
-  fc_match:       { fi: 'Osuma löytyi', sv: 'Träff hittad', en: 'Match found' },
+  fc_match:       { fi: 'Pari löytyi', sv: 'Träff hittad', en: 'Match found' },
   fc_dog:         { fi: 'Kultainennoutaja', sv: 'Golden retriever', en: 'Golden retriever' },
   fc_dog_sub:     { fi: 'Töölön alueella', sv: 'I Tölö-området', en: 'Töölö area' },
 
@@ -2414,7 +2414,7 @@ const translations = {
   why_loc_title:  { fi: 'Sijainti piilotettu', sv: 'Plats dold', en: 'Location hidden' },
   why_loc_desc:   { fi: 'Tarkat koordinaatit jaetaan vasta matchauksen ja omistajuuden vahvistuksen jälkeen. Muille näytetään vain epätarkka 300–500 m alue.', sv: 'Exakta koordinater delas först efter matchning och ägandebekräftelse. Andra ser bara ett ungefärligt 300–500 m område.', en: 'Exact coordinates shared only after matching and ownership verification. Others see only an approximate 300–500m area.' },
   why_verify_title:{ fi: 'Pakollinen verificaatio', sv: 'Obligatorisk verifiering', en: 'Mandatory verification' },
-  why_verify_desc: { fi: 'Jokainen osumailmoitus vaatii todistuksen omistajuudesta. Löytäjä päättää hyväksyykö — ei suoraa kontaktia ennen vahvistusta.', sv: 'Varje träffanmälan kräver bevis på ägande. Upphittaren bestämmer om den godkänns — ingen direkt kontakt före verifiering.', en: 'Every match claim requires proof of ownership. The finder decides whether to approve — no direct contact before verification.' },
+  why_verify_desc: { fi: 'Jokainen omistajuustodistus vaatii todistuksen omistajuudesta. Löytäjä päättää hyväksyykö — ei suoraa kontaktia ennen vahvistusta.', sv: 'Varje träffanmälan kräver bevis på ägande. Upphittaren bestämmer om den godkänns — ingen direkt kontakt före verifiering.', en: 'Every match claim requires proof of ownership. The finder decides whether to approve — no direct contact before verification.' },
   why_law_title:  { fi: 'Lain mukainen', sv: 'Laglig', en: 'Legal compliance' },
   why_law_desc:   { fi: 'Findly tukee löytötavaralain (778/1988) noudattamista. Löytäjällä on lain mukaan oikeus pyytää omistajalta löytöpalkkiota ja velvollisuus ilmoittaa löydöstä.', sv: 'Findly stöder efterlevnaden av hittegodslagar (778/1988). Upphittaren har enligt lag rätt att begära hittelön av ägaren och skyldighet att anmäla fyndet.', en: 'Findly supports compliance with the Lost Property Act (778/1988). The finder has a legal right to request a reward from the owner and a duty to report the find.' },
   why_match_title:{ fi: 'Älykäs matchaus', sv: 'Smart matchning', en: 'Smart matching' },
@@ -2456,7 +2456,7 @@ const translations = {
   faq_a6: { fi: 'Kyllä. Sijainti näytetään muille noin 300–500 metrin epätarkkuudella. Tarkka osoite jaetaan vasta kun omistajuus on vahvistettu.', sv: 'Ja. Platsen visas med ca 300–500 meters noggrannhet. Exakt adress delas först när ägande har bekräftats.', en: 'Yes. Location is shown with ~300–500m accuracy. Exact address is shared only after ownership is verified.' },
 
   // ── VERIFY FLOW ──
-  verify_badge:    { fi: 'Mahdollinen osuma löytyi', sv: 'Möjlig träff hittad', en: 'Potential match found' },
+  verify_badge:    { fi: 'Vastaava ilmoitus löytyi', sv: 'Möjlig träff hittad', en: 'Potential match found' },
   verify_title:    { fi: 'Löysimme mahdollisen matchin', sv: 'Vi hittade en möjlig matchning', en: 'We found a potential match' },
   verify_sub:      { fi: 'Tarkista ilmoitus ja jatka omistajuuden todistamiseen. Löytäjä ei näe yhteystietojasi ennen hyväksyntää.', sv: 'Kontrollera anmälan och fortsätt till ägandeverifiering. Upphittaren ser inte dina kontaktuppgifter före godkännande.', en: 'Check the listing and proceed to ownership verification. The finder won\'t see your contact details until approval.' },
   verify_warn:     { fi: 'Seuraavaksi sinua pyydetään kertomaan jotain, mitä vain oikea omistaja tietää. Tämä estää väärät omistusväitteet.', sv: 'Härnäst ombeds du berätta något som bara den riktiga ägaren vet. Detta förhindrar falska ägandeanspråk.', en: 'Next you\'ll be asked to share something only the real owner would know. This prevents false ownership claims.' },
@@ -2479,7 +2479,7 @@ const translations = {
   detail_expires:    { fi: 'Vanhenee', sv: 'Upphör', en: 'Expires' },
   detail_location:   { fi: 'Sijainti', sv: 'Plats', en: 'Location' },
   detail_loc_note:   { fi: 'Tarkka sijainti matchin jälkeen', sv: 'Exakt plats efter matchning', en: 'Exact location after matching' },
-  detail_contact:    { fi: 'Ilmoita osumasta', sv: 'Anmäl träff', en: 'Report a match' },
+  detail_contact:    { fi: 'Ilmoita löydöstä', sv: 'Anmäl träff', en: 'Report a match' },
   detail_contact_sub:{ fi: 'Käy läpi lyhyt vahvistusprosessi ennen yhteydenottoa. Sijainti ja yhteystiedot jaetaan vasta vahvistuksen jälkeen.', sv: 'Gå igenom en kort verifieringsprocess innan kontakt. Plats och kontaktuppgifter delas först efter verifiering.', en: 'Go through a short verification process before contact. Location and contact details are shared only after verification.' },
   detail_pet_contact:{ fi: '🐾 Ota yhteyttä', sv: '🐾 Ta kontakt', en: '🐾 Get in touch' },
   detail_pet_sub:    { fi: 'Eläinhavainnossa ei tarvita vahvistusprosessia — chat aukeaa suoraan. Kerro omistajalle missä ja milloin näit eläimen.', sv: 'Djurobservationer kräver ingen verifiering — chatten öppnas direkt. Berätta för ägaren var och när du såg djuret.', en: 'Pet sightings don\'t need verification — chat opens directly. Tell the owner where and when you saw the animal.' },
@@ -2489,7 +2489,7 @@ const translations = {
   detail_your_own:   { fi: 'Tämä on sinun ilmoituksesi', sv: 'Det här är din anmälan', en: 'This is your listing' },
   detail_delete:     { fi: 'Poista', sv: 'Radera', en: 'Delete' },
   detail_report:     { fi: '🚩 Ilmoita väärinkäytöstä', sv: '🚩 Anmäl missbruk', en: '🚩 Report abuse' },
-  detail_login_hint: { fi: 'Kirjaudu sisään ilmoittaaksesi osumasta.', sv: 'Logga in för att anmäla en träff.', en: 'Log in to report a match.' },
+  detail_login_hint: { fi: 'Kirjaudu sisään ilmoittaaksesi löydöstä.', sv: 'Logga in för att anmäla en träff.', en: 'Log in to report a match.' },
   detail_login_link: { fi: 'Kirjaudu tai luo tili →', sv: 'Logga in eller skapa konto →', en: 'Log in or sign up →' },
 
   // ── TOASTS ──
@@ -2524,7 +2524,7 @@ const translations = {
   toast_sighting_saved:{ fi: 'Havainto tallennettu! Kiitos 💛', sv: 'Observation sparad! Tack 💛', en: 'Sighting saved! Thanks 💛' },
   toast_sight_type:    { fi: 'Valitse eläimen tyyppi.', sv: 'Välj djurtyp.', en: 'Select animal type.' },
   toast_sight_where:   { fi: 'Kerro missä näit eläimen.', sv: 'Berätta var du såg djuret.', en: 'Tell where you saw the animal.' },
-  toast_rate_limit:    { fi: 'Olet lähettänyt liian monta osumailmoitusta tänään. Yritä huomenna.', sv: 'Du har skickat för många träffanmälningar idag. Försök imorgon.', en: 'You\'ve sent too many match reports today. Try tomorrow.' },
+  toast_rate_limit:    { fi: 'Olet lähettänyt liian monta omistajuustodistusta tänään. Yritä huomenna.', sv: 'Du har skickat för många träffanmälningar idag. Försök imorgon.', en: 'You\'ve sent too many match reports today. Try tomorrow.' },
   toast_verify_secret: { fi: 'Kerro tunnistava yksityiskohta.', sv: 'Berätta en identifierande detalj.', en: 'Share an identifying detail.' },
   toast_verify_phone:  { fi: 'Lisää puhelinnumero.', sv: 'Lägg till telefonnummer.', en: 'Add phone number.' },
   toast_no_self_msg:   { fi: 'Et voi lähettää viestiä itsellesi.', sv: 'Du kan inte skicka meddelande till dig själv.', en: 'You can\'t message yourself.' },
@@ -2904,11 +2904,11 @@ function setMatchBadge(count) {
   if (count > 0) {
     [b1, b2, b3].forEach(b => { if (b) { b.textContent = count; b.style.display = 'inline-block'; } });
     if (heroBtn) { heroBtn.style.borderColor = 'var(--green)'; heroBtn.style.borderStyle = 'solid'; heroBtn.style.background = 'rgba(31,94,61,0.12)'; heroBtn.style.color = 'var(--green)'; }
-    if (heroText) heroText.textContent = '🎯 ' + count + ' ' + {fi:'osumaa!',sv:'träffar!',en:'matches!'}[currentLang];
+    if (heroText) heroText.textContent = '🎯 ' + count + ' ' + {fi:'vastaavaa ilmoitusta!',sv:'träffar!',en:'matches!'}[currentLang];
   } else {
     [b1, b2, b3].forEach(b => { if (b) b.style.display = 'none'; });
     if (heroBtn) { heroBtn.style.borderColor = ''; heroBtn.style.borderStyle = ''; heroBtn.style.background = ''; heroBtn.style.color = ''; }
-    if (heroText) heroText.textContent = {fi:'🔔 Tarkista osumat',sv:'🔔 Kolla träffar',en:'🔔 Check matches'}[currentLang];
+    if (heroText) heroText.textContent = {fi:'🔔 Tarkista vastaavat',sv:'🔔 Kolla träffar',en:'🔔 Check matches'}[currentLang];
   }
 }
 
@@ -2942,7 +2942,7 @@ function notifyNewMatches(currentCount) {
   const prev = parseInt(localStorage.getItem(key) || '0', 10);
   if (currentCount > prev) {
     const delta = currentCount - prev;
-    toast(delta === 1 ? '🎯 Uusi mahdollinen osuma!' : `🎯 ${delta} uutta mahdollista osumaa!`, 'green');
+    toast(delta === 1 ? '🎯 Uusi vastaava ilmoitus!' : `🎯 ${delta} uutta vastaavaa ilmoitusta!`, 'green');
   }
   localStorage.setItem(key, String(currentCount));
 }
@@ -3274,7 +3274,7 @@ async function openListing(id) {
   const status = l.status || 'active';
   const statusSteps = [
     { key: 'active', label: 'Aktiivinen' },
-    { key: 'match', label: 'Osuma löytyi' },
+    { key: 'match', label: 'Pari löytyi' },
     { key: 'agreed', label: 'Palautus sovittu' },
     { key: 'returned', label: 'Palautettu' },
   ];
@@ -3423,7 +3423,7 @@ async function openListing(id) {
     ${!currentUser ? `
     <div class="notice-info">
       <span>💡</span>
-      <span>Kirjaudu sisään ilmoittaaksesi osumasta. <a onclick="showPage('auth')" style="color:var(--blue);cursor:pointer;font-weight:500;">Kirjaudu tai luo tili →</a></span>
+      <span>Kirjaudu sisään ilmoittaaksesi löydöstä. <a onclick="showPage('auth')" style="color:var(--blue);cursor:pointer;font-weight:500;">Kirjaudu tai luo tili →</a></span>
     </div>` : ''}
 
     ${l.type === 'pet' ? `
@@ -3941,7 +3941,7 @@ async function pollForNotifications() {
   }
 
   if (lastMatchCount > 0 && count > lastMatchCount) {
-    sendNotification('Findly — Uusi osuma 🎯', `${count - lastMatchCount} uusi mahdollinen osuma ilmoituksellesi!`);
+    sendNotification('Findly — Vastaava ilmoitus 🎯', `${count - lastMatchCount} vastaava ilmoitus voi koskea sinua!`);
     updateMatchBadge();
   }
   lastMatchCount = count;
@@ -4512,9 +4512,9 @@ function setFormType(type) {
   const hintEl = document.getElementById('f-location-hint');
   if (hintEl) hintEl.textContent = isFound ? 'Mistä löysit tavaran? Hae paikan nimellä.' : 'Missä viimeksi muistat nähneesi tavaran? Hae paikan nimellä.';
 
-  // Phone: lost-only and required
+  // Phone: lost-only field (visible only on lost), optional
   const phoneInput = document.getElementById('f-phone');
-  if (phoneInput) phoneInput.required = isLost;
+  if (phoneInput) phoneInput.required = false;
 
   // Submit button
   const submitBtn = document.getElementById('submit-btn');
@@ -4674,7 +4674,7 @@ async function submitListing(e) {
     if (!desc)  { toast(t('toast_write_desc')  || 'Kirjoita kuvaus', 'red'); document.getElementById('f-desc').focus(); return; }
     if (!whenFrom || !whenTo) { toast(t('toast_select_date') || 'Valitse päivämäärä', 'red'); return; }
     if (whenFrom > whenTo) { toast('Alkupäivä ei voi olla loppupäivän jälkeen.', 'red'); return; }
-    if (!phone) { toast(t('toast_write_phone') || 'Anna puhelinnumero', 'red'); document.getElementById('f-phone').focus(); return; }
+    // Phone is optional — chat works without it
   }
 
   const btn = document.getElementById('submit-btn');
@@ -4807,7 +4807,7 @@ async function submitListing(e) {
     }
     if (matchCount > 0) {
       setMatchBadge(matchCount);
-      sendNotification('Findly — ' + {fi:'Osuma löytyi!',sv:'Träff hittad!',en:'Match found!'}[currentLang], matchCount + {fi:' mahdollinen osuma ilmoituksellesi',sv:' möjlig träff för din anmälan',en:' possible match for your listing'}[currentLang]);
+      sendNotification('Findly — ' + {fi:'Pari löytyi!',sv:'Träff hittad!',en:'Match found!'}[currentLang], matchCount + {fi:' vastaava ilmoitus voi koskea sinua',sv:' möjlig träff för din anmälan',en:' possible match for your listing'}[currentLang]);
       showMatchAlert(matchCount, bestMatch, bestScore);
     }
   }, 1500);
@@ -4837,7 +4837,7 @@ function showMatchAlert(count, bestMatch, score) {
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
       <div style="font-size:32px;">🎯</div>
       <div>
-        <div style="font-size:16px;font-weight:700;font-family:'Fraunces','Georgia',serif;color:var(--green);">${count} ${count === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[L] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[L]}</div>
+        <div style="font-size:16px;font-weight:700;font-family:'Fraunces','Georgia',serif;color:var(--green);">${count} ${count === 1 ? {fi:'vastaava ilmoitus löytyi!',sv:'träff hittad!',en:'match found!'}[L] : {fi:'vastaavaa ilmoitusta löytyi!',sv:'träffar hittade!',en:'matches found!'}[L]}</div>
         <div style="font-size:12px;color:var(--ink3);">${{fi:'Findly löysi automaattisesti',sv:'Findly hittade automatiskt',en:'Findly found automatically'}[L]}</div>
       </div>
     </div>
@@ -4850,7 +4850,7 @@ function showMatchAlert(count, bestMatch, score) {
       <div style="font-size:12px;font-weight:700;color:var(--green);background:rgba(31,94,61,0.12);padding:4px 10px;border-radius:20px;">${score}%</div>
     </div>` : ''}
     <div style="display:flex;gap:8px;">
-      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">${{fi:'Katso osumat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
+      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">${{fi:'Katso vastaavat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
       <button onclick="document.getElementById('match-alert').remove()" style="padding:11px 16px;font-size:14px;border: 1.5px solid var(--border);border-radius:12px;background: var(--paper);color:var(--ink3);cursor:pointer;">${{fi:'Myöhemmin',sv:'Senare',en:'Later'}[L]}</button>
     </div>`;
   document.body.appendChild(el);
@@ -4958,7 +4958,7 @@ async function loadMatches() {
       <div style="text-align:center;padding:48px 20px;">
         <div style="font-size:48px;margin-bottom:16px;">🔐</div>
         <h3 style="font-family:'Fraunces','Georgia',serif;font-size:20px;font-weight:700;margin-bottom:8px;">Kirjaudu sisään</h3>
-        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Osumat lasketaan sinun aktiivisten ilmoitustesi perusteella.</p>
+        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Vastaavat ilmoitukset lasketaan aktiivisten ilmoitustesi perusteella.</p>
         <button class="btn-primary" style="border:none;" onclick="showPage('auth')">Kirjaudu tai luo tili →</button>
       </div>`;
     return;
@@ -5034,7 +5034,7 @@ async function loadMatches() {
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px;margin-left:24px;">
         <div style="width:2px;height:20px;background:var(--green);border-radius:2px;"></div>
-        <span style="font-size:12px;font-weight:600;color:var(--green);">↓ ${candidates.length} ${candidates.length === 1 ? {fi:'mahdollinen osuma',sv:'möjlig träff',en:'possible match'}[currentLang] : {fi:'mahdollista osumaa',sv:'möjliga träffar',en:'possible matches'}[currentLang]}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--green);">↓ ${candidates.length} ${candidates.length === 1 ? {fi:'mahdollinen pari',sv:'möjlig träff',en:'possible match'}[currentLang] : {fi:'mahdollista paria',sv:'möjliga träffar',en:'possible matches'}[currentLang]}</span>
       </div>`;
 
     if (candidates.length === 0) {
@@ -5052,7 +5052,7 @@ async function loadMatches() {
         const isPending = pendingListingIds.has(l.id);
         const highMatch = score >= 70;
         const otherTypeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[l.type] || l.type;
-        const relevanceText = score >= 70 ? '🟢 Vahva osuma' : '🟡 Mahdollinen osuma';
+        const relevanceText = score >= 70 ? '🟢 Vahva pari' : '🟡 Mahdollinen pari';
         return `<div class="match-card${highMatch && !isPending ? ' high-match' : ''}" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.65;' : ''}">
           <button class="match-dismiss-btn" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')" title="Hylkää">✕</button>
           <div class="match-card-icon" style="${l.image_url ? 'padding:0;overflow:hidden;border:none;' : ''}">${l.image_url ? `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);" />` : categoryIcon(l.category)}</div>
@@ -5089,7 +5089,7 @@ async function loadMatches() {
     el.innerHTML = `
     <div style="background:rgba(31,94,61,0.06);border:1.5px solid rgba(31,94,61,0.15);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
       <div style="font-size:48px;margin-bottom:8px;">🎯</div>
-      <div style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:800;color:var(--green);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'osuma löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'osumaa löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
+      <div style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:800;color:var(--green);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'vastaava ilmoitus löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'vastaavaa ilmoitusta löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
       <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">${{fi:'Findly löysi mahdollisia matcheja ilmoituksillesi.',sv:'Findly hittade möjliga matchningar för dina anmälningar.',en:'Findly found potential matches for your listings.'}[currentLang]}</div>
       <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
     </div>
@@ -5183,7 +5183,7 @@ function dismissMatch(myListingId, otherListingId) {
     dismissed.push(otherListingId);
     localStorage.setItem(key, JSON.stringify(dismissed));
   }
-  toast({fi:'Osuma piilotettu.',sv:'Träff dold.',en:'Match hidden.'}[currentLang], 'green');
+  toast({fi:'Ilmoitus piilotettu.',sv:'Träff dold.',en:'Match hidden.'}[currentLang], 'green');
   loadMatches();
 }
 
@@ -5544,7 +5544,7 @@ async function loadConversations() {
     el.innerHTML = `<div style="text-align:center;padding:32px;color:var(--ink3);">
       <div style="font-size:36px;margin-bottom:12px;">💬</div>
       <div style="font-size:14px;">${{fi:'Ei vielä keskusteluja',sv:'Inga konversationer ännu',en:'No conversations yet'}[currentLang]}</div>
-      <div style="font-size:12px;margin-top:6px;">${{fi:'Kun saat osuman ja otat yhteyttä, keskustelu ilmestyy tähän.',sv:'När du får en träff och tar kontakt visas konversationen här.',en:'When you get a match and make contact, the conversation appears here.'}[currentLang]}</div>
+      <div style="font-size:12px;margin-top:6px;">${{fi:'Kun ilmoituksesi saa vastaparin ja otat yhteyttä, keskustelu ilmestyy tähän.',sv:'När du får en träff och tar kontakt visas konversationen här.',en:'When you get a match and make contact, the conversation appears here.'}[currentLang]}</div>
     </div>`;
     return;
   }
@@ -5615,7 +5615,7 @@ async function loadConversations() {
       if (isGiftMessage(lastMsg)) {
         const g = parseGift(lastMsg) || {};
         text = (g.emoji || '💛') + ' Kiitos lähetetty';
-      } else if (text.startsWith('🔐 OSUMAILMOITUS')) text = '🔐 Osumailmoitus lähetetty';
+      } else if (text.startsWith('🔐 OSUMAILMOITUS')) text = '🔐 Omistajuustodistus lähetetty';
       else if (text.startsWith('✅ OMISTAJUUS')) text = '✅ Omistajuus vahvistettu';
       preview = (isOwn ? 'Sinä: ' : '') + text;
       if (lastMsg.content.length > 60 && !isGiftMessage(lastMsg)) preview += '...';
@@ -6006,7 +6006,7 @@ async function loadProfile() {
       // Progress steps
       const steps = [
         { label: 'Aktiivinen', state: 'done' },
-        { label: 'Osuma', state: isMatch || isResolved ? 'done' : 'pending' },
+        { label: 'Vastaava', state: isMatch || isResolved ? 'done' : 'pending' },
         { label: 'Vahvistus', state: isResolved ? 'done' : isMatch ? 'active' : 'pending' },
         { label: 'Palautettu', state: isResolved ? 'active' : 'pending' }
       ];
@@ -6024,7 +6024,7 @@ async function loadProfile() {
       } else if (isMatch) {
         actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('messages')">Avaa keskustelu →</span>`;
       } else {
-        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('matches')">Katso osumia →</span>`;
+        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('matches')">Katso vastaavia ilmoituksia →</span>`;
       }
 
       // Time info
