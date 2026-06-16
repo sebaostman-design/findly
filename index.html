@@ -1489,7 +1489,7 @@ footer::before { display: none; }
         <div id="home-map"></div>
         <div class="home-map-overlay">
           <h3>Lähialueesi ilmoitukset</h3>
-          <p>Sijainnit näkyvät ±500 m tarkkuudella.</p>
+          <p>Sijainnit näkyvät ±50 m tarkkuudella.</p>
           <button class="home-map-btn" onclick="showPage('map')">Avaa kartta →</button>
         </div>
       </div>
@@ -1567,7 +1567,7 @@ footer::before { display: none; }
     <div style="position:absolute;bottom:24px;right:24px;z-index:10;">
       <button class="map-floating-cta" onclick="openFormTab('found')" style="background:var(--gradient-brand);color:var(--ink);border:none;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(31,94,61,0.3);animation:glowPulse 3s ease-in-out infinite;transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📦 Tee löytöilmoitus</button>
     </div>
-    <div id="map-privacy-note" style="position:absolute;top:90px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(5,15,10,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(31,94,61,0.2);border-radius:30px;padding:8px 16px;font-size:11px;color:var(--ink3);pointer-events:none;white-space:nowrap;transition:opacity 0.5s;"> 📍 Sijainnit ±300–500 m yksityisyyden suojaamiseksi</div>
+    <div id="map-privacy-note" style="position:absolute;top:90px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(5,15,10,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(31,94,61,0.2);border-radius:30px;padding:8px 16px;font-size:11px;color:var(--ink3);pointer-events:none;white-space:nowrap;transition:opacity 0.5s;"> 📍 Sijainnit ±50 m yksityisyyden suojaamiseksi</div>
   </div>
 </div>
 
@@ -1789,7 +1789,7 @@ footer::before { display: none; }
           </div>
           <input type="hidden" id="f-lat" />
           <input type="hidden" id="f-lng" />
-          <p style="font-size:11px;color:var(--ink3);margin-top:6px;">📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.</p>
+          <p style="font-size:11px;color:var(--ink3);margin-top:6px;">📍 Sijainti näytetään muille noin ~50 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.</p>
 
           <!-- Freeform place detail — visible for both lost and found -->
           <div style="margin-top:14px;">
@@ -2149,7 +2149,7 @@ footer::before { display: none; }
         <strong>Päivitetty:</strong> 2.4.2026</p>
 
         <h3 style="font-size:16px;font-weight:700;margin:28px 0 8px;color:var(--ink);">1. Mitä tietoja keräämme</h3>
-        <p>Kerättävät tiedot: sähköposti, nimi, puhelinnumero (vapaaehtoinen), ilmoituksen sisältö (otsikko, kuvaus, kategoria, kuva), likimääräinen sijainti (300–500 m epätarkkuus) ja aikaleima.</p>
+        <p>Kerättävät tiedot: sähköposti, nimi, puhelinnumero (vapaaehtoinen), ilmoituksen sisältö (otsikko, kuvaus, kategoria, kuva), likimääräinen sijainti (~50 m epätarkkuus) ja aikaleima.</p>
 
         <h3 style="font-size:16px;font-weight:700;margin:28px 0 8px;color:var(--ink);">2. Mihin tietoja käytetään</h3>
         <p>Tietoja käytetään: ilmoitusten julkaisemiseen, matchaukseen (kadonneiden ja löydettyjen tavaroiden vertailuun), käyttäjien väliseen viestintään ja palvelun kehittämiseen. Emme myy tietojasi kolmansille osapuolille.</p>
@@ -2325,7 +2325,7 @@ const translations = {
 
   // ── MAP ──
   map_title:   { fi: 'Karttanäkymä', sv: 'Kartvy', en: 'Map view' },
-  map_notice:  { fi: '📍 Sijainnit näytetään noin 300–500 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.', sv: '📍 Platser visas med ca 300–500 m noggrannhet för att skydda integriteten. Exakt plats delas först efter matchning.', en: '📍 Locations shown with ~300–500m accuracy for privacy. Exact location shared only after matching.' },
+  map_notice:  { fi: '📍 Sijainnit näytetään noin ~50 m tarkkuudella yksityisyyden suojaamiseksi. Tarkka sijainti jaetaan vasta matchauksen jälkeen.', sv: '📍 Platser visas med ca ~50 m noggrannhet för att skydda integriteten. Exakt plats delas först efter matchning.', en: '📍 Locations shown with ~~50m accuracy for privacy. Exact location shared only after matching.' },
 
   // ── PETS ──
   pets_label:    { fi: 'Eläinilmoitukset', sv: 'Djuranmälningar', en: 'Pet listings' },
@@ -2429,7 +2429,7 @@ const translations = {
 
   // ── MISC ──
   stat_location: { fi: 'sijainti suojattu', sv: 'plats skyddad', en: 'location protected' },
-  loc_privacy:   { fi: '📍 Sijainti näytetään muille noin 300–500 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.', sv: '📍 Platsen visas med ca 300–500 m noggrannhet. Exakt plats delas först efter matchning.', en: '📍 Location shown with ~300–500m accuracy. Exact location shared only after matching.' },
+  loc_privacy:   { fi: '📍 Sijainti näytetään muille noin ~50 m epätarkkuudella. Tarkka sijainti jaetaan vasta matchin jälkeen.', sv: '📍 Platsen visas med ca ~50 m noggrannhet. Exakt plats delas först efter matchning.', en: '📍 Location shown with ~~50m accuracy. Exact location shared only after matching.' },
   footer_tagline: { fi: 'Löydä se mikä katosi. Hyvän mielen palvelu. 💛', sv: 'Hitta det som försvann. En feel-good tjänst. 💛', en: 'Find what was lost. A feel-good service. 💛' },
   footer_copy:    { fi: '© 2025 Findly. Kaikki oikeudet pidätetään.', sv: '© 2025 Findly. Alla rättigheter förbehållna.', en: '© 2025 Findly. All rights reserved.' },
   footer_legal:   { fi: 'Findly toimii Suomen löytötavaralain (778/1988) mukaisesti. Palvelu on tiedonvälittäjä — se ei korvaa lain mukaisia velvollisuuksia eikä ole vastuussa tavaroiden katoamisesta tai väärinkäytöksistä. Tarkat sijaintitiedot jaetaan vasta matchauksen jälkeen.\n\nFindly ei säilytä tavaroita. Palvelu ei korvaa poliisia tai löytötavaratoimistoa. Käyttäjä vastaa itse lain noudattamisesta.', sv: 'Findly fungerar i enlighet med Finlands hittegodslagstiftning (778/1988). Tjänsten är en förmedlare — den ersätter inte lagstadgade skyldigheter och ansvarar inte för förlust av föremål eller missbruk. Exakta platsuppgifter delas först efter matchning.\n\nFindly förvarar inte föremål. Tjänsten ersätter inte polisen eller hittegodskontoret. Användaren ansvarar själv för att följa lagen.', en: 'Findly operates in accordance with the Finnish Lost Property Act (778/1988). The service is a mediator — it does not replace legal obligations and is not responsible for lost items or misuse. Exact location data is shared only after matching.\n\nFindly does not store items. The service does not replace the police or lost property office. The user is responsible for complying with the law.' },
@@ -2450,7 +2450,7 @@ const translations = {
 
   // ── WHY SECTION CARDS ──
   why_loc_title:  { fi: 'Sijainti piilotettu', sv: 'Plats dold', en: 'Location hidden' },
-  why_loc_desc:   { fi: 'Tarkat koordinaatit jaetaan vasta matchauksen ja omistajuuden vahvistuksen jälkeen. Muille näytetään vain epätarkka 300–500 m alue.', sv: 'Exakta koordinater delas först efter matchning och ägandebekräftelse. Andra ser bara ett ungefärligt 300–500 m område.', en: 'Exact coordinates shared only after matching and ownership verification. Others see only an approximate 300–500m area.' },
+  why_loc_desc:   { fi: 'Tarkat koordinaatit jaetaan vasta matchauksen ja omistajuuden vahvistuksen jälkeen. Muille näytetään vain epätarkka ~50 m alue.', sv: 'Exakta koordinater delas först efter matchning och ägandebekräftelse. Andra ser bara ett ungefärligt ~50 m område.', en: 'Exact coordinates shared only after matching and ownership verification. Others see only an approximate ~50m area.' },
   why_verify_title:{ fi: 'Pakollinen verificaatio', sv: 'Obligatorisk verifiering', en: 'Mandatory verification' },
   why_verify_desc: { fi: 'Jokainen omistajuustodistus vaatii todistuksen omistajuudesta. Löytäjä päättää hyväksyykö — ei suoraa kontaktia ennen vahvistusta.', sv: 'Varje träffanmälan kräver bevis på ägande. Upphittaren bestämmer om den godkänns — ingen direkt kontakt före verifiering.', en: 'Every match claim requires proof of ownership. The finder decides whether to approve — no direct contact before verification.' },
   why_law_title:  { fi: 'Lain mukainen', sv: 'Laglig', en: 'Legal compliance' },
@@ -2491,7 +2491,7 @@ const translations = {
   faq_q5: { fi: 'Toimiiko Findly koko Suomessa?', sv: 'Fungerar Findly i hela Finland?', en: 'Does Findly work across Finland?' },
   faq_a5: { fi: 'Kyllä — Helsingistä, Tampereelta, Turusta ja kaikkialta muualtakin. Findly on valtakunnallinen löytötavara-palvelu kaikille suomalaisille.', sv: 'Ja — från Helsingfors, Tammerfors, Åbo och överallt annat. Findly är en nationell hittegodsservice för alla finländare.', en: 'Yes — from Helsinki, Tampere, Turku and everywhere else. Findly is a nationwide lost & found service for all Finns.' },
   faq_q6: { fi: 'Onko sijainti turvallinen?', sv: 'Är platsen säker?', en: 'Is the location safe?' },
-  faq_a6: { fi: 'Kyllä. Sijainti näytetään muille noin 300–500 metrin epätarkkuudella. Tarkka osoite jaetaan vasta kun omistajuus on vahvistettu.', sv: 'Ja. Platsen visas med ca 300–500 meters noggrannhet. Exakt adress delas först när ägande har bekräftats.', en: 'Yes. Location is shown with ~300–500m accuracy. Exact address is shared only after ownership is verified.' },
+  faq_a6: { fi: 'Kyllä. Sijainti näytetään muille noin ~50 metrin epätarkkuudella. Tarkka osoite jaetaan vasta kun omistajuus on vahvistettu.', sv: 'Ja. Platsen visas med ca 300–500 meters noggrannhet. Exakt adress delas först när ägande har bekräftats.', en: 'Yes. Location is shown with ~~50m accuracy. Exact address is shared only after ownership is verified.' },
 
   // ── VERIFY FLOW ──
   verify_badge:    { fi: 'Vastaava ilmoitus löytyi', sv: 'Möjlig träff hittad', en: 'Potential match found' },
@@ -3222,10 +3222,12 @@ async function doSignout() {
 }
 
 // ═══════════════════════════════════════════════════════
-// LOCATION BLUR — 300–500m offset for privacy
+// LOCATION BLUR — ~50m offset for privacy
 // ═══════════════════════════════════════════════════════
 function blurLocation(lat, lng) {
-  const meters = 300 + Math.random() * 200;
+  // Tight ~50m radius — enough to anonymise the exact spot, small enough that
+  // the marker doesn't appear to jump between sessions.
+  const meters = 30 + Math.random() * 20;
   const angle = Math.random() * 2 * Math.PI;
   const dLat = (meters / 111320) * Math.cos(angle);
   const dLng = (meters / (111320 * Math.cos(lat * Math.PI / 180))) * Math.sin(angle);
