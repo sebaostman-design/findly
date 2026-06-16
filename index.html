@@ -542,8 +542,19 @@ section { padding: 80px 0; }
 .vis-opt small { display: block; font-size: 11px; font-weight: 400; margin-top: 3px; opacity: 0.85; }
 
 /* ── MAP PAGE ── */
-.map-tab { flex:1; padding:9px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; background:transparent; color:var(--ink2); transition:all 0.2s; }
-.map-tab.active { background:var(--green-light); color:var(--green); border-color: rgba(31,94,61,0.18); }
+.map-tab {
+  flex: 1; padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1px solid transparent;
+  background: transparent; color: var(--ink2);
+  transition: all 0.2s ease;
+}
+.map-tab:hover { color: var(--ink); }
+.map-tab.active {
+  background: var(--green); color: #fff;
+  border-color: var(--green);
+  box-shadow: 0 2px 8px -2px rgba(31,94,61,0.35);
+}
 #map-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
 .map-header { padding: 18px clamp(20px, 5vw, 80px) 14px; background: var(--paper); border-bottom: 1px solid var(--border); max-width: 100%; }
 .map-header-inner { max-width: 1280px; margin: 0 auto; }
@@ -1537,8 +1548,8 @@ footer::before { display: none; }
             <h2 style="font-family:'Fraunces','Georgia',serif;font-size:20px;font-weight:800;color:var(--ink);margin:0;" data-i18n="map_title">🗺️ Live-kartta</h2>
           </div>
           <div style="display:flex;gap:4px;background: var(--paper);border-radius:14px;padding:3px;">
-            <button id="map-tab-lost" onclick="switchMapTab('lost')" class="map-tab active" style="flex:1;padding:10px 16px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:rgba(31,94,61,0.15);color:var(--green);border:1px solid rgba(31,94,61,0.25);transition:all 0.2s;">🔍 Kadotetut tavarat</button>
-            <button id="map-tab-found" onclick="switchMapTab('found')" class="map-tab" style="flex:1;padding:10px 16px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--ink3);transition:all 0.2s;">📦 Löydetyt tavarat</button>
+            <button id="map-tab-lost"  onclick="switchMapTab('lost')"  class="map-tab active" style="flex:1;">🔍 Kadotetut tavarat</button>
+            <button id="map-tab-found" onclick="switchMapTab('found')" class="map-tab"        style="flex:1;">📦 Löydetyt tavarat</button>
           </div>
           <div style="display:flex;gap:6px;margin-top:8px;">
             <button class="feed-filter" onclick="toggleMapStories(this)" id="map-stories-btn" style="font-size:12px;padding:6px 14px;border-color:var(--amber);color:var(--amber);">💛 Palautetut</button>
@@ -2777,21 +2788,13 @@ function showCheckPrompt(type) {
 function switchMapTab(type) {
   window._mapTabSet = true;
   window._mapTab = type;
-  const tabLost = document.getElementById('map-tab-lost');
+  const tabLost  = document.getElementById('map-tab-lost');
   const tabFound = document.getElementById('map-tab-found');
-  if (tabLost) tabLost.className = 'map-tab' + (type === 'lost' ? ' active' : '');
-  if (tabFound) tabFound.className = 'map-tab' + (type === 'found' ? ' active' : '');
-  // Also update inline styles for the active state
-  if (tabLost) {
-    tabLost.style.background = type === 'lost' ? 'rgba(31,94,61,0.15)' : 'transparent';
-    tabLost.style.color = type === 'lost' ? 'var(--green)' : 'rgba(255,255,255,0.4)';
-    tabLost.style.border = type === 'lost' ? '1px solid rgba(31,94,61,0.25)' : 'none';
-  }
-  if (tabFound) {
-    tabFound.style.background = type === 'found' ? 'rgba(31,94,61,0.15)' : 'transparent';
-    tabFound.style.color = type === 'found' ? 'var(--green)' : 'rgba(255,255,255,0.4)';
-    tabFound.style.border = type === 'found' ? '1px solid rgba(31,94,61,0.25)' : 'none';
-  }
+  // Class toggle only — let .map-tab CSS handle the visuals. Inline styles
+  // from earlier render (rgba whites on light theme) were leaving the inactive
+  // tab invisible.
+  if (tabLost)  { tabLost.className  = 'map-tab' + (type === 'lost'  ? ' active' : ''); tabLost.removeAttribute('style');  tabLost.style.flex = '1'; }
+  if (tabFound) { tabFound.className = 'map-tab' + (type === 'found' ? ' active' : ''); tabFound.removeAttribute('style'); tabFound.style.flex = '1'; }
   // Filter markers
   if (type === 'lost') {
     updateMapMarkers(allListings.filter(l => l.type === 'lost'));
