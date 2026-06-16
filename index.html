@@ -243,7 +243,11 @@ nav.scrolled { background: rgba(247,245,240,0.97); box-shadow: 0 6px 20px -10px 
 
 /* ── HERO ── */
 .hero {
-  min-height: 78vh; display: flex; align-items: center;
+  /* dvh = dynamic viewport; stops the iOS Safari address bar from making the
+     hero jump as it appears/disappears on scroll. */
+  min-height: 78vh;
+  min-height: 78dvh;
+  display: flex; align-items: center;
   padding: 72px 0 64px; position: relative; overflow: hidden;
   background: var(--bg);
   isolation: isolate;
@@ -555,7 +559,7 @@ section { padding: 80px 0; }
   border-color: var(--green);
   box-shadow: 0 2px 8px -2px rgba(31,94,61,0.35);
 }
-#map-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+#map-page { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
 .map-header { padding: 18px clamp(20px, 5vw, 80px) 14px; background: var(--paper); border-bottom: 1px solid var(--border); max-width: 100%; }
 .map-header-inner { max-width: 1280px; margin: 0 auto; }
 .map-header h2 { font-family: 'Fraunces','Georgia',serif; font-size: 22px; font-weight: 600; margin-bottom: 12px; color: var(--ink); letter-spacing: -0.3px; }
@@ -583,7 +587,7 @@ section { padding: 80px 0; }
 
 /* ── FORM PAGE ── */
 /* ── FORM PAGE — DARK THEME ── */
-#page-new-listing { background: var(--bg); min-height: 100vh; position: relative; }
+#page-new-listing { background: var(--bg); min-height: 100vh; min-height: 100dvh; position: relative; }
 #page-new-listing::before, #page-new-listing::after { display: none; }
 .form-page-wrap {
   max-width: 720px; margin: 0 auto; position: relative; z-index: 1;
@@ -904,7 +908,24 @@ footer::before { display: none; }
   .stat-divider { display: none; }
   .stats-bar-inner { justify-content: flex-start; gap: 0; flex-wrap: wrap; }
   .stat-item { padding: 12px 16px; align-items: flex-start; }
-  .wrap { padding: 0 16px !important; }
+  .wrap {
+    padding-left:  max(16px, env(safe-area-inset-left)) !important;
+    padding-right: max(16px, env(safe-area-inset-right)) !important;
+  }
+  /* Shrink the nav so it always fits on a phone with the profile button visible */
+  .nav-inner {
+    height: 64px;
+    padding-left:  max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+  nav::before { height: 2px; }
+  .nav-logo { font-size: 22px; letter-spacing: -0.5px; }
+  .nav-logo::before { width: 8px; height: 8px; margin-right: 7px; box-shadow: 0 0 0 3px rgba(31,94,61,0.12); }
+  .nav-auth-btn { padding: 7px 12px; font-size: 12.5px; }
+  .nav-cta { padding: 7px 14px; font-size: 12.5px; }
+  #lang-switcher { display: none !important; }
+  /* Mobile menu starts under the new shorter nav */
+  #mobile-menu { top: 64px !important; }
   .hero { padding: 60px 0 40px; }
   .hero h1 { font-size: 36px !important; letter-spacing: -1px; }
   .hero-lead { font-size: 15px; }
@@ -4040,17 +4061,24 @@ function startNotificationPolling() {
 
 // In-app polling — runs for ALL logged-in users (not just notification-permitted)
 let inAppPollInterval = null;
+function _inAppTick() {
+  if (!currentUser) return;
+  updateMsgBadge();
+  updateMatchBadge();
+  // pollForNotifications keeps lastMessageCount fresh + fires toasts on new
+  // conversations / messages even without browser-notification permission.
+  pollForNotifications();
+}
 function startInAppPolling() {
   if (inAppPollInterval) return;
-  inAppPollInterval = setInterval(() => {
-    if (!currentUser) return;
-    updateMsgBadge();
-    updateMatchBadge();
-    // pollForNotifications keeps lastMessageCount fresh + fires toasts on new
-    // conversations / messages even without browser-notification permission.
-    pollForNotifications();
-  }, 12000);
+  inAppPollInterval = setInterval(_inAppTick, 12000);
 }
+// On mobile, setInterval throttles to ~1/min when the tab is backgrounded.
+// Run a tick immediately when the user comes back so any pending message
+// surfaces in a second or two rather than 12.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentUser) _inAppTick();
+});
 
 // In-app message banner — visible even when the tab is focused (sendNotification
 // is silent in that case). Lightweight slide-in at top-right with an "Avaa"
