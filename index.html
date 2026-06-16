@@ -1154,33 +1154,6 @@ footer::before { display: none; }
   </div>
 </div>
 
-<!-- FOUND EMAIL PROMPT MODAL -->
-<div id="found-email-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background: var(--paper);border: 1px solid var(--border);border-radius:20px;padding:32px 24px;width:calc(100% - 40px);max-width:420px;color:var(--ink);" onclick="event.stopPropagation()">
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:36px;margin-bottom:8px;">📦</div>
-      <div style="font-size:18px;font-weight:800;font-family:'Fraunces','Georgia',serif;margin-bottom:8px;">Julkaise löytöilmoitus</div>
-      <div style="font-size:13px;color:var(--ink3);line-height:1.5;">
-        Sähköpostiosoitteesi tarvitaan vain jos omistaja ottaa yhteyttä.
-      </div>
-    </div>
-    <div style="margin-bottom:16px;">
-      <label style="font-size:12px;font-weight:600;color:var(--ink3);display:block;margin-bottom:6px;">Sähköpostiosoite *</label>
-      <input type="email" id="found-email-input" placeholder="nimi@esimerkki.fi"
-        style="width:100%;padding:12px 14px;border: 1.5px solid var(--border);border-radius:12px;font-size:14px;outline:none;background: var(--paper);color:var(--ink);box-sizing:border-box;" />
-      <div id="found-email-error" style="font-size:12px;color:var(--red);margin-top:6px;display:none;"></div>
-    </div>
-    <button id="found-email-submit-btn" onclick="submitFoundWithEmail()"
-      style="width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:var(--gradient-brand);color:var(--ink);cursor:pointer;margin-bottom:10px;">
-      Julkaise ilmoitus — ei vaadi rekisteröitymistä
-    </button>
-    <div style="text-align:center;">
-      <a onclick="document.getElementById('found-email-modal').style.display='none';saveDraft();showPage('auth')" style="font-size:12px;color:var(--ink3);cursor:pointer;text-decoration:underline;">
-        Haluatko hallinnoida ilmoitustasi? Luo tili →
-      </a>
-    </div>
-  </div>
-</div>
 
 <!-- NAV -->
 <nav>
@@ -1564,20 +1537,15 @@ footer::before { display: none; }
 <div class="page" id="page-new-listing">
   <div class="form-page-wrap">
 
-    <!-- Login gate — shown when not logged in (lost/stolen/pet only) -->
+    <!-- Login gate — required for all listing flows -->
     <div id="new-listing-gate" style="display:none;text-align:center;padding:64px 20px;">
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-      <h3 style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:800;margin-bottom:8px;color:var(--ink);">Tili vaaditaan</h3>
-      <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6;">
-        Katoamisilmoitus vaatii tilin, jotta voit vastaanottaa osumia ja todistaa omistajuutesi. Rekisteröityminen on ilmaista ja kestää 30 sekuntia.
+      <h3 style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:600;margin-bottom:8px;color:var(--ink);letter-spacing:-0.3px;">Kevyt kirjautuminen riittää</h3>
+      <p style="font-size:14px;color:var(--ink2);margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6;">
+        Tarvitset tilin jotta voit vastaanottaa viestejä ja saada tiedon mahdollisesta osumasta. Sähköposti + salasana tai Google — kestää 20 sekuntia.
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto;">
-        <button class="btn-primary" style="border:none;width:100%;" onclick="saveDraft();showPage('auth')">Luo tili →</button>
-        <button style="width:100%;padding:12px;font-size:14px;font-weight:600;border: 1.5px solid var(--border);border-radius:14px;background: var(--paper);color:var(--ink2);cursor:pointer;" onclick="saveDraft();showPage('auth')">Kirjaudu sisään</button>
-      </div>
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
-        <p style="font-size:12px;color:var(--ink3);margin-bottom:10px;">Löysitkö tavaran? Löytöilmoitus ei vaadi tiliä.</p>
-        <button style="padding:10px 20px;font-size:13px;font-weight:600;border:1.5px solid rgba(31,94,61,0.3);border-radius:12px;background:rgba(31,94,61,0.08);color:var(--green);cursor:pointer;" onclick="setFormType('found')">📦 Tee löytöilmoitus →</button>
+        <button class="btn-primary" style="width:100%;" onclick="saveDraft();showPage('auth')">Kirjaudu / luo tili →</button>
       </div>
     </div>
 
@@ -1881,6 +1849,37 @@ footer::before { display: none; }
           <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
         </div>
         <button class="auth-btn" id="login-btn" onclick="doLogin()" data-i18n="auth_login_btn">Kirjaudu sisään</button>
+        <div style="text-align:center;margin-top:10px;">
+          <a onclick="showResetPasswordForm()" style="font-size:13px;color:var(--green);cursor:pointer;text-decoration:underline;font-weight:500;">Unohditko salasanasi?</a>
+        </div>
+      </div>
+
+      <!-- Password reset request -->
+      <div id="auth-reset-form" style="display:none;">
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="font-size:13px;color:var(--ink2);line-height:1.5;">Anna sähköpostisi — lähetämme palautuslinkin.</div>
+        </div>
+        <div class="auth-form-group">
+          <label>Sähköposti</label>
+          <input type="email" id="reset-email" placeholder="sinä@esimerkki.fi" onkeydown="if(event.key==='Enter')doRequestReset()" />
+        </div>
+        <button class="auth-btn" id="reset-btn" onclick="doRequestReset()">Lähetä palautuslinkki</button>
+        <div style="text-align:center;margin-top:10px;">
+          <a onclick="showLoginForm()" style="font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:underline;">← Takaisin kirjautumiseen</a>
+        </div>
+      </div>
+
+      <!-- Set new password (shown after clicking link in email — PASSWORD_RECOVERY) -->
+      <div id="auth-new-pw-form" style="display:none;">
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="font-size:18px;font-weight:600;font-family:'Fraunces','Georgia',serif;color:var(--ink);margin-bottom:6px;">Aseta uusi salasana</div>
+          <div style="font-size:13px;color:var(--ink2);">Salasanan tulee olla vähintään 6 merkkiä pitkä.</div>
+        </div>
+        <div class="auth-form-group">
+          <label>Uusi salasana</label>
+          <input type="password" id="new-password" placeholder="Vähintään 6 merkkiä" onkeydown="if(event.key==='Enter')doSetNewPassword()" />
+        </div>
+        <button class="auth-btn" id="new-pw-btn" onclick="doSetNewPassword()">Tallenna salasana</button>
       </div>
       <div id="auth-signup-form" style="display:none;">
         <div class="auth-form-group">
@@ -1907,8 +1906,9 @@ footer::before { display: none; }
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/></svg>
         <span data-i18n="auth_google">Jatka Googlella</span>
       </button>
-      <div class="auth-divider" data-i18n="auth_guest">— tai jatka ilman tiliä —</div>
-      <button class="auth-btn" style="background: var(--paper);color:var(--ink3);border: 1.5px solid var(--border);" onclick="showPage('home')" data-i18n="auth_back">Takaisin etusivulle</button>
+      <div style="text-align:center;margin-top:16px;">
+        <a onclick="showPage('home')" style="font-size:13px;color:var(--ink3);cursor:pointer;text-decoration:underline;" data-i18n="auth_back">← Takaisin etusivulle</a>
+      </div>
     </div>
   </div>
 </div>
@@ -2598,14 +2598,8 @@ function showPage(name) {
       const savedPhone = currentUser.user_metadata?.phone;
       if (savedPhone) document.getElementById('f-phone').value = savedPhone;
       restoreDraft();
-    } else if (currentFormType === 'found') {
-      // Found = low barrier (no full account required, email-only at submit)
-      gate.style.display = 'none';
-      wrap.style.display = '';
-      initFormMap();
-      restoreDraft();
     } else {
-      // Lost = full account required
+      // Light auth required for both lost and found
       gate.style.display = 'block';
       wrap.style.display = 'none';
     }
@@ -2763,8 +2757,14 @@ function toast(msg, type = '') {
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
   updateNavAuth();
-  // Redirect away from auth page if user just signed in
-  if (currentUser && document.getElementById('page-auth').classList.contains('active')) {
+  // Password recovery — user clicked the email reset link
+  if (event === 'PASSWORD_RECOVERY') {
+    showPage('auth');
+    showSetNewPasswordForm();
+    return;
+  }
+  // Redirect away from auth page if user just signed in (but NOT during recovery)
+  if (currentUser && document.getElementById('page-auth').classList.contains('active') && !window._passwordRecoveryActive) {
     showPage('home');
   }
   if (currentUser) {
@@ -2872,11 +2872,86 @@ function updateNavAuth() {
 }
 
 function switchAuthTab(tab) {
+  // Hide reset / new-password panels when user switches to a tab
+  document.getElementById('auth-reset-form').style.display = 'none';
+  document.getElementById('auth-new-pw-form').style.display = 'none';
   document.getElementById('auth-login-form').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('auth-tab-login').className = 'auth-tab' + (tab === 'login' ? ' active' : '');
   document.getElementById('auth-tab-signup').className = 'auth-tab' + (tab === 'signup' ? ' active' : '');
   document.getElementById('auth-msg').textContent = '';
+  document.getElementById('auth-msg').className = 'auth-msg';
+}
+
+function showResetPasswordForm() {
+  document.getElementById('auth-login-form').style.display = 'none';
+  document.getElementById('auth-signup-form').style.display = 'none';
+  document.getElementById('auth-new-pw-form').style.display = 'none';
+  document.getElementById('auth-reset-form').style.display = 'block';
+  document.getElementById('auth-msg').textContent = '';
+  document.getElementById('auth-msg').className = 'auth-msg';
+  // Prefill with whatever's in the login email field
+  const loginEmail = document.getElementById('login-email').value.trim();
+  if (loginEmail) document.getElementById('reset-email').value = loginEmail;
+}
+
+function showLoginForm() {
+  switchAuthTab('login');
+}
+
+function showSetNewPasswordForm() {
+  window._passwordRecoveryActive = true;
+  document.getElementById('auth-login-form').style.display = 'none';
+  document.getElementById('auth-signup-form').style.display = 'none';
+  document.getElementById('auth-reset-form').style.display = 'none';
+  document.getElementById('auth-new-pw-form').style.display = 'block';
+  // Hide tab strip and OAuth/back options while resetting
+  document.querySelector('.auth-tabs').style.display = 'none';
+  document.getElementById('google-btn').style.display = 'none';
+  document.getElementById('auth-msg').textContent = '';
+  document.getElementById('auth-msg').className = 'auth-msg';
+}
+
+async function doRequestReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  const msg = document.getElementById('auth-msg');
+  const btn = document.getElementById('reset-btn');
+  if (!email) { msg.textContent = 'Anna sähköpostiosoite.'; msg.className = 'auth-msg error'; return; }
+  msg.textContent = ''; msg.className = 'auth-msg';
+  btn.disabled = true; btn.textContent = 'Lähetetään...';
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname
+  });
+  btn.disabled = false; btn.textContent = 'Lähetä palautuslinkki';
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'auth-msg error';
+  } else {
+    msg.innerHTML = '✉️ Palautuslinkki lähetetty osoitteeseen ' + email + '.<br>Tarkista myös roskaposti.';
+    msg.className = 'auth-msg success';
+  }
+}
+
+async function doSetNewPassword() {
+  const pw = document.getElementById('new-password').value;
+  const msg = document.getElementById('auth-msg');
+  const btn = document.getElementById('new-pw-btn');
+  if (!pw || pw.length < 6) { msg.textContent = 'Salasanan tulee olla vähintään 6 merkkiä.'; msg.className = 'auth-msg error'; return; }
+  msg.textContent = ''; msg.className = 'auth-msg';
+  btn.disabled = true; btn.textContent = 'Tallennetaan...';
+  const { error } = await sb.auth.updateUser({ password: pw });
+  btn.disabled = false; btn.textContent = 'Tallenna salasana';
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'auth-msg error';
+    return;
+  }
+  // Restore default UI and bounce to home
+  window._passwordRecoveryActive = false;
+  document.querySelector('.auth-tabs').style.display = '';
+  document.getElementById('google-btn').style.display = '';
+  toast('Salasana päivitetty. Olet kirjautunut sisään.', 'green');
+  showPage('home');
 }
 
 async function doLogin() {
@@ -2916,11 +2991,13 @@ async function doSignup() {
   const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { name, phone } } });
   btn.disabled = false; btn.textContent = 'Luo tili';
   if (error) {
-    const errMap = {
-      'User already registered': t('toast_email_exists'),
-    };
-    msg.textContent = errMap[error.message] || error.message;
-    msg.className = 'auth-msg error';
+    if (error.message === 'User already registered' || /already.*registered|exists/i.test(error.message)) {
+      msg.innerHTML = 'Tämä sähköposti on jo rekisteröity. <a onclick="showResetPasswordForm()" style="color:var(--green);cursor:pointer;text-decoration:underline;font-weight:600;">Palauta salasana →</a>';
+      msg.className = 'auth-msg error';
+    } else {
+      msg.textContent = error.message;
+      msg.className = 'auth-msg error';
+    }
   } else if (data?.session) {
     // Email confirmation disabled — logged in immediately
     toast(t('toast_welcome_new'), 'green');
@@ -4250,20 +4327,10 @@ function setFormType(type) {
     }
   }
 
-  // Re-check gate for non-logged-in users
+  // Re-check gate for non-logged-in users — both flows require light auth
   if (!currentUser) {
-    const gate = document.getElementById('new-listing-gate');
-    const wrap = document.getElementById('new-listing-form-wrap');
-    if (isFound) {
-      // Found = low barrier (email-only OK on submit)
-      gate.style.display = 'none';
-      wrap.style.display = '';
-      initFormMap();
-    } else {
-      // Lost = full account required
-      gate.style.display = 'block';
-      wrap.style.display = 'none';
-    }
+    document.getElementById('new-listing-gate').style.display = 'block';
+    document.getElementById('new-listing-form-wrap').style.display = 'none';
   }
 
   // Notice copy
@@ -4469,82 +4536,6 @@ async function previewImage(input) {
 }
 
 // ═══════════════════════════════════════════════════════
-// FOUND EMAIL PROMPT (no-account publish)
-// ═══════════════════════════════════════════════════════
-function showFoundEmailPrompt() {
-  const modal = document.getElementById('found-email-modal');
-  document.getElementById('found-email-input').value = '';
-  document.getElementById('found-email-error').style.display = 'none';
-  document.getElementById('found-email-submit-btn').disabled = false;
-  document.getElementById('found-email-submit-btn').textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
-  modal.style.display = 'flex';
-}
-
-async function submitFoundWithEmail() {
-  const emailInput = document.getElementById('found-email-input');
-  const errorEl = document.getElementById('found-email-error');
-  const btn = document.getElementById('found-email-submit-btn');
-  const email = emailInput.value.trim();
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errorEl.textContent = 'Anna kelvollinen sähköpostiosoite.';
-    errorEl.style.display = 'block';
-    emailInput.focus();
-    return;
-  }
-
-  errorEl.style.display = 'none';
-  btn.disabled = true;
-  btn.textContent = 'Julkaistaan...';
-
-  try {
-    const randomPw = crypto.randomUUID();
-    const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-      email: email,
-      password: randomPw,
-      options: { data: { name: email.split('@')[0] } }
-    });
-
-    if (signUpError) {
-      // Email exists — try to sign in with password reset flow or show login option
-      errorEl.innerHTML = 'Tämä sähköposti on jo käytössä. <a style="color:var(--green);cursor:pointer;text-decoration:underline;" onclick="document.getElementById(\'found-email-modal\').style.display=\'none\';saveDraft();showPage(\'auth\');">Kirjaudu sisään →</a>';
-      errorEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
-      return;
-    }
-
-    // Account created — session should be active immediately (email confirmation disabled)
-    if (signUpData?.session) {
-      currentUser = signUpData.user;
-      updateNavAuth();
-      document.getElementById('found-email-modal').style.display = 'none';
-      document.getElementById('listing-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    } else if (signUpData?.user) {
-      // Fallback: user created but no session (confirmation might still be on)
-      // Try to sign in directly
-      const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password: randomPw });
-      if (signInData?.session) {
-        currentUser = signInData.user;
-        updateNavAuth();
-        document.getElementById('found-email-modal').style.display = 'none';
-        document.getElementById('listing-form').dispatchEvent(new Event('submit', { cancelable: true }));
-      } else {
-        errorEl.textContent = 'Tilin luonti onnistui mutta kirjautuminen epäonnistui. Kokeile kirjautua sisään.';
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
-      }
-    }
-  } catch (err) {
-    errorEl.textContent = 'Odottamaton virhe: ' + err.message;
-    errorEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Julkaise ilmoitus — ei vaadi rekisteröitymistä';
-  }
-}
-
-// ═══════════════════════════════════════════════════════
 // SUBMIT LISTING
 // ═══════════════════════════════════════════════════════
 async function submitListing(e) {
@@ -4552,13 +4543,8 @@ async function submitListing(e) {
   const isFound = currentFormType === 'found';
   const isLost  = currentFormType === 'lost';
 
-  if (!currentUser && isFound) {
-    // Low barrier: email-only publish for finders
-    showFoundEmailPrompt();
-    return;
-  }
   if (!currentUser) {
-    // Lost requires full auth
+    // Both flows require a light account (email + password or Google)
     saveDraft();
     showPage('auth');
     return;
