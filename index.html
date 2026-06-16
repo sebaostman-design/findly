@@ -4236,6 +4236,9 @@ async function initMap() {
   if (statReturned) statReturned.textContent = returned.length + ' ' + {fi:'palautettua',sv:'returnerade',en:'returned'}[currentLang] + ' 💛';
 
   if (mapInstance) {
+    // Container was hidden via display:none on the page swap; tell Mapbox the
+    // new size so tiles + markers render at the right coordinates.
+    setTimeout(() => mapInstance.resize(), 0);
     // Re-apply the current tab filter so we never flash other-type markers
     switchMapTab(window._mapTab || 'lost');
     if (showStories) addStoryMarkers(returned);
@@ -4298,6 +4301,9 @@ function updateMapMarkers(listings) {
     const el = document.createElement('div');
     el.className = 'map-marker';
     const mColor = markerColor(l.type);
+    // Outer marker positioned by Mapbox (transform). We must NOT add any
+    // transform / transition on this element — Mapbox writes to it every
+    // frame, and a CSS transition would smear it across the map.
     el.style.cssText = `
       width: 42px; height: 42px; border-radius: 50%;
       background: #fff;
@@ -4305,11 +4311,12 @@ function updateMapMarkers(listings) {
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 19px;
       box-shadow: 0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition: box-shadow 0.15s ease, border-width 0.15s ease;
     `;
     el.textContent = categoryIcon(l.category);
-    el.onmouseover = () => { el.style.transform = 'translateY(-2px)'; el.style.boxShadow = `0 8px 20px rgba(20,30,25,0.25), 0 0 0 3px ${mColor}33`; };
-    el.onmouseout = () => { el.style.transform = ''; el.style.boxShadow = '0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7)'; };
+    // Hover changes shadow / border only — no transform, so the pin stays put.
+    el.onmouseover = () => { el.style.boxShadow = `0 6px 16px rgba(20,30,25,0.22), 0 0 0 4px ${mColor}33`; };
+    el.onmouseout  = () => { el.style.boxShadow = '0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7)'; };
     const typeLbl = {lost:{fi:'Kadonnut',sv:'Förlorad',en:'Lost'},found:{fi:'Löydetty',sv:'Hittad',en:'Found'},stolen:{fi:'Varastettu',sv:'Stulen',en:'Stolen'},pet:{fi:'Eläin',sv:'Djur',en:'Pet'}}[l.type]?.[currentLang] || l.type;
     const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, className: 'dark-popup' }).setHTML(`
       <div style="background: var(--paper);border:1px solid rgba(31,94,61,0.2);border-radius:14px;padding:14px 16px;color:var(--ink);min-width:180px;">
