@@ -3319,11 +3319,16 @@ async function openListing(id) {
   const labelMap = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen'), pet: typeLabel('pet') };
   const _tt = currentLang;
   const takenToLabels = {
-    police: {fi:'🏛️ Viety poliisille',sv:'🏛️ Lämnad till polisen',en:'🏛️ Taken to police'}[_tt],
-    info: {fi:'📍 Infopiste',sv:'📍 Informationsdisk',en:'📍 Info desk'}[_tt],
+    // Current action keys (match the form options + finder-intro chat template)
+    keep:      {fi:'🔒 Löytäjän hallussa',sv:'🔒 Hos upphittaren',en:'🔒 With the finder'}[_tt],
+    police:    {fi:'🏛️ Toimitettu poliisille tai löytötavaratoimistoon',sv:'🏛️ Lämnad till polisen eller hittegodsbyrå',en:'🏛️ Handed to police / lost-property office'}[_tt],
+    left:      {fi:'📍 Jätetty paikoilleen',sv:'📍 Lämnad där',en:'📍 Left where it was'}[_tt],
+    delivered: {fi:'🏪 Toimitettu läheiseen liikkeeseen tai paikkaan',sv:'🏪 Lämnad i närliggande butik/plats',en:'🏪 Delivered to a nearby shop or venue'}[_tt],
+    other:     {fi:'✏️ Muu — tarkennetaan chatissa',sv:'✏️ Annat — preciseras i chatten',en:'✏️ Other — clarified in chat'}[_tt],
+    // Back-compat: keys used by earlier versions of the form
+    info:      {fi:'📍 Infopiste',sv:'📍 Informationsdisk',en:'📍 Info desk'}[_tt],
     lostfound: {fi:'📦 Löytötavaratoimisto',sv:'📦 Hittegodsbyrå',en:'📦 Lost property office'}[_tt],
-    safe: {fi:'🔒 Säilössä turvallisesti',sv:'🔒 Förvaras säkert',en:'🔒 Stored safely'}[_tt],
-    other: {fi:'✏️ Muu',sv:'✏️ Annat',en:'✏️ Other'}[_tt]
+    safe:      {fi:'🔒 Säilössä turvallisesti',sv:'🔒 Förvaras säkert',en:'🔒 Stored safely'}[_tt]
   };
 
   // Standard "can I contact this listing's owner?" — denied if:
@@ -4157,7 +4162,7 @@ async function initHomeMap() {
     }
     homeMap = new mapboxgl.Map({
       container: 'home-map',
-      style: 'mapbox://styles/mapbox/dark-v11',
+      style: 'mapbox://styles/mapbox/streets-v12',
       center: center,
       zoom: zoom,
       interactive: true,
@@ -4176,7 +4181,7 @@ async function initHomeMap() {
         const el = document.createElement('div');
         const color = markerColor(l.type);
         const icon = categoryIcon(l.category);
-        el.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid ' + color + ';background:rgba(0,0,0,0.6);box-shadow:0 0 12px ' + color + '44;' + (l._seed ? 'opacity:0.6;' : '');
+        el.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;border:3px solid ' + color + ';background:#fff;box-shadow:0 3px 10px rgba(20,30,25,0.18);' + (l._seed ? 'opacity:0.7;' : '');
         el.textContent = icon;
         const popup = new mapboxgl.Popup({ offset: 20, maxWidth: '200px' }).setHTML(
           '<div style="font-size:13px;font-weight:700;">' + esc(l.title || '') + '</div>' +
@@ -4217,7 +4222,7 @@ async function initMap() {
   }
   mapInstance = new mapboxgl.Map({
     container: 'mapbox-container',
-    style: 'mapbox://styles/mapbox/dark-v11',
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: [24.94, 60.17],
     zoom: 12
   });
@@ -4274,16 +4279,16 @@ function updateMapMarkers(listings) {
     const mColor = markerColor(l.type);
     el.style.cssText = `
       width: 42px; height: 42px; border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      border: 2px solid ${mColor};
+      background: #fff;
+      border: 3px solid ${mColor};
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 18px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 0 16px ${mColor}44, 0 4px 12px rgba(0,0,0,0.3);
-      transition: all 0.2s;
+      font-size: 19px;
+      box-shadow: 0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     `;
     el.textContent = categoryIcon(l.category);
-    el.onmouseover = () => { el.style.boxShadow = `0 0 24px ${mColor}88, 0 4px 16px rgba(0,0,0,0.4)`; el.style.borderWidth = '3px'; };
-    el.onmouseout = () => { el.style.boxShadow = `0 0 16px ${mColor}44, 0 4px 12px rgba(0,0,0,0.3)`; el.style.borderWidth = '2px'; };
+    el.onmouseover = () => { el.style.transform = 'translateY(-2px)'; el.style.boxShadow = `0 8px 20px rgba(20,30,25,0.25), 0 0 0 3px ${mColor}33`; };
+    el.onmouseout = () => { el.style.transform = ''; el.style.boxShadow = '0 4px 12px rgba(20,30,25,0.18), 0 0 0 2px rgba(255,255,255,0.7)'; };
     const typeLbl = {lost:{fi:'Kadonnut',sv:'Förlorad',en:'Lost'},found:{fi:'Löydetty',sv:'Hittad',en:'Found'},stolen:{fi:'Varastettu',sv:'Stulen',en:'Stolen'},pet:{fi:'Eläin',sv:'Djur',en:'Pet'}}[l.type]?.[currentLang] || l.type;
     const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, className: 'dark-popup' }).setHTML(`
       <div style="background: var(--paper);border:1px solid rgba(31,94,61,0.2);border-radius:14px;padding:14px 16px;color:var(--ink);min-width:180px;">
@@ -4432,7 +4437,7 @@ function initFormMap() {
   setTimeout(() => {
     formMap = new mapboxgl.Map({
       container: 'form-map',
-      style: 'mapbox://styles/mapbox/dark-v11',
+      style: 'mapbox://styles/mapbox/streets-v12',
       center: [24.94, 60.17],
       zoom: 12
     });
@@ -5951,11 +5956,16 @@ async function replyVerify(decision) {
   // Build comprehensive acceptance message with item location
   const addr = listing.address ? listing.address.split(',')[0] : '';
   const takenToMap = {
-    police: '🏛️ Tavara on viety poliisille',
-    info: '📍 Tavara on infopisteellä',
+    // Current keys
+    keep:      '🔒 Tavara on löytäjän hallussa',
+    police:    '🏛️ Tavara on toimitettu poliisille tai löytötavaratoimistoon',
+    left:      '📍 Tavara on jätetty löytöpaikalle',
+    delivered: '🏪 Tavara on toimitettu läheiseen liikkeeseen tai paikkaan',
+    other:     '📋 Sijainti tarkennetaan chatissa',
+    // Back-compat
+    info:      '📍 Tavara on infopisteellä',
     lostfound: '📦 Tavara on löytötavaratoimistossa',
-    safe: '🔒 Tavara on löytäjän hallussa turvallisesti',
-    other: '📋 Muu sijainti'
+    safe:      '🔒 Tavara on löytäjän hallussa turvallisesti'
   };
 
   let acceptMsg = '✅ OMISTAJUUS VAHVISTETTU\n\n';
@@ -5967,12 +5977,14 @@ async function replyVerify(decision) {
     acceptMsg += (takenToMap[listing.taken_to] || listing.taken_to) + '\n';
     if (listing.taken_to_detail) acceptMsg += '   ➜ ' + listing.taken_to_detail + '\n';
     acceptMsg += '\n';
-    if (listing.taken_to === 'police') {
-      acceptMsg += '⚖️ Tavara noudetaan poliisilta. Ota mukaasi henkilöllisyystodistus.\n\n';
-    } else if (listing.taken_to === 'lostfound') {
-      acceptMsg += '⚖️ Ota yhteyttä löytötavaratoimistoon ja ilmoita tavaran tiedot.\n\n';
-    } else if (listing.taken_to === 'info') {
-      acceptMsg += '⚖️ Tavara on noudettavissa infopisteeltä. Varaudu todistamaan omistajuus.\n\n';
+    if (listing.taken_to === 'police' || listing.taken_to === 'lostfound') {
+      acceptMsg += '⚖️ Käy noutamassa tavara — ota mukaasi henkilöllisyystodistus.\n\n';
+    } else if (listing.taken_to === 'delivered' || listing.taken_to === 'info') {
+      acceptMsg += '⚖️ Käy noutamassa tavara mainitusta paikasta. Varaudu todistamaan omistajuus.\n\n';
+    } else if (listing.taken_to === 'left') {
+      acceptMsg += '⚖️ Tavara on jätetty löytöpaikkaan — kannattaa noutaa pian.\n\n';
+    } else if (listing.taken_to === 'keep' || listing.taken_to === 'safe') {
+      acceptMsg += '⚖️ Sopikaa palautuspaikka ja -aika chatissa.\n\n';
     }
   }
 
