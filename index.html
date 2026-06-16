@@ -1165,7 +1165,6 @@ footer::before { display: none; }
     <div class="nav-links">
       <a onclick="showPage('map');switchMapTab('lost')">🔍 Kadotetut</a>
       <a onclick="showPage('map');switchMapTab('found')">📦 Löydetyt</a>
-      <a onclick="showPage('matches')" style="font-weight:600;position:relative;">🎯 Vastaavat<span id="match-badge" style="display:none;position:absolute;top:-6px;right:-14px;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;min-width:16px;text-align:center;line-height:16px;"></span></a>
     </div>
     <div class="nav-right">
       <div id="lang-switcher" style="display:flex;gap:2px;margin-right:6px;flex-shrink:0;">
@@ -1352,7 +1351,6 @@ footer::before { display: none; }
 <div id="mobile-menu" style="display:none;position:fixed;top:79px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--border);z-index:190;padding:16px 24px;flex-direction:column;gap:14px;">
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('lost');toggleMobileMenu()">🔍 Kadotetut</a>
   <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;" onclick="showPage('map');switchMapTab('found');toggleMobileMenu()">📦 Löydetyt</a>
-  <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;font-weight:600;position:relative;" onclick="showPage('matches');toggleMobileMenu()">🎯 Vastaavat<span id="match-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:2px 6px;margin-left:6px;"></span></a>
   <div id="mobile-menu-auth" style="display:none;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:4px;">
     <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;position:relative;" onclick="showPage('messages');toggleMobileMenu()" data-i18n="nav_messages">💬 Viestit<span id="msg-badge-mobile" style="display:none;background:#E53935;color:var(--ink);font-size:10px;font-weight:700;border-radius:99px;padding:1px 5px;margin-left:6px;"></span></a>
     <a style="font-size:15px;color:var(--ink2);text-decoration:none;cursor:pointer;display:block;margin-bottom:14px;" onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav_profile">👤 Profiili</a>
@@ -1386,6 +1384,13 @@ footer::before { display: none; }
           </button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ── PAIR-MATCH CARD — visible only when logged in + active match exists -->
+  <section id="pair-match-section" style="display:none;background:var(--bg);padding:0 0 32px;">
+    <div class="wrap" style="max-width:640px;margin:0 auto;">
+      <div id="pair-match-card"></div>
     </div>
   </section>
 
@@ -1806,8 +1811,7 @@ footer::before { display: none; }
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px;">Mitä seuraavaksi?</div>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">
-        <button onclick="showPage('matches')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;">Katso vastaavia ilmoituksia →</button>
-        <button onclick="resetListingForm();showPage('home')" style="padding:13px 20px;font-size:14px;font-weight:600;border:1px solid var(--border);border-radius:12px;background:var(--paper);color:var(--ink);cursor:pointer;">← Palaa etusivulle</button>
+        <button onclick="resetListingForm();showPage('home')" style="padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;">← Palaa etusivulle</button>
         <button onclick="resetListingForm()" style="padding:11px 20px;font-size:13px;font-weight:500;border:none;background:none;color:var(--ink2);cursor:pointer;text-decoration:underline;">Tee uusi ilmoitus</button>
       </div>
       <div id="install-prompt-area" style="display:none;margin-top:24px;">
@@ -1863,23 +1867,6 @@ footer::before { display: none; }
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- ═══════════════════════════════════════════════ -->
-<!-- PAGE: MATCHES -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="page" id="page-matches">
-  <section>
-    <div class="wrap">
-      <div class="form-page-back" onclick="showPage('home')">← Etusivu</div>
-      <div class="section-label" data-i18n="match_label">Vastaavat</div>
-      <div class="section-title" data-i18n="match_title">Vastaavat ilmoitukset</div>
-      <div class="section-sub" style="margin-bottom:36px;" data-i18n="match_sub">Findly vertaa ilmoituksiasi muihin ilmoituksiin ja näyttää vastaavat sinulle.</div>
-      <div id="matches-content">
-        <div class="loading"><div class="spinner"></div><span data-i18n="loading">Ladataan...</span></div>
-      </div>
-    </div>
-  </section>
-</div>
 
 <!-- PAGE: LISTING DETAIL -->
 <!-- ═══════════════════════════════════════════════ -->
@@ -2656,7 +2643,7 @@ function showPage(name, fromPopstate) {
     }
   }
 
-  if (name === 'home') setTimeout(initHomeMap, 200);
+  if (name === 'home') { setTimeout(initHomeMap, 200); renderPairMatchCard(); }
   if (name === 'feed') loadFeed();
   if (name === 'map') {
     // Default to "Kadotetut" the first time we open the map page in this session
@@ -2664,7 +2651,7 @@ function showPage(name, fromPopstate) {
     initMap();
   }
   if (name === 'pets') { loadPets(); loadSightings(); }
-  if (name === 'matches') { loadMatches(); setMatchBadge(0); }
+  // /matches page removed — matching now surfaces as a home card + toasts.
   if (name === 'messages') { loadConversations(); setMsgBadge(0); lastSeenMsgTime = new Date().toISOString(); localStorage.setItem('findly-last-msg', lastSeenMsgTime); }
   if (name === 'profile') loadProfile();
   if (name === 'new-listing') {
@@ -3005,6 +2992,8 @@ async function updateMatchBadge() {
   setMatchBadge(total);
   // Surface a toast for new matches the first time they appear (per browser).
   notifyNewMatches(total);
+  // Also refresh the home page pair-match card so it reflects the latest.
+  renderPairMatchCard();
 }
 
 // One-shot toast when match count grows since last check (persisted in localStorage).
@@ -4988,7 +4977,7 @@ function showMatchAlert(count, bestMatch, score) {
       <div style="font-size:12px;font-weight:700;color:var(--green);background:rgba(31,94,61,0.12);padding:4px 10px;border-radius:20px;">${score}%</div>
     </div>` : ''}
     <div style="display:flex;gap:8px;">
-      <button onclick="document.getElementById('match-alert').remove();showPage('matches')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">${{fi:'Katso vastaavat →',sv:'Se träffar →',en:'View matches →'}[L]}</button>
+      <button onclick="document.getElementById('match-alert').remove();showPage('home')" style="flex:1;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:12px;background:var(--green);color: #fff;cursor:pointer;">${{fi:'Katso etusivulta →',sv:'Se på startsidan →',en:'View on home →'}[L]}</button>
       <button onclick="document.getElementById('match-alert').remove()" style="padding:11px 16px;font-size:14px;border: 1.5px solid var(--border);border-radius:12px;background: var(--paper);color:var(--ink3);cursor:pointer;">${{fi:'Myöhemmin',sv:'Senare',en:'Later'}[L]}</button>
     </div>`;
   document.body.appendChild(el);
@@ -5088,162 +5077,67 @@ function scoreMatch(mine, other) {
   return { score: Math.min(score, 100), reasons };
 }
 
-async function loadMatches() {
-  const el = document.getElementById('matches-content');
-
-  if (!currentUser) {
-    el.innerHTML = `
-      <div style="text-align:center;padding:48px 20px;">
-        <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-        <h3 style="font-family:'Fraunces','Georgia',serif;font-size:20px;font-weight:700;margin-bottom:8px;">Kirjaudu sisään</h3>
-        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Vastaavat ilmoitukset lasketaan aktiivisten ilmoitustesi perusteella.</p>
-        <button class="btn-primary" style="border:none;" onclick="showPage('auth')">Kirjaudu tai luo tili →</button>
-      </div>`;
-    return;
-  }
-
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Lasketaan osumia...</div>';
+// ═══════════════════════════════════════════════════════
+// PAIR-MATCH HOME CARD — replaces the old /matches page.
+// Loads my listings + everyone else's, scores them, and shows a single
+// card on the home page with the best match (plus a "+ N muuta" tag).
+// ═══════════════════════════════════════════════════════
+async function renderPairMatchCard() {
+  const section = document.getElementById('pair-match-section');
+  const card    = document.getElementById('pair-match-card');
+  if (!section || !card) return;
+  if (!currentUser) { section.style.display = 'none'; return; }
 
   try {
-  // Load user's own listings + all other listings + existing conversations
-  const now = new Date().toISOString();
-  const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
-    sb.from('listings').select('*').eq('user_id', currentUser.id).neq('status','returned').gt('expires_at', now),
-    sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found','pet']).neq('status','returned').gt('expires_at', now),
-    sb.from('conversations').select('listing_id, listings(status)').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
-  ]);
-  // Set of listing IDs where user already has a conversation
-  const pendingListingIds = new Set((myConvs || []).map(c => c.listing_id));
-  // Set of listing IDs where conversation's listing is already resolved
-  const resolvedConvListingIds = new Set((myConvs || []).filter(c => c.listings?.status === 'returned').map(c => c.listing_id));
+    const now = new Date().toISOString();
+    const [{ data: myListings }, { data: allOther }, { data: myConvs }] = await Promise.all([
+      sb.from('listings').select('*').eq('user_id', currentUser.id).neq('status','returned').gt('expires_at', now),
+      sb.from('listings').select('*').neq('user_id', currentUser.id).in('type', ['lost','found']).neq('status','returned').gt('expires_at', now),
+      sb.from('conversations').select('listing_id').or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    ]);
 
-  if (!myListings || myListings.length === 0) {
-    el.innerHTML = `
-      <div style="text-align:center;padding:48px 20px;">
-        <div style="font-size:48px;margin-bottom:16px;">📭</div>
-        <h3 style="font-family:'Fraunces','Georgia',serif;font-size:20px;font-weight:700;margin-bottom:8px;">Ei aktiivisia ilmoituksia</h3>
-        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">Tee ensin ilmoitus niin Findly etsii sinulle osumia.</p>
-        <button class="btn-primary" style="border:none;" onclick="showPage('new-listing')">+ Tee ilmoitus →</button>
-      </div>`;
-    return;
-  }
-
-  let html = '';
-  let totalMatches = 0;
-
-  // Filter out own listings linked to resolved conversations
-  const activeMyListings = myListings.filter(l => !resolvedConvListingIds.has(l.id));
-
-  if (activeMyListings.length === 0 && myListings.length > 0) {
-    el.innerHTML = `
-      <div style="text-align:center;padding:48px 20px;">
-        <div style="font-size:48px;margin-bottom:16px;">✅</div>
-        <h3 style="font-family:'Fraunces','Georgia',serif;font-size:20px;font-weight:700;margin-bottom:8px;">${{fi:'Kaikki tapaukset käsitelty!',sv:'Alla ärenden avslutade!',en:'All cases handled!'}[currentLang]}</h3>
-        <p style="font-size:14px;color:var(--ink3);margin-bottom:24px;">${{fi:'Suljetut tapaukset löydät profiilisi arkistosta.',sv:'Avslutade ärenden hittar du i profilens arkiv.',en:'Closed cases can be found in your profile archive.'}[currentLang]}</p>
-      </div>`;
-    return;
-  }
-
-  for (const mine of activeMyListings) {
-    // Finder who said "do not contact me" opts out of the matches view for their own found-listings
-    if (mine.type === 'found' && !listingAllowsContact(mine)) continue;
-    const candidates = (allOther || []).map(other => {
-      if (isDismissed(mine.id, other.id)) return null;
-      if (resolvedConvListingIds.has(other.id)) return null;
-      // Hide found-listings whose finder declined contact — there's no actionable path
-      if (other.type === 'found' && !listingAllowsContact(other)) return null;
-      const result = scoreMatch(mine, other);
-      if (!result || result.score < 20) return null;
-      return { listing: other, score: result.score, reasons: result.reasons };
-    }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 5);
-
-    const typeLbl = typeLabel(mine.type);
-    const typeBadge = { lost: 'badge-lost', found: 'badge-found', stolen: 'badge-stolen' }[mine.type] || '';
-
-    html += `<div class="match-group">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--ink3);margin-bottom:8px;">${{fi:'SINUN ILMOITUKSESI',sv:'DIN ANMÄLAN',en:'YOUR LISTING'}[currentLang]}</div>
-      <div class="own-listing-pill" onclick="openListing('${mine.id}')" style="border: 1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;background: var(--paper);cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:4px;">
-        <span style="font-size:28px;">${categoryIcon(mine.category)}</span>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;">${esc(mine.title)}</div>
-          <div style="font-size:12px;color:var(--ink3);">${typeLbl} · ${mine.address ? mine.address.split(',')[0] : ''} · ${expiresIn(mine.created_at)}</div>
-        </div>
-        <span class="feed-card-badge ${typeBadge}" style="font-size:10px;">${typeLbl}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px;margin-left:24px;">
-        <div style="width:2px;height:20px;background:var(--green);border-radius:2px;"></div>
-        <span style="font-size:12px;font-weight:600;color:var(--green);">↓ ${candidates.length} ${candidates.length === 1 ? {fi:'mahdollinen pari',sv:'möjlig träff',en:'possible match'}[currentLang] : {fi:'mahdollista paria',sv:'möjliga träffar',en:'possible matches'}[currentLang]}</span>
-      </div>`;
-
-    if (candidates.length === 0) {
-      html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px;margin-left:24px;">
-        <div style="width:2px;height:20px;background:var(--border);border-radius:2px;"></div>
-        <span style="font-size:12px;color:var(--ink3);">Ei vielä osumia</span>
-      </div>
-      <div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px;background:var(--paper);border-radius:var(--radius);border:1px dashed var(--border);">
-        🔍 Findly etsii osumia automaattisesti. Tarkista myöhemmin uudelleen.
-      </div>`;
-    } else {
-      totalMatches += candidates.length;
-      html += candidates.map(({ listing: l, score, reasons }) => {
-        const displayAddr = l.address ? 'lähellä ' + l.address.split(',')[0] : 'Sijainti merkitty';
-        const isPending = pendingListingIds.has(l.id);
-        const highMatch = score >= 70;
-        const otherTypeLabel = { lost: typeLabel('lost'), found: typeLabel('found'), stolen: typeLabel('stolen') }[l.type] || l.type;
-        const relevanceText = score >= 70 ? '🟢 Vahva pari' : '🟡 Mahdollinen pari';
-        return `<div class="match-card${highMatch && !isPending ? ' high-match' : ''}" onclick="openListing('${l.id}')" style="${isPending ? 'opacity:0.65;' : ''}">
-          <button class="match-dismiss-btn" onclick="event.stopPropagation();dismissMatch('${mine.id}','${l.id}')" title="Hylkää">✕</button>
-          <div class="match-card-icon" style="${l.image_url ? 'padding:0;overflow:hidden;border:none;' : ''}">${l.image_url ? `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);" />` : categoryIcon(l.category)}</div>
-          <div class="match-card-body">
-            <div class="match-card-top">
-              <div>
-                <div class="match-card-title">${esc(l.title)}</div>
-                <div style="font-size:11px;color:var(--ink3);margin-top:2px;">${otherTypeLabel}-ilmoitus</div>
-              </div>
-            </div>
-            <div class="match-relevance" style="color:${score >= 70 ? 'var(--green)' : 'var(--amber)'};">${relevanceText}</div>
-            <div class="match-card-meta">
-              <span>📍 ${esc(displayAddr)}</span>
-              <span>🕐 ${timeAgo(l.created_at)}</span>
-              ${l.incident_time_from && l.incident_time_to ? `<span>📅 ${new Date(l.incident_time_from).toLocaleDateString('fi-FI')} — ${new Date(l.incident_time_to).toLocaleDateString('fi-FI')}</span>` : l.incident_time ? `<span>📅 ${new Date(l.incident_time).toLocaleDateString('fi-FI')}</span>` : ''}
-            </div>
-            <div class="match-card-desc">${esc(listingPublicDescription(l))}</div>
-            <div class="match-card-actions">
-              ${isPending
-                ? `<button style="padding:12px 24px;font-size:14px;font-weight:600;border-radius:24px;cursor:pointer;border:1px solid rgba(245,158,11,0.2);background:rgba(245,158,11,0.12);color:var(--amber);width:100%;text-align:center;" onclick="event.stopPropagation();showPage('messages')">⏳ Odottaa vastausta — Avaa viestit</button>`
-                : mine.type === 'found'
-                  ? `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();openFinderIntro('${l.id}','${l.user_id}')">🤝 Kerro löydöstäsi</button>`
-                  : `<button class="btn-primary" style="border:none;padding:12px 24px;font-size:14px;width:100%;text-align:center;" onclick="event.stopPropagation();startVerifyFlow('${l.id}','${l.user_id}')">🔐 Tämä on minun — todista omistajuus</button>`}
-            </div>
-          </div>
-        </div>`;
-      }).join('');
+    const pendingIds = new Set((myConvs || []).map(c => c.listing_id));
+    const matches = [];
+    for (const mine of (myListings || [])) {
+      if (mine.type === 'found' && !listingAllowsContact(mine)) continue;
+      for (const other of (allOther || [])) {
+        if (pendingIds.has(other.id)) continue;
+        if (isDismissed(mine.id, other.id)) continue;
+        if (other.type === 'found' && !listingAllowsContact(other)) continue;
+        const r = scoreMatch(mine, other);
+        if (r && r.score >= 20) matches.push({ other, mine, score: r.score });
+      }
     }
+    matches.sort((a, b) => b.score - a.score);
+    if (!matches.length) { section.style.display = 'none'; return; }
 
-    html += '</div>';
-  }
+    const best = matches[0].other;
+    const myType = matches[0].mine.type;
+    const more = matches.length - 1;
+    const where = (best.address || '').split(',')[0];
+    const meta = [where, timeAgo(best.created_at)].filter(Boolean).join(' · ');
+    // Wording: lead with what they should do depending on which side they posted.
+    const heading = myType === 'lost'
+      ? 'Joku saattoi löytää tavarasi'
+      : 'Joku saattaa olla löytösi omistaja';
 
-  if (totalMatches > 0) {
-    el.innerHTML = `
-    <div style="background:rgba(31,94,61,0.06);border:1.5px solid rgba(31,94,61,0.15);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;text-align:center;animation:popIn 0.4s ease;">
-      <div style="font-size:48px;margin-bottom:8px;">🎯</div>
-      <div style="font-family:'Fraunces','Georgia',serif;font-size:22px;font-weight:800;color:var(--green);margin-bottom:6px;">${totalMatches} ${totalMatches === 1 ? {fi:'vastaava ilmoitus löytyi!',sv:'träff hittad!',en:'match found!'}[currentLang] : {fi:'vastaavaa ilmoitusta löytyi!',sv:'träffar hittade!',en:'matches found!'}[currentLang]}</div>
-      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">${{fi:'Findly löysi mahdollisia matcheja ilmoituksillesi.',sv:'Findly hittade möjliga matchningar för dina anmälningar.',en:'Findly found potential matches for your listings.'}[currentLang]}</div>
-      <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
-    </div>
-    ${html}`;
-  } else {
-    el.innerHTML = `
-    <div style="background: var(--paper);border: 1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:28px;text-align:center;">
-      <div style="font-size:36px;margin-bottom:8px;">🔍</div>
-      <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;">${{fi:'Ei osumia juuri nyt',sv:'Inga träffar just nu',en:'No matches right now'}[currentLang]}</div>
-      <div style="font-size:13px;color:var(--ink3);margin-bottom:4px;">${{fi:'Findly etsii jatkuvasti. Tarkista myöhemmin uudelleen!',sv:'Findly söker hela tiden. Kolla igen senare!',en:'Findly keeps searching. Check again later!'}[currentLang]}</div>
-      <div style="font-size:11px;color:var(--ink3);">${{fi:'Päivitetty',sv:'Uppdaterad',en:'Updated'}[currentLang]} ${new Date().toLocaleTimeString(currentLang === 'fi' ? 'fi-FI' : currentLang === 'sv' ? 'sv-SE' : 'en-GB', {hour:'2-digit',minute:'2-digit'})} · <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">↻ ${{fi:'Päivitä',sv:'Uppdatera',en:'Refresh'}[currentLang]}</a></div>
-    </div>
-    ${html}`;
-  }
-  } catch(err) {
-    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--red);font-size:14px;">Virhe osumien latauksessa. <a onclick="loadMatches()" style="color:var(--green);cursor:pointer;font-weight:600;">Yritä uudelleen</a></div>';
+    card.innerHTML = `
+      <div onclick="openListing('${best.id}')"
+        style="background:var(--green-light);border:1px solid rgba(31,94,61,0.22);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s ease;"
+        onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='var(--shadow-md)';"
+        onmouseout="this.style.transform='';this.style.boxShadow='';">
+        <div style="font-size:28px;line-height:1;flex-shrink:0;">🎯</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--green);margin-bottom:2px;">Vastapari löytyi</div>
+          <div style="font-family:'Fraunces','Georgia',serif;font-size:16px;font-weight:600;color:var(--ink);line-height:1.25;letter-spacing:-0.2px;">${esc(heading)}</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:4px;">${esc(best.title || '')}${meta ? ' · ' + esc(meta) : ''}${more > 0 ? ` <span style="color:var(--ink3);">· + ${more} muuta</span>` : ''}</div>
+        </div>
+        <div style="font-size:13px;color:var(--green);font-weight:600;white-space:nowrap;">Avaa →</div>
+      </div>`;
+    section.style.display = 'block';
+  } catch (e) {
+    console.error('renderPairMatchCard:', e);
+    section.style.display = 'none';
   }
 }
 
@@ -6174,7 +6068,7 @@ async function loadProfile() {
       } else if (isMatch) {
         actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('messages')">Avaa keskustelu →</span>`;
       } else {
-        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('matches')">Katso vastaavia ilmoituksia →</span>`;
+        actionHtml = `<span class="plc-action" onclick="event.stopPropagation();showPage('home')">Katso etusivulta →</span>`;
       }
 
       // Time info
