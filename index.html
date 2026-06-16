@@ -5271,35 +5271,28 @@ async function renderPairMatchCard() {
 // ═══════════════════════════════════════════════════════
 // Shared: find or create ONE conversation per listing+user pair
 async function getOrCreateConversation(listingId, otherUserId) {
-  // Check 1: conversation for this exact listing with these users
+  // One conversation PER case (listing) per user pair — never collapse multiple
+  // listings into the same thread, even if the same two people are involved.
   const { data: exact } = await sb.from('conversations')
     .select('id')
     .eq('listing_id', listingId)
-    .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
     .limit(1)
     .maybeSingle();
   if (exact) return { convId: exact.id, isNew: false };
 
-  // Check 2: ANY conversation between these two users (covers reverse listing_id)
-  const { data: between } = await sb.from('conversations')
-    .select('id')
-    .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (between) return { convId: between.id, isNew: false };
-
-  // Create new — if duplicate error, retry read
+  // Create a new conversation for this listing
   const { data: conv, error } = await sb.from('conversations').insert({
     listing_id: listingId,
     user_a: currentUser.id,
     user_b: otherUserId
   }).select().single();
   if (error) {
-    // Might be a race condition — try reading again
+    // Race condition retry — re-check the same listing+pair lookup
     const { data: retry } = await sb.from('conversations')
-      .select('id').eq('listing_id', listingId)
-      .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+      .select('id')
+      .eq('listing_id', listingId)
+      .or(`and(user_a.eq.${currentUser.id},user_b.eq.${otherUserId}),and(user_a.eq.${otherUserId},user_b.eq.${currentUser.id})`)
       .limit(1).maybeSingle();
     if (retry) return { convId: retry.id, isNew: false };
     toast(t('toast_error') + error.message, 'red');
