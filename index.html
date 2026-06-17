@@ -4109,14 +4109,20 @@ async function pollForNotifications() {
 
   if (convs) {
     let newMsgCount = 0;
+    const isFirstPoll = !window._notifPollSeeded;
+    const seenCutoff = new Date(lastSeenMsgTime);
     for (const c of convs) {
       const prev = lastMessageCount[c.id];
-      const isFirstPoll = !window._notifPollSeeded;
-      const newMessage = prev && new Date(c.updated_at) > new Date(prev);
+      const cu = new Date(c.updated_at);
+      // Three triggers for "this needs a notification":
+      //   1) prev tracked and updated_at has advanced (steady-state new message)
+      //   2) not tracked AND not first poll (genuinely brand-new conversation)
+      //   3) first poll AND updated_at is more recent than the user's last visit
+      //      to the Viestit page (unread leftover from before the tab opened)
+      const newMessage      = prev && cu > new Date(prev);
       const newConversation = !prev && !isFirstPoll;
-      if (newMessage || newConversation) {
-        const otherUser = c.user_a === currentUser.id ? c.user_b : c.user_a;
-        // Only notify if the LATEST message in this conversation was NOT from us
+      const unreadOnSeed    = isFirstPoll && cu > seenCutoff;
+      if (newMessage || newConversation || unreadOnSeed) {
         const { data: lastMsg } = await sb.from('messages')
           .select('sender_id, content')
           .eq('conversation_id', c.id)
@@ -4124,12 +4130,13 @@ async function pollForNotifications() {
           .limit(1)
           .maybeSingle();
         if (lastMsg && lastMsg.sender_id !== currentUser.id) {
+          const isFirstContact = newConversation || (unreadOnSeed && !prev);
           sendNotification(
-            newConversation ? 'Findly — Vastapari löytyi 🎯' : 'Findly — Uusi viesti 💬',
-            newConversation ? 'Joku otti yhteyttä ilmoituksesi kautta.' : (lastMsg.content || '').substring(0, 90)
+            isFirstContact ? 'Findly — Vastapari löytyi 🎯' : 'Findly — Uusi viesti 💬',
+            isFirstContact ? 'Joku otti yhteyttä ilmoituksesi kautta.' : (lastMsg.content || '').substring(0, 90)
           );
           showInAppMessageBanner(c.id);
-          flashTitle(newConversation ? '🎯 Vastapari löytyi' : '💬 Uusi viesti');
+          flashTitle(isFirstContact ? '🎯 Vastapari löytyi' : '💬 Uusi viesti');
           newMsgCount++;
         }
       }
